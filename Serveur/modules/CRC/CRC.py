@@ -188,10 +188,22 @@ class Vue():
         self.entryResponsabilite.pack(side=LEFT, padx = largeur)
         self.entryResponsabilite.bind('<Return>',self.saisirResponsabilite)
         
+        '''
         self.entryCollaboration = Entry(frame4, text="", width=15)
         self.entryCollaboration.pack(side=LEFT, padx = largeur)
         self.entryCollaboration.bind('<Return>',self.saisirCollaboration)
+        '''
+        #liste déroulante avec la liste des noms des classes existantes
+  
+        choix = self.parent.modele.nomsDesClasses()
+        self.classeChoisie = StringVar(frame4)
+        self.classeChoisie.set(0)#la valeur par défaut de la liste déroulante
+        self.choixClasses = OptionMenu(frame4,self.classeChoisie,*choix)
+        self.choixClasses.pack(side="left")
         
+        #bouton pour ajouter un collaborateur
+        boutonCollaboration = Button(frame4, text="Ajouter", command = self.saisirCollaboration)
+        boutonCollaboration.pack(side = LEFT)   
           
         #zone pour les listebox des responsabilités et des collaborations
         frameDeuxBox = Frame(self.menuAjout)
@@ -257,13 +269,13 @@ class Vue():
         self.menuDroite.pack(side=LEFT) 
        
         
-    def saisirCollaboration(self,event):
-        saisie = self.entryCollaboration.get()
+    def saisirCollaboration(self):  
+        saisie=  self.classeChoisie.get()
         self.collaborateurs.append(saisie)
         self.listeCollaboration.insert(END,saisie)
         #vider le Entry après avoir saisi quelque chose
-        self.entryCollaboration.delete(0,END)
-        print(self.entryCollaboration.get())
+        #self.entryCollaboration.delete(0,END)
+        print(saisie)
         
     def supprimer(self):
         if self.focused_box == self.listeCollaboration:
@@ -340,14 +352,21 @@ class Modele():
     
     def nomsDesClasses(self):
         champs = ["id_classes", "nom", "id_projet"]
-        selected = self.serveur.sel("CRCClasse", champs)
+        #selected = self.serveur.sel("CRCClasse", champs)
         #ajouter les classes correspondant au id projet à une liste
         classes = []
+        '''
         for element in select:
             if element[2] == self.parent.idProjet:
                 classes.append(element)    
+        '''
+        classes = []
+        for i in range (5):
+            classes.append(i)
+        #classes = ["nom1","nom2","nom3","nom4"]
         return classes    
-
+       
+    
 class Controleur():
     def __init__(self):
         #informations du système quand le programme est lancé
