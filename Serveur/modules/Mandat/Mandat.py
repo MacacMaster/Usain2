@@ -94,7 +94,7 @@ class Vue():
     def ecranCommande(self):
         self.frameCommande=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
         self.frameCommande.pack(fill=X)
-        self.canCommande=Canvas(self.frameCommande, height=100, bg="light gray")
+        self.canCommande=Canvas(self.frameCommande, height=135, bg="light gray")
         self.canCommande.pack(fill=X)
         
         #Entree de l'expression
@@ -112,19 +112,35 @@ class Vue():
         
         #Boutons de type
         self.btnImplicite=Button(self.frameCommande, text="Implicite", width=30, bg="light blue", command=lambda:self.choixType(1))
-        self.canCommande.create_window(525,70,window=self.btnImplicite,width=110,height=30)
-        self.btnSupplementaire=Button(self.frameCommande, text="Supplementaire", width=30, bg="light blue", command=lambda:self.choixType(2))
-        self.canCommande.create_window(650,70,window=self.btnSupplementaire,width=110,height=30)
+        self.canCommande.create_window(150,110,window=self.btnImplicite,width=110,height=30)
+        self.btnSupplementaire=Button(self.frameCommande, text="Explicite", width=30, bg="light blue", command=lambda:self.choixType(2))
+        self.canCommande.create_window(275,110,window=self.btnSupplementaire,width=110,height=30)
+        self.btnSupplementaire=Button(self.frameCommande, text="Supplementaire", width=30, bg="light blue", command=lambda:self.choixType(3))
+        self.canCommande.create_window(400,110,window=self.btnSupplementaire,width=110,height=30)
+        
     
+        #deux labels pour identifier les expression
+        self.labelChoixNature = Label(self.frameCommande, text="nature choisie")
+        self.canCommande.create_window(525,70,window=self.labelChoixNature,width=110,height=30)
+
+        self.labelChoixType = Label(self.frameCommande, text="type choisi", bg="light blue")
+        self.canCommande.create_window(525,110,window=self.labelChoixType,width=110,height=30)
+    
+        #bouton confirmer
+        self.btnConfirmer=Button(self.frameCommande, text="Confirmer", width=30, command=lambda:self.choixNature(3))
+        self.canCommande.create_window(650,90,window=self.btnConfirmer,width=110,height=30)
     
     
     def choixNature(self,choix):
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
+            self.labelChoixNature.config(text="Objet")
             print("Envoie de la nature Objet dans l'expression: "+self.parent.modele.uneExpression.nature)
         elif choix==2:
+            self.labelChoixNature.config(text="Action")
             self.parent.modele.uneExpression.nature="Action"
         elif choix==3:
+            self.labelChoixNature.config(text="Attribut")
             self.parent.modele.uneExpression.nature="Attribut"
         
         self.parent.modele.uneExpression.contenu=self.mot
@@ -136,17 +152,22 @@ class Vue():
             
     
     def choixType(self,choix):
-        if self.parent.modele.uneExpression.nature!=NULL:
-            if choix==1:
-                self.parent.modele.uneExpression.type="Implicite"
-            elif choix==2:
-               self.parent.modele.uneExpression.type="Supplementaire"
-            
-            self.parent.modele.uneExpression.contenu=self.mot
-            self.parent.modele.updateExpression()
-            self.afficheListBox()    
-        else:
-            print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
+        #if self.parent.modele.uneExpression.nature!=NULL:
+        if choix==1:
+            self.labelChoixType.config(text="Implicite")
+            self.parent.modele.uneExpression.type="Implicite"
+        elif choix==2:
+            self.labelChoixType.config(text="Explicite")
+            self.parent.modele.uneExpression.type="Explicite"
+        elif choix==3:
+            self.labelChoixType.config(text="Supplémentaire")
+            self.parent.modele.uneExpression.type="Supplementaire"
+        
+        self.parent.modele.uneExpression.contenu=self.mot
+        self.parent.modele.updateExpression()
+        self.afficheListBox()    
+        #else:
+        #    print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
         
         #self.parent.modele.insertionSQL(self.parent.modele.uneExpression)         
