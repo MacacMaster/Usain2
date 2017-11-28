@@ -1,11 +1,23 @@
 from tkinter import *
 
-'''class Controleur():
+class Formes():
+    def __init__(self, pModele, pNom):
+        self.modele=pModele
+        self.nom = pNom
+        self.x1
+        self.y1
+        self.x2
+        self.y2
+        self.text
+
+class Controleur():
     def __init__(self):
         self.vue = Vue(self)
         self.unReprend=False
         self.vue.root.mainloop()
         print("controleur")
+        
+
     
 class Vue():
     def __init__(self, pControleur):
@@ -15,8 +27,6 @@ class Vue():
         self.root = Tk()
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.fenetre.pack()
-        self.listeCas=[]
-        self.listeEtat=[]
         self.dejaOuvert=False
         self.indiceCasModifier=0
         self.menuInitial()
@@ -26,6 +36,8 @@ class Vue():
         self.y2=0
         self.cercle=False;
         self.rect=False;
+        self.choix = 0 
+        self.formeTemp = 0 
       
 
     
@@ -64,6 +76,8 @@ class Vue():
        
         self.caneva.bind('ButtonRelease-1', self.release)
         self.caneva.pack(padx =5, pady =5)
+        
+        self.formeTemp = self.caneva.create_rectangle(0,0,0,0,tag="tempo")
     
     def bouge(self,event):
         self.x2 = event.x
@@ -82,10 +96,11 @@ class Vue():
         self.dessiner()
     
     def creeCercle(self):
-        self.cercle=True;
+        self.cercle=True
    
     def creeRectangle(self):
         self.rect=True
+        self.choix = "rectangle"
                     
     def detruitTempo(self):
        pass
@@ -93,16 +108,23 @@ class Vue():
         
     def dessinerTempo(self):
         if(self.cercle):
-            self.caneva.create_oval(self.x,self.y,self.x+self.x,self.y+self.x,tags="Forme")
-        
-        self.caneva.create_rectangle(self.x,self.y,self.x2,self.y2,tags="Forme")
-        self.caneva.delete("Forme")
+            self.caneva.create_oval(self.x,self.y,self.x+self.x,self.y+self.x)
+            
+            
+        #self.formeTemp = self.caneva.create_rectangle(self.x,self.y,self.x2,self.y2, tag="tempo")
+        #options = self.x,self.y,self.x2,self.y2
+        #options = self.x2,self.y2
+        self.caneva.coords("tempo",self.x,self.y,self.x2,self.y2)
+        #self.caneva.delete(self.formeTemp)
+        #self.caneva.delete("Forme")
         
         
     def callback(event):
-        print ("clicked at", event.x, event.y)'''
+        print ("clicked at", event.x, event.y)
         
         
+        
+'''    
 class Controleur():
     def __init__(self):
         self.modele = Modele(self)
@@ -150,6 +172,6 @@ class Formes():
         self.x2
         self.y2
         self.text
-                        
+'''                        
 if __name__ == '__main__':
     c = Controleur()
