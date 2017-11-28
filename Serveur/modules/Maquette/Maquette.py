@@ -1,17 +1,18 @@
 from tkinter import *
 
 class Formes():
-    def __init__(self, pModele, pNom):
-        self.modele=pModele
+    def __init__(self, x1,y1,x2,y2, pNom, pText = ""):
+        #self.modele=pModele
         self.nom = pNom
-        self.x1
-        self.y1
-        self.x2
-        self.y2
-        self.text
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 =x2
+        self.y2 =y2
+        self.text = pText
 
 class Controleur():
     def __init__(self):
+        self.modele = Modele(self)
         self.vue = Vue(self)
         self.unReprend=False
         self.vue.root.mainloop()
@@ -30,16 +31,29 @@ class Vue():
         self.dejaOuvert=False
         self.indiceCasModifier=0
         self.menuInitial()
-        self.x=0
-        self.y=0
+        self.x1=0
+        self.y1=0
         self.x2=0
         self.y2=0
         self.cercle=False;
         self.rect=False;
-        self.choix = 0 
-        self.formeTemp = 0 
-      
-
+        self.choix = ""
+        self.formeTemp = 0
+        self.afficherCaneva()
+        
+    def afficherCaneva(self):
+        #self.caneva.delete(ALL)
+        for i in self.controleur.modele.formes:
+            if (i.nom == "Rectangle"):
+                print("Dessine")
+                self.caneva.create_rectangle(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+            if (i.nom  == "Cercle"):
+                self.caneva.create_oval()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+            if (i.nom  == "Fleche"):
+                self.caneva.create_line()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+            if (i.nom  == "Texte"):
+                self.caneva.create_text()()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+        #self.root.after(10, self.afficherCaneva)
     
     def menuInitial(self):
         self.caneva = Canvas(self.fenetre, width = self.largeur-200, height=self.hauteur, bg="white")
@@ -74,7 +88,7 @@ class Vue():
         self.caneva.bind('<Button-1>', self.clic)
         self.caneva.pack(padx =5, pady =5)
        
-        self.caneva.bind('ButtonRelease-1', self.release)
+        self.caneva.bind('<ButtonRelease-1>', self.release)
         self.caneva.pack(padx =5, pady =5)
         
         self.formeTemp = self.caneva.create_rectangle(0,0,0,0,tag="tempo")
@@ -82,25 +96,31 @@ class Vue():
     def bouge(self,event):
         self.x2 = event.x
         self.y2 = event.y
-        print(self.x2,self.y2)
+        #print(self.x2,self.y2)
         self.dessinerTempo()
     
     def clic(self,event):
-        self.x = event.x
-        self.y = event.y
-        print(self.x,self.y)
+        self.x1 = event.x
+        self.y1 = event.y
+        #print(self.x,self.y)
 
-    def release(self):
-        self.x2 = event.x
-        self.y2 = event.y
-        self.dessiner()
+    def release(self,event):
+        forme = None
+        if self.choix != "Text":
+            forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
+        else:
+            forme = Formes(self.x1,self.y1,event.x,event.y,self.choix, text)
+        print("Forme creee")
+        self.controleur.modele.formes.append(forme)
+        self.afficherCaneva()
     
     def creeCercle(self):
         self.cercle=True
    
     def creeRectangle(self):
         self.rect=True
-        self.choix = "rectangle"
+        self.choix = "Rectangle"
+        print("choisi")
                     
     def detruitTempo(self):
        pass
@@ -108,19 +128,26 @@ class Vue():
         
     def dessinerTempo(self):
         if(self.cercle):
-            self.caneva.create_oval(self.x,self.y,self.x+self.x,self.y+self.x)
+            self.caneva.create_oval(self.x1,self.y1,self.x1+self.x1,self.y1+self.y1)
             
             
         #self.formeTemp = self.caneva.create_rectangle(self.x,self.y,self.x2,self.y2, tag="tempo")
         #options = self.x,self.y,self.x2,self.y2
         #options = self.x2,self.y2
-        self.caneva.coords("tempo",self.x,self.y,self.x2,self.y2)
+        self.caneva.coords("tempo",self.x1,self.y1,self.x2,self.y2)
         #self.caneva.delete(self.formeTemp)
         #self.caneva.delete("Forme")
         
         
     def callback(event):
         print ("clicked at", event.x, event.y)
+        
+        
+        
+class Modele():
+    def __init__(self, pControleur):
+        self.controleur = pControleur
+        self.formes = [ ]
         
         
         
