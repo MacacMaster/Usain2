@@ -48,6 +48,7 @@ class Log():
     def writeLog(self,action="Actionman",module="Client"):
         #print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
         self.parent.serveur.writeLog(self.getTime(),self.organisation,self.user,self.clientip,self.dbip,module,action)
+        
     
     #===========================================================================
     # def logWrite2(self,module="a.py",action="Action"):

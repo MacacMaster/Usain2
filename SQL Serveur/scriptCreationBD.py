@@ -80,6 +80,9 @@ curseur.execute("INSERT INTO Projets VALUES ('1', '1', 'ProjetTest')")
 curseur.execute("INSERT INTO Projets VALUES ('2', '2', 'Projet1')")
 curseur.execute("INSERT INTO Projets VALUES ('3', '1', 'Projet1')")
 
+curseur.execute("INSERT INTO Tables VALUES ('1', '1', 'Table1')")
+curseur.execute("INSERT INTO Tables VALUES ('2', '1', 'Table2')")
+
 # Voir les objets de la bd
 for comptesOrg in curseur.execute('SELECT * FROM Organisations'):
     print(comptesOrg)
@@ -89,6 +92,9 @@ for comptesOrg in curseur.execute('SELECT * FROM Usagers'):
     
     
 for comptesOrg in curseur.execute('SELECT * FROM Projets'):
+    print(comptesOrg)
+    
+for comptesOrg in curseur.execute('SELECT * FROM Tables'):
     print(comptesOrg)
 
 # Sauvegarder (commit) les changements
