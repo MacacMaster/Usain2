@@ -8,34 +8,49 @@ class Controleur():
         self.vue = Vue(self)
         self.modele = Modele(self)
         self.unReprend=False
-        self.vue.root.mainloop()
-        print("controleur")
-    
-    
-    def FermerBD(self):
-        self.serveur.fermerBd()
+        self.saasIP=sys.argv[1]
+        self.utilisateur=sys.argv[2]
+        self.organisation=sys.argv[3]
+        self.idProjet=sys.argv[4]
+        self.clientIP=sys.argv[5]
+        self.etat="Non termine"
+        self.adresseServeur="http://"+self.saasIP+":9998"
+        self.serveurBd=ServerProxy(self.adresseServeur)
+        self.IdCas=0
+        self.idUtili=0
+        self.idMachine=0
     
     def remplirListeCas(self):
-       return self.serveur.remplirListeCas()
+        self.serveur.select("Description","CasUsage",idProjet)
     
     def remplirListeEtat(self):
-        return self.serveur.remplirListeEtat()
+        self.serveur.select("Etat","CasUsage",idProjet)
     
-    def modifierCas(self,cas,usager,machine):
-        self.serveur.modifierCas(cas,usager,machine,self.vue.indiceCasModifier+1)
-        
-        
+    def modifierCas(self,cas):#remplacer avec les bons noms
+        idCas=self.serveur.chercher(idCas,casUsage,cas)
+        self.serveur.update(casUsage,Description,cas,idCas,self.idProjet)
+    
+    def modifierUsager(self,usagertxt,cas):#remplacer avec les bons noms
+        idCas=self.serveur.chercher(idCas,casUsage,cas)
+        idUsager=self.serveur.chercher(idUtilisateur,Utilisateur,casUsage,idCas)
+        self.serveur.update(utilisateur,Description,usagertxt,idUsager)
+    
+    def modifierMachine(self,cas,Machinetxt):#remplacer avec les bons noms
+        idCas=self.serveur.chercher(idCas,casUsage,cas)
+        idMachine=self.serveur.chercher(idUtilisateur,Machine,casUsage,idCas)
+        self.serveur.update(machine,Description,machinetxt,idUsager)
+         
     def envoyerCas(self,cas,usager,machine):
-        print(cas,usager,machine)
-        self.serveur.envoyerCas(cas)
+        self.serveur.insert("CasUSage",self.idProjet,idCas,cas,self.etat)
         self.envoyerScenari(usager, machine)
-
         self.vue.mettreAJourListes()
-    def envoyerScenari(self,utlisateur,machine):
-        self.serveur.envoyerScenari(utlisateur,machine)
+        self.IdCas+=1
+    def envoyerScenari(self,utlisateurtxt,machinetxt):
+        self.serveur.insert(utlisateur,idCas,utlisateurtxt,self.idUtili,self.etat)
+        self.serveur.insert(machine,idCas,machinetxt,self.idMachine,self.etat)
         
     def chercherBdcas(self,indice):
-        cas=self.serveur.chercherBdcas(indice)
+        cas=self.serveur.chercher(Description,casUsage,cas)
         return cas
 
     def chercherUtilisateur(self,indice):
@@ -46,10 +61,19 @@ class Controleur():
         machine=self.serveur.chercherBdMachine(indice)
         return machine
     
-    def changerEtat(self,cas):
-        self.unReprend=self.serveur.changerEtat(cas)
+    def changerEtat(self,cas):#a faire
+        idCas=self.serveur.chercher(idCas,casUsage,cas)
+        etat=self.serveur.chercher("Etat",casUsage,self.idProjet,idcas)
+        EtatCompare=Etat.fetchone()[0]
+        if(EtatCompare=="NonTerminé"):
+            self.serveur.update(CasUsage,"Etat",)
+        elif(EtatCompare=="Terminé"):
+             self.serveur.update(CasUsage,"Etat",)
+        elif(EtatCompare=="Reprendre"):
+             self.serveur.update(CasUsage,"Etat",) 
         self.vue.caneva.forget()
         self.vue.menuInitial()
+        
     def changerReprendre(self,etat):
         self.serveur.changerEtatReprendre(etat)
         self.vue.caneva.forget()
@@ -59,7 +83,15 @@ class Modele():
     def __init__(self, pControleur):
         self.controleur = pControleur
         print("modele")
-    
+        self.cas=[]
+        self.Etat=[]
+
+class Cas():
+   def __init__(self,text,idcas,etatini):
+        self.etat=etatini
+        self.description=text
+        self.id=idcas
+
 class Vue():
     def __init__(self, pControleur):
         self.controleur = pControleur
@@ -68,16 +100,11 @@ class Vue():
         self.root = Tk()
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.fenetre.pack()
-        self.liste={"a","b","c","a2","b2","c2"}
         self.listeCas=[]
         self.listeEtat=[]
         self.dejaOuvert=False
         self.indiceCasModifier=0
         self.menuInitial()
-      
-       
-        
-    
 
     def mettreAJourListes(self):
         self.remplirListeEtat()
@@ -157,7 +184,7 @@ class Vue():
     
     
     def indiceDeLaBD(self):
-        self.indiceCasModifier=self.listecas.curselection()[0]
+        self.indiceCasModifier=self.listecas.curselection().get()[0]
         print("indice a modifier : ",self.indiceCasModifier)
         self.menuModifier()
     def recevoirDonnees(self,liste):
@@ -196,7 +223,7 @@ class Vue():
         self.labelActionMachine=Entry(bg="white")
         self.canevaMod.create_window(650,200,window=self.labelActionMachine,width=150,height=250)
     
-        cas=self.controleur.chercherBdcas(self.indiceCasModifier+1,);
+        cas=self.controleur.chercherBdcas(self.indiceCasModifier,);
         self.labelCasUsage.insert(END, str (cas))
        
         usager=self.controleur.chercherUtilisateur(self.indiceCasModifier+1,)#
@@ -232,6 +259,9 @@ class Vue():
         usager=self.labelActionUsager.get()
         machine=self.labelActionMachine.get()
         self.controleur.modifierCas(cas,usager,machine)
+        self.controleur.modifierUtilisateur(cas,usager)
+        self.controleur.modifierMachine(cas,machine)
+        
     
     def envoyerTexte(self):
         cas=self.labelCasUsage.get()
