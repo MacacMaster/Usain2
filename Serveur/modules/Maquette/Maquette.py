@@ -46,22 +46,24 @@ class Vue():
         for i in self.controleur.modele.formes:
             if (i.nom == "Rectangle"):
                 print("Dessine")
-                self.caneva.create_rectangle(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+                self.caneva.create_rectangle(i.x1,i.y1,i.x2,i.y2)
+                #self.caneva.create_rectangle(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
+            '''
             if (i.nom  == "Cercle"):
-                self.caneva.create_oval()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+                self.caneva.create_oval()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
             if (i.nom  == "Fleche"):
-                self.caneva.create_line()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+                self.caneva.create_line()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
             if (i.nom  == "Texte"):
-                self.caneva.create_text()()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+                self.caneva.create_text()()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
         #self.root.after(10, self.afficherCaneva)
-    
+        '''
     def menuInitial(self):
         self.caneva = Canvas(self.fenetre, width = self.largeur-200, height=self.hauteur, bg="white")
         self.caneva.pack(side=LEFT)
         self.cadreBtn = Canvas(self.fenetre, width = 200, height=self.hauteur, bg="white")
         self.cadreBtn.pack(side=LEFT)
         
-        self.btnRectangle=Button(self.cadreBtn,text="Rectangle",width=30,command=self.creeRectangle())
+        self.btnRectangle=Button(self.cadreBtn,text="Rectangle",width=30,command=self.creeRectangle)
         self.cadreBtn.create_window(100,100,window=self.btnRectangle,width=150,height=30)
     
         self.btnCercle=Button(self.cadreBtn,text="Cercle",width=30,command=self.creeCercle())
@@ -108,9 +110,11 @@ class Vue():
         forme = None
         if self.choix != "Text":
             forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
+            print("Forme creee")
+            print(forme.nom)
         else:
             forme = Formes(self.x1,self.y1,event.x,event.y,self.choix, text)
-        print("Forme creee")
+       
         self.controleur.modele.formes.append(forme)
         self.afficherCaneva()
     
