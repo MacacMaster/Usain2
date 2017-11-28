@@ -110,5 +110,5 @@ Client/*/
 *.sqlite
 *.db
 #except
-!BDD.sqlite
+#!SprintMasterData.db
 *.pyc
