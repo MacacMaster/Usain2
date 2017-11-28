@@ -22,6 +22,7 @@ class Vue():
 
         self.barreTaches()
         self.framePrincipal()
+        self.frameCommandes()
         
     def barreTaches(self):
         #menu deroulante
@@ -36,22 +37,52 @@ class Vue():
     def framePrincipal(self):
         self.framePrincipal = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
         self.framePrincipal.pack(fill=X)
-        self.canPrincipal=Canvas(self.framePrincipal, width=1000, height=800, bg="steelblue", )
+        self.canPrincipal=Canvas(self.framePrincipal, width=1000, height=730, bg="steelblue", )
         self.canPrincipal.pack()
         
-        self.lblProchain=Label(self.framePrincipal, text="Prochaine action: ", width=150, height=30, bg="light blue", relief=RAISED)
-        self.canPrincipal.create_window(100,40, window=self.lblProchain, width=120, height=30)
-        StrAction="Ici sera affichee la prochaine action a effectuer par l'utilisateur"
-        self.lblAction=Label(self.framePrincipal, text=StrAction, width=750, height=30, bg="white", relief=RAISED)
-        self.canPrincipal.create_window(575,40, window=self.lblAction, width=750, height=30)
+        self.lblProchain=Label(self.framePrincipal, text="Prochaine action: ", width=150, height=30, bg="light blue")
+        self.canPrincipal.create_window(90,40, window=self.lblProchain, width=120, height=30)
+        self.StrAction="Ici sera affichee la prochaine action a effectuer par l'utilisateur"
+        self.lblAction=Label(self.framePrincipal, text=self.StrAction, width=800, height=30, bg="pink")
+        self.canPrincipal.create_window(575,40, window=self.lblAction, width=800, height=30)
         
         
-        #self.lblFonctionnalite=Label(self.framePrincipal, text="Fonctionnalite", width=100, height=80, bg="white", relief=RAISED )
-        #self.canAnalyse.create_window(75,120,window=self.labelExplicite, width=100, height=120)
+        self.lblFonct=Label(self.framePrincipal, text="Fonctionnalite", width=600, height=25, bg="white", relief=RAISED )
+        self.canPrincipal.create_window(330,90,window=self.lblFonct, width=600, height=25)
+        self.lblPriorite=Label(self.framePrincipal, text="Priorite", width=60, height=25, bg="white", relief=RAISED )
+        self.canPrincipal.create_window(660,90,window=self.lblPriorite, width=60, height=25)
+        self.lblSprint=Label(self.framePrincipal, text="Sprint", width=60, height=25, bg="white", relief=RAISED )
+        self.canPrincipal.create_window(720,90,window=self.lblSprint, width=60, height=25)
+        self.lblPourcentage=Label(self.framePrincipal, text="%", width=70, height=25, bg="white", relief=RAISED )
+        self.canPrincipal.create_window(785,90,window=self.lblPourcentage, width=70, height=25)
+        self.lblResponsable=Label(self.framePrincipal, text="Responsable", width=160, height=25, bg="white", relief=RAISED )
+        self.canPrincipal.create_window(900,90,window=self.lblResponsable, width=160, height=25)
         
+        self.listFonct=Listbox(self.framePrincipal, width=599, height=600)
+        self.canPrincipal.create_window(330,405,window=self.listFonct, width=599, height=600)
+        self.listPriorite=Listbox(self.framePrincipal, width=59, height=600)
+        self.canPrincipal.create_window(660,405,window=self.listPriorite, width=59, height=600)
+        self.listSprint=Listbox(self.framePrincipal, width=59, height=600)
+        self.canPrincipal.create_window(720,405,window=self.listSprint, width=59, height=600)
+        self.listPourcentage=Listbox(self.framePrincipal, width=69, height=600)
+        self.canPrincipal.create_window(785,405,window=self.listPourcentage, width=69, height=600)
+        self.listResponsable=Listbox(self.framePrincipal, width=159, height=600)
+        self.canPrincipal.create_window(900,405,window=self.listResponsable, width=159, height=600)
         
+    def frameCommandes(self):
+        self.frameCommandes = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
+        self.frameCommandes.pack(fill=X)
+        self.canCommandes=Canvas(self.frameCommandes, width=1000, height=70, bg="light grey", )
+        self.canCommandes.pack()
         
-        
+        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink")
+        self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
+        self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink")
+        self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
+        self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink")
+        self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
+        self.btnChangerProjet=Button(self.frameCommandes, text="Changer de projet", width=40, bg="light blue")
+        self.canCommandes.create_window(900,35,window=self.btnChangerProjet,width=150,height=35)
         
         
         """self.fentrecreationplanif.pack()
