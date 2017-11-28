@@ -99,3 +99,16 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+*.project
+*.pydevproject
+.settings/*.*
+#ignores every folders in Client
+Client/*/
+#ignores every db and .sqlite
+*.sqlite
+*.db
+#except
+!BDD.sqlite
+*.pyc
