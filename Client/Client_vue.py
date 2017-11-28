@@ -77,7 +77,7 @@ class Vue():
     def creerCadreCentral(self):
         self.cadreCentral=Frame(self.cadreApplication)
         self.cadreProjet = Frame(self.cadreCentral)
-        self.canevaProjet=Canvas(self.cadreProjet,width=400,height=600,bg="green")
+        self.canevaProjet=Canvas(self.cadreProjet,width=400,height=600,bg="steelblue")
         self.canevaProjet.pack()
         self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
         btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="pink",command=self.chargerProjet)
@@ -92,7 +92,7 @@ class Vue():
         
         #----------------------------
         self.cadreOutil = Frame(self.cadreCentral)
-        self.canevaOutil=Canvas(self.cadreOutil,width=400,height=600,bg="lightgreen")
+        self.canevaOutil=Canvas(self.cadreOutil,width=400,height=600,bg="lightgrey")
         self.canevaOutil.pack()
         
         self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
@@ -105,7 +105,7 @@ class Vue():
     def creerCadreModules(self):
         self.cadreCentral2=Frame(self.cadreApplication)
         self.cadreModules=Frame(self.cadreCentral2)
-        self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="green")
+        self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="steelblue")
         self.canevaModules.pack()
         self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
         btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="pink",command=self.requeteModule)
