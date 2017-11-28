@@ -136,6 +136,12 @@ class ControleurServeur():
         fiche.close()
         return xmlrpc.client.Binary(contenu)
     
+    def insertionSQL(self,nomTable,valeurs):
+        self.serveurBD.insDonnees(nomTable, valeurs)
+    
+    def selectionSQL(self,nomTable,champs):
+        self.serveurBD.selDonnees(nomTable,champs)
+    
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
         logLocation='Logs.sqlite'

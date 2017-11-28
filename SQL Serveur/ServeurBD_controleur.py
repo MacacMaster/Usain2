@@ -5,25 +5,32 @@ from xmlrpc.server import SimpleXMLRPCServer
 import socket
 import sqlite3
 
+######################################################
+# EXEMPLES POUR LES SELECT ET LES INSERT
+#       self.insDonnees("Organisations", " 4, 'allo'")
+#        self.selDonnees("Organisations","id, nom")
+# 
+# 
+######################################################
+
 class ControleurServeurBD():
     def __init__(self):
         self.database = sqlite3.connect('SprintMasterData.db')
         self.curseur = self.database.cursor()
         
-    #def insDonnees(self,nomTable,valeurs):
-        #conn= sqlite3.connect('BDD.sqlite')
-        #c = conn.cursor()
-        #c.execute(s)
-        #conn.commit()
-        #conn.close()
+    def insDonnees(self,nomTable,valeurs):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''INSERT into '''+nomTable+''' VALUES ( '''+valeurs+''' )''')
+        conn.commit()
+        conn.close()
     
-    #def selDonnees(self,nomTable,idCol):
-        #conn= sqlite3.connect('BDD.sqlite')
-        #c = conn.cursor()
-        #c.execute(''' SELECT * from Projets''') 
-        #c.execute('''SELECT ''' +idCol+ ''' from '''+nomTable)
-        #print(c.fetchall())
-        #conn.close()
+    def selDonnees(self,nomTable,champs):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
+        print(c.fetchall())
+        conn.close()
     
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''
@@ -31,6 +38,7 @@ class ControleurServeurBD():
         
         print(nomProjetBD)
         print(idOrgaBD)
+        self.selDonnees("Organisations","id, nom")
         idProjet = self.curseur.execute("SELECT id FROM Projets WHERE id_Organisation = ? and nom = ? ", (idOrgaBD, nomProjetBD)).fetchone()
         print("L'id du projet séléctionné est", str(idProjet)[1:len(idProjet)-3])
         return str(idProjet)[1:len(idProjet)-3]

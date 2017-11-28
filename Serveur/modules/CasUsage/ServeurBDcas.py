@@ -6,7 +6,7 @@ class ServeurBDcas():
         self.Etat="NonTerminé"
         self.database = None
         self.curseur = None
-        self.creeBd()
+        #self.creeBd()
         
         self.curseur.execute("select * from CasUsage")
         self.Id = len(self.curseur.fetchall())
