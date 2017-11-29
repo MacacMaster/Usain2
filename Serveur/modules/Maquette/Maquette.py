@@ -48,9 +48,11 @@ class Vue():
                 print("Dessine")
                 self.caneva.create_rectangle(i.x1,i.y1,i.x2,i.y2)
                 #self.caneva.create_rectangle(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
+            
+            elif (i.nom  == "Cercle"):
+                self.caneva.create_oval(i.x1,i.y1,i.x2,i.y2)
+                #self.caneva.create_oval(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
             '''
-            if (i.nom  == "Cercle"):
-                self.caneva.create_oval()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
             if (i.nom  == "Fleche"):
                 self.caneva.create_line()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
             if (i.nom  == "Texte"):
@@ -66,7 +68,7 @@ class Vue():
         self.btnRectangle=Button(self.cadreBtn,text="Rectangle",width=30,command=self.creeRectangle)
         self.cadreBtn.create_window(100,100,window=self.btnRectangle,width=150,height=30)
     
-        self.btnCercle=Button(self.cadreBtn,text="Cercle",width=30,command=self.creeCercle())
+        self.btnCercle=Button(self.cadreBtn,text="Cercle",width=30,command=self.creeCercle)
         self.cadreBtn.create_window(100,250,window=self.btnCercle,width=150,height=30)
         
         self.bntTexte=Button(self.cadreBtn,text="Texte",width=30)#
@@ -93,7 +95,9 @@ class Vue():
         self.caneva.bind('<ButtonRelease-1>', self.release)
         self.caneva.pack(padx =5, pady =5)
         
+        #formes temporaires
         self.formeTemp = self.caneva.create_rectangle(0,0,0,0,tag="tempo")
+        self.cercleTemp = self.caneva.create_oval(0,0,55,55,tag="tempoCercle")
     
     def bouge(self,event):
         self.x2 = event.x
@@ -110,7 +114,6 @@ class Vue():
         forme = None
         if self.choix != "Text":
             forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
-            print("Forme creee")
             print(forme.nom)
         else:
             forme = Formes(self.x1,self.y1,event.x,event.y,self.choix, text)
@@ -119,28 +122,22 @@ class Vue():
         self.afficherCaneva()
     
     def creeCercle(self):
-        self.cercle=True
+        self.choix = "Cercle"
    
     def creeRectangle(self):
-        self.rect=True
         self.choix = "Rectangle"
-        print("choisi")
                     
     def detruitTempo(self):
        pass
 
         
     def dessinerTempo(self):
-        if(self.cercle):
-            self.caneva.create_oval(self.x1,self.y1,self.x1+self.x1,self.y1+self.y1)
-            
-            
+        if(self.choix == "Cercle"):
+            #self.caneva.create_oval(self.x1,self.y1,self.x1+self.x1,self.y1+self.y1)  
+            self.caneva.coords("tempoCercle",self.x1,self.y1,self.x2,self.y2)      
         #self.formeTemp = self.caneva.create_rectangle(self.x,self.y,self.x2,self.y2, tag="tempo")
-        #options = self.x,self.y,self.x2,self.y2
-        #options = self.x2,self.y2
-        self.caneva.coords("tempo",self.x1,self.y1,self.x2,self.y2)
-        #self.caneva.delete(self.formeTemp)
-        #self.caneva.delete("Forme")
+        elif (self.choix == "Rectangle"):
+            self.caneva.coords("tempo",self.x1,self.y1,self.x2,self.y2)
         
         
     def callback(event):
