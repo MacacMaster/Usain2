@@ -53,15 +53,18 @@ class Vue():
                 self.caneva.create_oval(i.x1,i.y1,i.x2,i.y2)
                 #self.caneva.create_oval(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
             
-            if (i.nom  == "Fleche"):
+            elif (i.nom  == "Fleche"):
                 #self.caneva.create_line()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
-                #self.caneva.
                 self.caneva.create_line(i.x1,i.y1,i.x2,i.y2, arrow="last")
-        '''
-            if (i.nom  == "Texte"):
-                self.caneva.create_text()()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
+        
+            elif (i.nom  == "Texte"):
+                print("ecriture clone")
+                entry = Entry(self.caneva,bd=0,font=("Purisa",15))       
+                entry.insert(0,i.text)
+                entry.place(x= i.x1, y= i.y1)
+                #self.caneva.create_text()()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
         #self.root.after(10, self.afficherCaneva)
-        '''
+        
     def menuInitial(self):
         self.caneva = Canvas(self.fenetre, width = self.largeur-200, height=self.hauteur, bg="white")
         self.caneva.pack(side=LEFT)
@@ -74,7 +77,7 @@ class Vue():
         self.btnCercle=Button(self.cadreBtn,text="Cercle",width=30,command=self.creeCercle)
         self.cadreBtn.create_window(100,250,window=self.btnCercle,width=150,height=30)
         
-        self.bntTexte=Button(self.cadreBtn,text="Texte",width=30)
+        self.bntTexte=Button(self.cadreBtn,text="Texte",width=30, command=self.creeTexte)
         self.cadreBtn.create_window(100,200,window=self.bntTexte,width=150,height=30)
         
         self.bntFleche=Button(self.cadreBtn,text="Fleche",width=30, command = self.creeFleche)
@@ -99,9 +102,25 @@ class Vue():
         self.caneva.pack(padx =5, pady =5)
         
         #formes temporaires
-        self.formeTemp = self.caneva.create_rectangle(0,0,0,0,tag="tempoRectangle")
-        self.cercleTemp = self.caneva.create_oval(0,0,0,0,tag="tempoCercle")
+        self.caneva.create_rectangle(0,0,0,0,tag="tempoRectangle")
+        self.caneva.create_oval(0,0,0,0,tag="tempoCercle")
         self.caneva.create_line(0,0, 0,0, tags=("tempoFleche"), arrow="last")
+        self.entryTemp = Entry(self.caneva,bd=0,font=("Purisa",15))
+    
+        #les bindings pour faire fonctionner le entryTemp
+        self.entryTemp.bind('<Return>',lambda d: self.deselectionner())
+        #self.caneva.tag_bind("editable","<Return>", self.deselectionner)
+    
+    def deselectionner(self):
+        self.caneva.focus_force()
+        #self.caneva.delete("highlight")
+        #self.caneva.select_clear()
+        if (self.choix == "ModeEcriture"):
+            forme = Formes(self.x1,self.y1,None,None,"Texte", self.entryTemp.get()) #la position de la forme n'a que une pair de x et de y
+            self.controleur.modele.formes.append(forme)
+            self.afficherCaneva()   
+            #effacer le contenu de l'entry temporaire
+            self.entryTemp.delete(0,END)
     
     def bouge(self,event):
         self.x2 = event.x
@@ -110,8 +129,16 @@ class Vue():
         self.dessinerTempo()
     
     def clic(self,event):
-        self.x1 = event.x
-        self.y1 = event.y
+        if (self.choix != "ModeEcriture"):
+            self.x1 = event.x
+            self.y1 = event.y
+        if (self.choix == "Texte"):
+            #entry = Entry(self.caneva,bd=0,font=("Purisa",15))
+            self.entryTemp.place(x= event.x, y= event.y)
+            self.entryTemp.focus_force() #forcer le focus, l'usager va ecrire quelque chose dedans
+            
+            print("en train d'ecrire")
+            self.choix = "ModeEcriture" #l'utilisateur doit rechoisir une autre option
         #print(self.x,self.y)
 
     def release(self,event):
@@ -119,11 +146,12 @@ class Vue():
         if self.choix != "Text":
             forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
             print(forme.nom)
-        else:
-            forme = Formes(self.x1,self.y1,event.x,event.y,self.choix, text)
-       
-        self.controleur.modele.formes.append(forme)
-        self.afficherCaneva()
+            forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
+            self.controleur.modele.formes.append(forme)
+            self.afficherCaneva()
+    
+    def creeTexte(self):
+        self.choix = "Texte"
     
     def creeFleche(self):
         self.choix = "Fleche"
@@ -133,6 +161,7 @@ class Vue():
    
     def creeRectangle(self):
         self.choix = "Rectangle"
+        print("rectangle")
                     
     def detruitTempo(self):
        pass
