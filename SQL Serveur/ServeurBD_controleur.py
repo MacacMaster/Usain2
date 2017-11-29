@@ -5,13 +5,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 import socket
 import sqlite3
 
-######################################################
-# EXEMPLES POUR LES SELECT ET LES INSERT
-#       self.insDonnees("Organisations", " 4, 'allo'")
-#        self.selDonnees("Organisations","id, nom")
-# 
-# 
-######################################################
+
 
 class ControleurServeurBD():
     def __init__(self):
@@ -38,7 +32,6 @@ class ControleurServeurBD():
         
         print(nomProjetBD)
         print(idOrgaBD)
-        self.selDonnees("Organisations","id, nom")
         idProjet = self.curseur.execute("SELECT id FROM Projets WHERE id_Organisation = ? and nom = ? ", (idOrgaBD, nomProjetBD)).fetchone()
         print("L'id du projet séléctionné est", str(idProjet)[1:len(idProjet)-3])
         return str(idProjet)[1:len(idProjet)-3]

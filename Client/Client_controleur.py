@@ -74,6 +74,8 @@ class Controleur():
         else:
             self.vue.logInClientFail()
             
+        self.serveur.selectionSQL("Projets","id")
+            
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)
         if rep:
@@ -143,3 +145,4 @@ class Controleur():
             
 if __name__=="__main__":
     c=Controleur()
+    
