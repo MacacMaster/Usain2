@@ -52,9 +52,12 @@ class Vue():
             elif (i.nom  == "Cercle"):
                 self.caneva.create_oval(i.x1,i.y1,i.x2,i.y2)
                 #self.caneva.create_oval(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
-            '''
+            
             if (i.nom  == "Fleche"):
-                self.caneva.create_line()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
+                #self.caneva.create_line()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
+                #self.caneva.
+                self.caneva.create_line(i.x1,i.y1,i.x2,i.y2, arrow="last")
+        '''
             if (i.nom  == "Texte"):
                 self.caneva.create_text()()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
         #self.root.after(10, self.afficherCaneva)
@@ -71,10 +74,10 @@ class Vue():
         self.btnCercle=Button(self.cadreBtn,text="Cercle",width=30,command=self.creeCercle)
         self.cadreBtn.create_window(100,250,window=self.btnCercle,width=150,height=30)
         
-        self.bntTexte=Button(self.cadreBtn,text="Texte",width=30)#
+        self.bntTexte=Button(self.cadreBtn,text="Texte",width=30)
         self.cadreBtn.create_window(100,200,window=self.bntTexte,width=150,height=30)
         
-        self.bntFleche=Button(self.cadreBtn,text="Fleche",width=30)
+        self.bntFleche=Button(self.cadreBtn,text="Fleche",width=30, command = self.creeFleche)
         self.cadreBtn.create_window(100,300,window=self.bntFleche,width=150,height=30)
 
         self.btnRectangle=Button(self.cadreBtn,text="Commit",width=30)
@@ -96,8 +99,9 @@ class Vue():
         self.caneva.pack(padx =5, pady =5)
         
         #formes temporaires
-        self.formeTemp = self.caneva.create_rectangle(0,0,0,0,tag="tempo")
-        self.cercleTemp = self.caneva.create_oval(0,0,55,55,tag="tempoCercle")
+        self.formeTemp = self.caneva.create_rectangle(0,0,0,0,tag="tempoRectangle")
+        self.cercleTemp = self.caneva.create_oval(0,0,0,0,tag="tempoCercle")
+        self.caneva.create_line(0,0, 0,0, tags=("tempoFleche"), arrow="last")
     
     def bouge(self,event):
         self.x2 = event.x
@@ -121,6 +125,9 @@ class Vue():
         self.controleur.modele.formes.append(forme)
         self.afficherCaneva()
     
+    def creeFleche(self):
+        self.choix = "Fleche"
+    
     def creeCercle(self):
         self.choix = "Cercle"
    
@@ -137,9 +144,9 @@ class Vue():
             self.caneva.coords("tempoCercle",self.x1,self.y1,self.x2,self.y2)      
         #self.formeTemp = self.caneva.create_rectangle(self.x,self.y,self.x2,self.y2, tag="tempo")
         elif (self.choix == "Rectangle"):
-            self.caneva.coords("tempo",self.x1,self.y1,self.x2,self.y2)
-        
-        
+            self.caneva.coords("tempoRectangle",self.x1,self.y1,self.x2,self.y2)
+        elif (self.choix == "Fleche"):
+            self.caneva.coords("tempoFleche",self.x1,self.y1,self.x2,self.y2)
     def callback(event):
         print ("clicked at", event.x, event.y)
         
