@@ -10,6 +10,14 @@ import time
 from _overlapped import NULL
 
 
+class Classe():
+    def __init__ (self, pProprietaire, pNom, pResponsabilites, pCollaborateurs):
+        self.proprietaire = pProprietaire
+        self.nom = pNom
+        self.responsabilites = pResponsabilites
+        self.collaborateurs = pCollaborateurs
+        
+
 class Vue():
     def __init__(self, parent):
         self.parent=parent
@@ -347,8 +355,9 @@ class Vue():
             messagebox.showwarning("Attention", "Saisir les informations manquantes")
         
         else: 
+            classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilites, self.listeCollaboration)
+            self.parent.modele.insertionConfirmer(classe)
             self.canceler() #retour à au menu de base CRC  
-            
 
 class Modele():
     def __init__(self, parent, serveur):
@@ -392,17 +401,44 @@ class Modele():
         #classes = ["nom1","nom2","nom3","nom4"]
         return classes    
        
+    def insertionConfirmer(self, classe):
+        #insérer la classe 
+        valeurs = (self.controleur.idProjet, classe.proprietaire,classe.nom)
+        self.parent.serveur.insertionSQL("Classes",valeurs)
+        
+        
+
+        
+        #insérer les responsabilites
+        idClasse = 5
+        #parcorir tous les éléments de la listbox responsabilités    
+        for i in range (classe.responsabilites.size()):
+            nom = classe.responsabilites.get(i)   
+            valeurs = (idClasse, nom)
+            self.parent.serveur.insertionSQL("Responsabilites",valeurs)
+            
+        #insérer les collaborateurs
+        #parcorir tous les éléments de la listbox responsabilités    
+        for i in range (classe.collaborateurs.size()):
+            nom = classe.collaborateurs.get(i)   
+            valeurs = (idClasse, nom)
+            self.parent.serveur.insertionSQL("Collaborations",valeurs)
+        
     
 class Controleur():
     def __init__(self):
         #informations du système quand le programme est lancé
         #self.idClient = 999;
-        
-        self.ip = 999;
-        self.idProjet = 999;
+              
+        self.saasIP=sys.argv[1]
+        self.utilisateur=sys.argv[2]
+        self.organisation=sys.argv[3]
+        self.idProjet=sys.argv[4]
+        self.clientIP=sys.argv[5]
+        self.adresseServeur="http://"+self.saasIP+":9998"
           
         #connexion au proxy
-        ad="http://"+str(self.ip)+":9999"
+        ad="http://"+self.saasIP+":9999"
         self.serveur = ServerProxy(ad)
         
         #MVC
