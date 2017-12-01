@@ -201,15 +201,13 @@ class Vue():
     
         self.boutonNouvelleClasse = Button(frame3, text="Ajouter nouvelle classe",  command=lambda: self.creerMenuAjout(2))
         self.boutonNouvelleClasse.pack(side =TOP)  
-       
-        
-    def creerMenuAjout(self, bouton):
+
+    def creerMenuAjout(self, bouton):      
         if bouton == 1: #modifier classe
-            print("hha")
+            pass
         elif bouton == 2: #nouvelle classe
             self.nomClasse.set("")
             self.nomProprietaire.set("")
-        
         #enlever la premiere fenetre
         self.menuDroite.pack_forget()
         self.menuGauche.pack_forget()
@@ -224,7 +222,11 @@ class Vue():
         lblNomClasse = Label(frame1, text="Nom (classe)", width=25)
         lblNomClasse.pack(side=LEFT)  
         
-        self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state = DISABLED)
+        #activer ou désactiver l'état du entry
+        if bouton == 1:
+            self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state = DISABLED)
+        elif bouton == 2:
+            self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state =  NORMAL)
         self.entryNomClasse.pack(side=LEFT)
         #entryNomClasse.insert(END,"nom de la classe");
         
@@ -236,7 +238,7 @@ class Vue():
         lblProprietaire.pack(side=LEFT)  
         
         #self.nomProprietaire =  StringVar(frame2, value='allo') // textvariable=self.nomProprietaire
-        
+     
         #self.nomProprietaire =  StringVar( value='wafwafe')
         self.entryProprietaire = Entry(frame2, width=25, textvariable=self.nomProprietaire)
         self.entryProprietaire.pack(side=LEFT)
@@ -258,7 +260,7 @@ class Vue():
         frame4 = Frame(self.menuAjout)
         frame4.pack(fill=X, pady=5)
         
-        largeur = 55;
+        largeur = 55
         
         
         self.entryResponsabilite = Entry(frame4, text="", width=15)
@@ -270,13 +272,17 @@ class Vue():
         self.entryCollaboration.pack(side=LEFT, padx = largeur)
         self.entryCollaboration.bind('<Return>',self.saisirCollaboration)
         '''
+        
         #liste déroulante avec la liste des noms des classes existantes
-       
-        #choix = self.parent.modele.nomsDesClasses()
+        #self.nomClasse.set("allo")
+        
+        ''' 
         self.classeChoisie = StringVar(frame4)
         self.classeChoisie.set(0)#la valeur par défaut de la liste déroulante
         self.choixClasses = OptionMenu(frame4,self.classeChoisie,*choix)
         self.choixClasses.pack(side="left")
+        '''
+        
         
         #bouton pour ajouter un collaborateur
         boutonCollaboration = Button(frame4, text="Ajouter", command = self.saisirCollaboration)
@@ -327,8 +333,12 @@ class Vue():
         boutonSupprimer.pack(side = LEFT)   
         
         boutonCanceler = Button(frame7, text="Canceler", command = self.canceler)
-        boutonCanceler.pack(side = LEFT)         
+        boutonCanceler.pack(side = LEFT)  
         
+               
+            
+            
+            
     def canceler(self):
         #vider les listes, car aucune sauvegarde n'a été faite!
         self.listeCollaboration = []
@@ -452,10 +462,12 @@ class Modele():
     def nomsDesClasses(self):
         selected = self.serveur.selectionSQL("Classes", "id, id_projet, proprietaire, nom")
         self.classes = []
+        
         for element in selected:
             if (str(element[1]) == str(self.parent.idProjet)):
             #if element[3] == self.parent.idProjet:
                 self.classes.append(element)
+        
        
     def insertionConfirmer(self, classe):
         #insérer la classe 
