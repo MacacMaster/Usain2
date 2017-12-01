@@ -18,6 +18,7 @@ class Controleur():
         print("controleur")
 
     def ajoutTableBD(self, nom):
+        print("j'insere1")
         self.serveur.insertionSQL("Tables",str(self.idProjet)+",'"+nom+"'")
         self.vue.canevaNouvelleTable.forget()
         self.vue.menuInitial()
@@ -26,15 +27,7 @@ class Controleur():
         print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
-    def ajoutTableBD(self, nom):
-        self.serveur.insertionSQL("Tables","10,"+self.idProjet+",'"+nom+"'")
-        self.vue.canevaNouvelleTable.forget()
-        self.vue.menuInitial()
-        
-    def connectionServeur(self):
-        print("Connection au serveur BD...")
-        serveur=ServerProxy(self.adresseServeur)
-        return serveur
+
 
 
 class Modele():
@@ -154,8 +147,8 @@ class Vue():
         
         self.controleur.modele.remplirListBoxChamps(self.listBoxChampsTable)
         
-        #self.btnNewChamp=Button(self.canevaAffichageChamps,text="Ajouter un champs",width=20,command=self.allezMenuAjouterChamps())
-        #self.canevaAffichageChamps.create_window(200,550,window=self.btnAjouterChamps,width=150,height=20)
+        self.btnNewChamp=Button(self.canevaAffichageChamps,text="Ajouter un champs",width=20,command=self.allezMenuAjouterChamps())
+        self.canevaAffichageChamps.create_window(200,550,window=self.btnAjouterChamps,width=150,height=20)
 
         
         self.btnAnnulerAffichageChamps=Button(self.canevaAffichageChamps,text="Annuler",width=20,command=self.annulerAffichageChamps)
