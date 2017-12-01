@@ -4,6 +4,7 @@ from xmlrpc.server import SimpleXMLRPCServer
  #création de l'objet qui écoute  Q
 import socket
 import sqlite3
+from IdMaker import *
 
 
 
@@ -11,11 +12,15 @@ class ControleurServeurBD():
     def __init__(self):
         self.database = sqlite3.connect('SprintMasterData.db')
         self.curseur = self.database.cursor()
+        self.id=0
+        
+        
         
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        c.execute('''INSERT into '''+nomTable+''' VALUES ( '''+valeurs+''' )''')
+        self.id+=1
+        c.execute('''INSERT into '''+nomTable+''' VALUES (''' +str(self.id)+', '+valeurs+''' )''')
         conn.commit()
         conn.close()
     
@@ -39,7 +44,7 @@ class ControleurServeurBD():
     def selDonneesComplexe1(self,nomTable,champs,where,indice):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+where +'''=?''', (indice,))
+        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+where +'''=?''', (indice))
         donnees = c.fetchall()
         conn.close()
         return donnees
