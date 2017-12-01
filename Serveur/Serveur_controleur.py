@@ -159,7 +159,7 @@ class ControleurServeur():
         self.serveurBD.insDonnees(nomTable, valeurs)
     
     def selectionSQL1(self,nomTable,champs,where,indice):
-        return self.serveurBD.selDonneesComplexe1(nomTable,champs)
+        return self.serveurBD.selDonneesComplexe1(self,nomTable,champs,where,indice)
     
     def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
         return self.serveurBD.selDonneesComplexe2(nomTable,champs)
@@ -168,7 +168,7 @@ class ControleurServeur():
         return self.serveurBD.selDonnees(nomTable,champs)
     
     
-    def updateSQL(self,nomTable):
+    def updateSQL(self,nomTable,champs,valeur):
         self.serveurBD.updateDonnes(nomTable,champs,valeur)
     
     #Fonction d'écriture du log        
@@ -187,3 +187,6 @@ objetControleurServeur=ControleurServeur()
 daemon.register_instance(objetControleurServeur)
 print("Création du serveur terminé")
 daemon.serve_forever()
+
+def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees(nomTable,champs, where, idProjet)

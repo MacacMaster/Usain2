@@ -23,7 +23,7 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
-        print(c.fetchall())
+        #print(c.fetchall())
         return(c.fetchall())
         conn.close()
 
@@ -36,7 +36,7 @@ class ControleurServeurBD():
         conn.commit()
         conn.close()
     
-    def selDonneesComplexe1(self,nomTable,champs,where,indice):
+    def selDonneesComplexe1(self,nomTable,champs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         self.c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+where +'''=?''', (indice,))
@@ -132,5 +132,11 @@ daemon.register_instance(objetControleurServeurBD)
 print("Création du serveur BD terminé")
 daemon.serve_forever()
 
-
+def selDonnees3(self,nomTable,champs, where, idProjet):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        laselection=c.fetchall()
+        conn.close()
+        return laselection
 

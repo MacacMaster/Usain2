@@ -285,7 +285,6 @@ from xmlrpc.client import ServerProxy
 
 class Controleur():
     def __init__(self):
-         
         self.saasIP=sys.argv[1]
         self.adresseServeur="http://"+self.saasIP+":9999"
         self.serveur = self.connectionServeur()
@@ -372,7 +371,6 @@ class Vue():
         self.root = Tk()
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.fenetre.pack()
-        self.liste={"a","b","c","a2","b2","c2"}
         self.listeCas=[]
         self.listeEtat=[]
         self.dejaOuvert=False
@@ -468,6 +466,8 @@ class Vue():
     def remplirListBoxCas(self):
         self.listecas.delete(0, END)
         for i in self.listeCas:
+            temp=str(i)[3:int(len(i)-5)]
+            self.listeetat.insert(END,temp)
             print(i)
             self.listecas.insert(END,i)
         self.listeCas.clear()
@@ -475,7 +475,8 @@ class Vue():
     def remplirListBoxEtat(self):
         self.listeetat.delete(0, END)
         for i in self.listeEtat:
-            self.listeetat.insert(END,i)
+            temp=str(i)[3:int(len(i)-5)]
+            self.listeetat.insert(END,temp)
         self.listeEtat.clear()
         
     def menuModifier(self):
