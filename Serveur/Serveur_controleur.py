@@ -177,7 +177,9 @@ class ControleurServeur():
         return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
     
     def insCustom(self,commande,values):
-        self.serveurBD.insCustom(self,commande,values)    def selectionSQL3(self,nomTable,champs, where, idProjet):
+        self.serveurBD.insCustom(self,commande,values)    
+        
+    def selectionSQL3(self,nomTable,champs, where, idProjet):
         return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
     
     

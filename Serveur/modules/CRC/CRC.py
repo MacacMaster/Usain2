@@ -37,6 +37,7 @@ class Vue():
         self.collaborateurs=[]
         self.responsabilites = []
         self.focused_box = None
+        
       
     def loaderNomClasses(self):
         self.parent.modele.nomsDesClasses()
@@ -69,10 +70,22 @@ class Vue():
         #alors que self.listeClasses ne contient que les noms des classes...
         
         classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
-
+        
+        
        
+        
+        
+        #trouver les collaborateurs de la classe
+        collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(index)
+        for element in collaborateursDeLaClasse:
+            self.listeCollaboration.insert(END,element[2])
+        #trouver les responsabilites de la classe
+        responsabilites = self.parent.modele.responsabilitiesDeLaClasse(index)
+        for element in responsabilites:
+            self.listeResponsabilites.insert(END,element[2])
+
+        
         '''
-        #trouver lesresponsabilites de la classe
         requete = self.serveur.selectionAllSQL("Responsabilites")
         for element in requete: 
             #chercher parmi les responsabilites celles qui a le même ID classe que celle qu'on veut
@@ -140,6 +153,7 @@ class Vue():
         self.btnModification = Button(frame3, text = "Modification", command=self.creerMenuAjout, state=DISABLED)
         self.btnModification.pack(side = RIGHT)
 
+    
         
     
     def creerMenuDroite(self):
@@ -387,8 +401,22 @@ class Modele():
         self.parent=parent
         self.serveur = serveur
 
-    def ajoutListe(self):
-        pass
+    def responsabilitiesDeLaClasse(self, id_classe):
+        requete = self.serveur.selectionSQL("Responsabilites", "id, id_Classe, nom")
+        responsabilites = []
+        for element in requete:
+            if str(element[1]) == str(id_classe):
+                responsabilites.append(element)
+        return responsabilites
+    
+    def collaborateursDeLaClasse(self, id_classe):
+        requete = self.serveur.selectionSQL("Collaborations", "id, id_Classe, nom")
+        collaborateurs = []
+        for element in requete:
+            if str(element[1]) == str(id_classe):
+                collaborateurs.append(element)
+        return collaborateurs
+        
        
     def enregistrer(self,texteMandat):
         #texteMandat = texteMandat.get(1.0,'end-1c')
@@ -402,8 +430,6 @@ class Modele():
         conn.commit()
         conn.close()
  
-    
-    
     def nomsDesClasses(self):
         selected = self.serveur.selectionSQL("Classes", "id, id_projet, proprietaire, nom")
         self.classes = []
