@@ -31,6 +31,7 @@ class Vue():
         self.fenetre.pack()
         self.classes = []
         #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
+     
 
         self.creerVueMenu()
         self.collaborateurs=[]
@@ -43,8 +44,6 @@ class Vue():
         for i in  classes:
             self.listeClasses.insert(END,i[3])
         
-            
-    
     def creerVueMenu(self):  
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menu.pack(side=LEFT)
@@ -59,16 +58,20 @@ class Vue():
         #chercher la liste des classes
 
     def choisirClasse(self,event):
+        
         #vider la liste
         self.listeResponsabilites.delete(0, END) #effacer la liste
         self.listeCollaboration.delete(0, END) #effacer la liste
+       
         #obtenir l'index correspondant a la classe selectionnee dans la liste de classes
         index = self.listeClasses.curselection()[0]
         #self.classes est un tableau qui contient toutes les informations sur les classes...
         #alors que self.listeClasses ne contient que les noms des classes...
-        idClasse = self.classes[index][0] #l'index 0 d'un element est son id
-        print(idClasse)
-   
+        
+        classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
+
+       
+        '''
         #trouver lesresponsabilites de la classe
         requete = self.serveur.selectionAllSQL("Responsabilites")
         for element in requete: 
@@ -82,11 +85,11 @@ class Vue():
             #chercher parmi les collaborateurs celles qui a le même ID classe que celle qu'on veut
             if (element[1] == idClasse):
                 self.listeCollaboration.insert(END,classes[2]) #le champ avec index 2 correspond au nom
-      
+      '''
         #informations sur le propriétaire
-        self.lblNomClasse.config(text = self.classes[index][3]) # 3 = nom de la classe
-        self.lblProprietaire.config(text  = self.classes[index][2]) # 2 = proprietaire de la classe
-       
+        #self.lblNomClasse.config(text = self.classes[index][3]) # 3 = nom de la classe
+        self.lblNomClasse.config(text = classeChoisi[3])
+        self.lblProprietaire.config(text  = self.parent.modele.classes[index][2]) # 2 = proprietaire de la classe
         
     def creerMenuGauche(self):
         self.menuGauche = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -156,6 +159,7 @@ class Vue():
         
         self.lblNomClasse = Label(frame2, text = "nom de la classe")
         self.lblNomClasse.pack()
+        #self.lblNomClasse.config(text = "afawf")
         
         self.lblProprietaire = Label(frame2, text = "propriétaire de la classe")
         self.lblProprietaire.pack()
@@ -165,7 +169,7 @@ class Vue():
         
         self.listeResponsabilites = Listbox(frame2)
         self.listeResponsabilites.pack()
-              
+      
         lblCollaboration = Label(frame2, text = "Collaboration")
         lblCollaboration.pack()
         
@@ -235,7 +239,7 @@ class Vue():
         '''
         #liste déroulante avec la liste des noms des classes existantes
        
-        choix = self.parent.modele.nomsDesClasses()
+        #choix = self.parent.modele.nomsDesClasses()
         self.classeChoisie = StringVar(frame4)
         self.classeChoisie.set(0)#la valeur par défaut de la liste déroulante
         self.choixClasses = OptionMenu(frame4,self.classeChoisie,*choix)
@@ -259,7 +263,9 @@ class Vue():
         self.listeResponsabilites.pack(side=LEFT, fill=BOTH, expand=1)
         self.listeResponsabilites.bind("<FocusIn>", self.box_focused)
         self.listeResponsabilites.bind("<FocusOut>", self.box_unfocused)
-        
+ 
+
+
         scrollbar.config(command=self.listeResponsabilites.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
         

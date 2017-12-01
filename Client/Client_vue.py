@@ -19,6 +19,7 @@ class Vue():
         self.cadreApplication = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.cadreApplication.pack()
         self.centrerFenetre()
+        self.statut=0
         
         self.creerCadreModules()
         self.creerCadreLogIn(pClientIp)
@@ -64,6 +65,8 @@ class Vue():
         identifiantNomOrga = self.entrerNomOrga.get()
         identifiantNomUsager = self.entrerNomUsager.get()
         identifiantMotDePasse = self.entrerMotDePasse.get()
+        if(identifiantNomUsager == "admin"):
+            self.statut=1
         print("Nom de l'organisation entré par l'usager:", identifiantNomOrga,"Nom entré par l'usager ", identifiantNomUsager, "Mot de passe entré par l'usager ", identifiantMotDePasse)
         self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
     
@@ -81,7 +84,7 @@ class Vue():
         self.canevaProjet.pack()
         self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
         btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="pink",command=self.chargerProjet)
-        btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="pink",command=self.chargerProjet)
+        btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="pink",command=self.creerProjet)
         self.canevaProjet.create_window(200,100,window=self.listeProjets)
         
         self.canevaProjet.create_window(100,20,window=self.labNomOrga,width=100,height=15)
@@ -100,7 +103,8 @@ class Vue():
         self.canevaOutil.create_window(200,100,window=self.listeOutils)
         self.canevaOutil.create_window(200,450,window=btnconnecter,width=100,height=30)
         
-        #self.cadreOutil.pack(side=LEFT)
+        if(self.statut == 1):
+            self.cadreOutil.pack(side=LEFT)
         
     def creerCadreModules(self):
         self.cadreCentral2=Frame(self.cadreApplication)
@@ -112,15 +116,30 @@ class Vue():
         self.canevaModules.create_window(200,100,window=self.listeModules)
         self.canevaModules.create_window(200,450,window=btnconnecter,width=100,height=30)
         self.cadreModules.pack(side=LEFT)
+    
+    def creerProjet(self):
+        labNomProjet=Label(text="Nom du projet",bg="darkblue",borderwidth=0,relief=RIDGE,fg="white", font=("Helvetica", 12))
+        self.canevaProjet.create_window(200,350,window=labNomProjet,width=150,height=30)
+        self.entrerNomProjet=Entry(bg="lightblue")
+        self.canevaProjet.create_window(200,400,window=self.entrerNomProjet,width=150,height=30)
+        btnNProjet=Button(self.cadreProjet, text="Ok",bg="pink",command=self.okProjet)
+        self.canevaProjet.create_window(350,400,window=btnNProjet,width=50,height=30) 
+        
+    def okProjet(self):
+        self.controleur.creerProjet(self.entrerNomProjet.get())
+        self.creerCadreCentral()
+        
+        
         
     def chargerProjet(self):
-        if self.listeProjets.curselection():
-            nomprojet=self.listeProjets.selection_get()
-            self.controleur.chargerProjet(nomprojet, self.controleur.idOrga);
-            self.changeCadre(self.cadreCentral2)
-        else:
-            self.chooseProjectFail()
-         
+            if self.listeProjets.curselection():
+                nomprojet=self.listeProjets.selection_get()
+                self.controleur.chargerProjet(nomprojet, self.controleur.idOrga);
+                self.changeCadre(self.cadreCentral2)
+            else:
+                self.chooseProjectFail()
+        
+
     def requeteProjet(self):
         mod=self.listeProjets.selection_get()
         if mod:

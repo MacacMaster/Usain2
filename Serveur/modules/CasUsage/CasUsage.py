@@ -40,14 +40,14 @@ class Controleur():
         self.vue.mettreAJourListes()
    
     def chercherBdcas(self,indice):
-        return self.serveur.selectionSQL3("CasUsages","description","id",indice)
+        return self.serveur.selectionSQL3("CasUsages","description","id",indice+1)
        
     def chercherUtilisateur(self,indice):
-        utilisateur=self.serveur.selectionSQL2("Humains","etat","id","id_CasUsage",self.idScena,indice)
+        utilisateur=self.serveur.selectionSQL2("Humains","etat","id","id_CasUsage",self.idScena,indice+1)
         return utilisateur
     
     def chercherMachine(self,indice):
-       machine=self.serveur.selectionSQL2("Machines","etat","id","id_CasUsage",self.idScena,indice)
+       machine=self.serveur.selectionSQL2("Machines","etat","id","id_CasUsage",self.idScena,indice+1)
        return machine
     
     def modifierCas(self,cas,usager,machine):
@@ -55,31 +55,6 @@ class Controleur():
         self.serveur.updateSQL("Humains",usager,"etat","id","id_CasUsage",self.idScena,self.vue.indiceCasModifier+1)
         self.serveur.updateSQL("Machines",machine,"etat","id","id_CasUsage",self.idMach,self.vue.indiceCasModifier+1)
    
-   
-    def changerEtat(self,indice):
-        Etat=self.serveur.selectionSQL3("CasUsages","etat","id",indice)
-        nomTableGood=str(Etat)[3:int(len(Etat)-5)]
-        print(nomTableGood)
-        if(nomTableGood=="NonTermine"): 
-            self.serveur.updateSQL("CasUsages","Termine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
-        elif(nomTableGood=="Termine"):
-            self.serveur.updateSQL("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
-        elif(nomTableGood=="Reprendre"):
-            self.serveur.updateSQL("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
-        self.unReprend=False;
-        self.vue.caneva.forget()
-        self.vue.menuInitial()
-
-    def changerReprendre(self,indice):
-        Etat=self.serveur.selectionSQL3("CasUsages","etat","id",indice)
-        nomTableGood=str(Etat)[3:int(len(Etat)-5)]
-        if(nomTableGood=="NonTermine"):
-            self.serveur.updateSQL("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
-        elif(nomTableGood=="Termine"):
-            self.serveur.updateSQL("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
-            self.unReprend=True;
-        self.vue.caneva.forget()
-        self.vue.menuInitial()
     
 class Vue():
     def __init__(self, pControleur):
@@ -124,12 +99,6 @@ class Vue():
         self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
         self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
         
-        self.bntTermine=Button(self.caneva,text="Terminé/NonTerminé",width=20,command=self.supprimer)#
-        self.caneva.create_window(100,550,window=self.bntTermine,width=150,height=20)
-        
-        self.bntReprendre=Button(self.caneva,text="Reprendre",width=20,command=self.reprendre)
-        self.caneva.create_window(self.largeur/2,550,window=self.bntReprendre,width=150,height=20)
-        
         self.listeetat=Listbox(self.caneva,bg="lightblue",borderwidth=0,relief=FLAT,width=12,height=12)
         self.caneva.create_window(670,350,window=self.listeetat)
        
@@ -138,37 +107,6 @@ class Vue():
         self.caneva.create_window(350,350,window=self.listecas)
         self.mettreAJourListes()
 
-        if(self.dejaOuvert==False):
-            self.ouvrirReprendre()
-        
-    def unSeulReprendre(self):
-        for i in range(1,self.listeetat.size()+1):
-            etat=self.listeetat.get(ACTIVE)
-            self.listeetat.activate(i)
-            etat2= str(etat)
-            if(etat2=="('Reprendre',)"):
-                self.controleur.unReprend=True
-
-                
-    def ouvrirReprendre(self):
-        compteur=0
-        for i in range(1,self.listeetat.size()+1):
-            compteur+=1
-            etat=self.listeetat.get(ACTIVE)
-            self.listeetat.activate(i)
-            etat2= str(etat)
-            if(etat2=="('Reprendre',)"):
-                self.indiceCasModifier=compteur-1
-                self.dejaOuvert=True
-                self.menuModifier()
-        
-    def reprendre(self):
-        self.unSeulReprendre()
-        if(self.controleur.unReprend==False):  
-            self.indiceCasModifier=self.listeetat.curselection()[0]
-            self.controleur.changerReprendre(self.indiceCasModifier)
-    
-    
     
     def indiceDeLaBD(self):
         self.indiceCasModifier=self.listecas.curselection()[0]
@@ -219,7 +157,7 @@ class Vue():
         usager=self.controleur.chercherUtilisateur(self.indiceCasModifier+1,)#
         self.labelActionUsager.insert(END, str(usager))
 
-        machine=self.controleur.chercherMachine(self.indiceCasModifier+1,)#
+        machine=self.controleur.chercherMachine(self.indiceCasModifier+1,),
         self.labelActionMachine.insert(END,str(machine))
         
         self.canevaMod.create_window(400,200,window=self.labelActionUsager,width=150,height=250)

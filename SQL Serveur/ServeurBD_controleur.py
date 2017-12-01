@@ -14,7 +14,14 @@ class ControleurServeurBD():
         self.curseur = self.database.cursor()
         self.id=0
         
-        
+    #test pour envoyer une commande fait a la main -M-A
+    def insCustom(self,commande,values):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        self.id+=1
+        curseur.execute(commande, (self.id, values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],))
+        conn.commit()
+        conn.close()
         
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')

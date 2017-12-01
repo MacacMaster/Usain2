@@ -47,6 +47,10 @@ class SQL():
         
         pass
     
+    #"INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,)
+    #test
+    def insCustom(self,sprint,nom,priorite,debut,fin):
+        self.Saas.insCustom("INSERT INTO PlanifGlobales VALUES (?,?,?,?,?,?,?,?)",[self.parent.idProjet,sprint,nom,self.parent.utilisateur,priorite,debut,fin])
     def supressionFonction(self):
         pass
     
