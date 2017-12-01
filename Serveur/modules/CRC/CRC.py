@@ -447,7 +447,7 @@ class Controleur():
         
         self.serveur = ServerProxy(ad)
         '''
-        
+        '''
         self.saasIP= None
         self.utilisateur=None
         self.organisation=None
@@ -455,12 +455,12 @@ class Controleur():
         self.clientIP=None
         self.adresseServeur=None
         self.serveur = None
+        '''   
             
         #MVC
         self.modele=Modele(self, self.serveur)
-        self.vue=Vue(self)
-           
-        #self.serveur = self.connectionServeur()
+        self.vue=Vue(self)   
+        self.serveur = self.connectionServeur()
         
         self.vue.root.mainloop()
     
