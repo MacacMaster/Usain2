@@ -33,6 +33,7 @@ class Controleur():
         #id du projet selectionne
         self.idProjet=None
         self.vue=Vue(self,self.clientIP)
+        
         self.vue.root.mainloop()
         
     
@@ -50,7 +51,7 @@ class Controleur():
 
     def fermerApplication(self):
         
-        self.log.writeLog("Fermeture du Client")
+        #self.log.writeLog("Fermeture du Client")
         self.vue.root.destroy()
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
@@ -63,7 +64,7 @@ class Controleur():
             print("Connection au serveur Saas réussi")
             #
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
-            self.log.setLog(pIdentifiantNomOrga,pIdentifiantNomUsager, "LoginDB")
+            
             if (reponseServeur == 0):
                 self.log.writeLog("Login Fail")
                 self.vue.logInClientFail()

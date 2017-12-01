@@ -172,6 +172,8 @@ class ControleurServeur():
         self.serveurBD.updateDonnes(nomTable,champs,valeur)
         return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
     
+    def insCustom(self,commande,values):
+        self.serveurBD.insCustom(self,commande,values)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
