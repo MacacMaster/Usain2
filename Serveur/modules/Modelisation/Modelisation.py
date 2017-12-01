@@ -12,18 +12,20 @@ class Controleur():
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
         self.serveur = self.connectionServeur()
-       # print("utilisateur : " , self.utilisateur)
-       # print("organisation : ", self.organisation)
-       # print("id projet : ", self.idProjet)
         self.modele= Modele(self)
         self.vue = Vue(self)
         self.vue.root.mainloop()
-        
         print("controleur")
-    
-   
+
+    def ajoutTableBD(self, nom):
+        self.serveur.insertionSQL("Tables",str(self.idProjet)+",'"+nom+"'")
+        self.vue.canevaNouvelleTable.forget()
+        self.vue.menuInitial()
         
-    
+    def connectionServeur(self):
+        print("Connection au serveur BD...")
+        serveur=ServerProxy(self.adresseServeur)
+        return serveur
     def ajoutTableBD(self, nom):
         self.serveur.insertionSQL("Tables","10,"+self.idProjet+",'"+nom+"'")
         self.vue.canevaNouvelleTable.forget()
@@ -33,6 +35,7 @@ class Controleur():
         print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
+
 
 class Modele():
     def __init__(self, pControleur):
@@ -77,9 +80,7 @@ class Vue():
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.fenetre.pack()
         self.menuInitial()
-       
 
-          
     def ajouterTable(self):
         pass
     
@@ -87,8 +88,6 @@ class Vue():
         pass
     
     def menuInitial(self):
-        
-        
         self.caneva = Canvas(self.fenetre, width = self.largeur, height=self.hauteur, bg="steelblue")
         self.caneva.pack()
         
@@ -147,9 +146,9 @@ class Vue():
         
         self.listBoxContrainteChampsTable=Listbox(self.canevaAffichageChamps,bg="lightblue",borderwidth=0,relief=FLAT,width=20,height=20)
         self.canevaAffichageChamps.create_window(550,270,window=self.listBoxContrainteChampsTable)
-        ##################
+
         self.controleur.modele.remplirListBoxContraintesChamps(self.listBoxContrainteChampsTable)
-        ################
+
         self.listBoxChampsTable=Listbox(self.canevaAffichageChamps,bg="lightblue",borderwidth=0,relief=FLAT,width=50,height=20)
         self.canevaAffichageChamps.create_window(300,270,window=self.listBoxChampsTable)
         
@@ -169,8 +168,6 @@ class Vue():
          self.menuAjouterChamps()
      
     def menuAjouterChamps(self):
-        print("gasgbsaoidbgsd")
-        
         self.canevaAjouterChamps = Canvas(self.fenetre, width = self.largeur*(2/3) , height=self.hauteur, bg="steelblue")
         self.canevaAjouterChamps.pack()
         
@@ -211,15 +208,7 @@ class Vue():
         self.btnAjouterChamps=Button(self.canevaAjouterChamps,text="Ajouter un champs",width=20,command=self.ajouterChamps)
         self.canevaAjouterChamps.create_window(260,500,window=self.btnAjouterChamps,width=150,height=20)
     
-        
-        
 
-
-
-
-
-
-        
      
     def ajouterChamps(self):
         pass
