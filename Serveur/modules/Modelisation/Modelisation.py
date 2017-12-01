@@ -24,6 +24,7 @@ class Controleur():
    
         
     
+<<<<<<< .mine
     def ajoutTableBD(self, nom):
         self.serveur.insertionSQL("Tables",str(self.idProjet)+",'"+nom+"'")
         self.vue.canevaNouvelleTable.forget()
@@ -33,6 +34,17 @@ class Controleur():
         print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
+=======
+    def ajoutTableBD(self, nom):
+        self.serveur.insertionSQL("Tables","10,"+self.idProjet+",'"+nom+"'")
+        self.vue.canevaNouvelleTable.forget()
+        self.vue.menuInitial()
+        
+    def connectionServeur(self):
+        print("Connection au serveur BD...")
+        serveur=ServerProxy(self.adresseServeur)
+        return serveur
+>>>>>>> .theirs
 
 class Modele():
     def __init__(self, pControleur):

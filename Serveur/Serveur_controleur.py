@@ -172,15 +172,20 @@ class ControleurServeur():
         self.serveurBD.updateDonnes(nomTable,champs,valeur)
         return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
     
+    def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
+    
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
         logLocation='Logs.sqlite'
+        print ("Log Open")
         logdb = sqlite3.connect(logLocation)
         curseur = logdb.cursor()
         curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,))
         logdb.commit()
         logdb.close()
+        print ("Log Close")
         return True 
     
     def selectionSQL3(self,nomTable,champs, where, idProjet):
