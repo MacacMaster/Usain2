@@ -183,6 +183,9 @@ class ControleurServeur():
         logdb.close()
         return True 
     
+    def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
+    
 print("Création du serveur...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)
 objetControleurServeur=ControleurServeur()
@@ -190,5 +193,3 @@ daemon.register_instance(objetControleurServeur)
 print("Création du serveur terminé")
 daemon.serve_forever()
 
-def selectionSQL3(self,nomTable,champs, where, idProjet):
-        return self.serveurBD.selDonnees(nomTable,champs, where, idProjet)
