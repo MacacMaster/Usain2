@@ -1,5 +1,18 @@
 #-*- coding: utf-8 -*-
-
+######################################################
+# Pour utiliser les fonctions de sélection ou d'insertion
+# dans les modules
+# 1) s'assurer d'avoir un lien avec le serveur (voir client)
+#2) appeler la fonction de serveur:
+#      ex:  self.serveur.insertionSQL("Organisations", " 4, 'allo' ")
+# Premier paramètre est le nom de la table en string, le deuxième est un long string qui est la liste des valeurs à ajouter. Si cette liste a des string, les mettre entre ' ' .
+#        self.selDonnees("Organisations","id, nom")
+# 
+# ex: self.serveur.selectionSQL("Projets","id")
+#        Premier paramètre est le nom de la table en string, puis la liste des colonnes dont vous voulez les données
+#        Cette fonction a encore un print, vous verrez donc son résultat.
+#        Cette fonction retourne une liste, il vous faudra donc aller sélectionner spécifiquement le champ recherché
+######################################################
 from xmlrpc.server import SimpleXMLRPCServer
 import xmlrpc.client
  #création de l'objet qui écoute  Q
@@ -60,9 +73,13 @@ class ControleurServeur():
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Connection au serveurDB
-        self.ipServeurBd="http://"+pUsagerIP+":9998"
-        print("Connection au serveur BD...")
-        self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1) #self.serveurBD=ServerProxy(ad,allow_none = 1)        print("Connection serveur BD réussi")
+        print("Connexion au serveur BD...")
+        self.ipServeurBd = "http://"+pUsagerIP+":9998"
+        self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1)
+        print("Connexion au serveur BD réussie")
+
+       
+       
         
         #variables id
         identifiantNomUsager = pIdentifiantNomUsager
@@ -76,6 +93,8 @@ class ControleurServeur():
             print("Recherche du client terminé. Il s'agit de", clientTempo[0], "qui appartient a l'organisation numero ", clientTempo[1])
             client = self.modele.creerclient(clientTempo[0], clientTempo[1])
             return [client, clientTempo[1]]
+        
+        
 
     def rechercheProjetsDispo(self, id):
         tabProjet = self.serveurBD.rechercheProjetsDispo(id)
@@ -135,6 +154,15 @@ class ControleurServeur():
         contenu=fiche.read()
         fiche.close()
         return xmlrpc.client.Binary(contenu)
+    
+    def insertionSQL(self,nomTable,valeurs):
+        self.serveurBD.insDonnees(nomTable, valeurs)
+    
+    def selectionSQL(self,nomTable,champs):
+        self.serveurBD.selDonnees(nomTable,champs)
+        
+    def selectionAllSQL(self,nomTable):
+        return self.serveurBD.selAll(nomTable)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):

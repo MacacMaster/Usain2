@@ -10,6 +10,14 @@ import time
 from _overlapped import NULL
 
 
+class Classe():
+    def __init__ (self, pProprietaire, pNom, pResponsabilites, pCollaborateurs):
+        self.proprietaire = pProprietaire
+        self.nom = pNom
+        self.responsabilites = pResponsabilites
+        self.collaborateurs = pCollaborateurs
+        
+
 class Vue():
     def __init__(self, parent):
         self.parent=parent
@@ -36,27 +44,40 @@ class Vue():
         #self.menu.pack_propagate(0)
         #self.classes = self.parent.modele.nomsDesClasses()
         #test
-        self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
+        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
 
         self.creerMenuGauche()
         self.creerMenuDroite()
         #chercher la liste des classes
 
     def choisirClasse(self,event):
-        
         #vider la liste
         self.listeResponsabilites.delete(0, END) #effacer la liste
         self.listeCollaboration.delete(0, END) #effacer la liste
+        #obtenir l'index correspondant a la classe selectionnee dans la liste de classes
         index = self.listeClasses.curselection()[0]
-        id = self.classes[index][0]
-        print(id)
-        for classes in self.classes:
-            self.listeResponsabilites.insert(END,classes[2])
-            self.listeCollaboration.insert(END,classes[1])
-            
+        #self.classes est un tableau qui contient toutes les informations sur les classes...
+        #alors que self.listeClasses ne contient que les noms des classes...
+        idClasse = self.classes[index][0] #l'index 0 d'un element est son id
+        print(idClasse)
+   
+        #trouver lesresponsabilites de la classe
+        requete = self.serveur.selectionAllSQL("Responsabilites")
+        for element in requete: 
+            #chercher parmi les responsabilites celles qui a le même ID classe que celle qu'on veut
+            if (element[1] == idClasse):
+                self.listeResponsabilites.insert(END,element[2]) #le champ avec index 2 correspond au nom
+        
+        #trouver les collabrateurs de la classe
+                requete = self.serveur.selectionAllSQL("Responsabilites")
+        for element in requete: 
+            #chercher parmi les collaborateurs celles qui a le même ID classe que celle qu'on veut
+            if (element[1] == idClasse):
+                self.listeCollaboration.insert(END,classes[2]) #le champ avec index 2 correspond au nom
+      
         #informations sur le propriétaire
-        self.lblNomClasse.config(text = self.classes[index][2])
-        self.lblProprietaire.config(text  = self.classes[index][3])
+        self.lblNomClasse.config(text = self.classes[index][3]) # 3 = nom de la classe
+        self.lblProprietaire.config(text  = self.classes[index][2]) # 2 = proprietaire de la classe
        
         
     def creerMenuGauche(self):
@@ -78,6 +99,12 @@ class Vue():
         self.listeClasses = Listbox(frame2, height=25)
         self.listeClasses.pack(side=LEFT,fill="y")
         self.listeClasses.bind('<<ListboxSelect>>',self.choisirClasse)
+        #quand on désélectionne cette liste, on veut désactivier le bouton supprimer
+        self.listeClasses.bind("<FocusOut>", self.box_unfocused)
+        self.listeClasses.bind("<FocusIn>", self.box_focused)
+        
+        #loader la liste de classes
+        self.chercherClasse()
         
         scrollbar = Scrollbar(frame2, orient = "vertical")
         scrollbar.config(command=self.listeClasses.yview)  
@@ -92,12 +119,15 @@ class Vue():
         #for x in range(30):
         #    listeClasses.insert(END, str(x))
 
-        
-        frame3 = Frame(self.menuGauche)
+        frame3 = Frame(self.menuGauche, bg="steelblue")
         frame3.pack(fill=BOTH, expand=True, pady = 5)
         
-        btnSuppression = Button(self.menuGauche, text = "Suppression")
-        btnSuppression.pack()
+        self.btnSuppression = Button(frame3, text = "Suppression", state=DISABLED)
+        self.btnSuppression.pack(side = LEFT)
+        
+        self.btnModification = Button(frame3, text = "Modification", command=self.creerMenuAjout, state=DISABLED)
+        self.btnModification.pack(side = RIGHT)
+
         
     
     def creerMenuDroite(self):
@@ -133,11 +163,12 @@ class Vue():
         self.listeCollaboration = Listbox(frame2)
         self.listeCollaboration.pack()
         
-        frame3 = Frame(self.menuDroite)
+        frame3 = Frame(self.menuDroite, bg="steelblue")
         frame3.pack(fill=BOTH, expand=True, pady = 5)
-        
-        btnModification = Button(self.menuDroite, text = "Modification", command=self.creerMenuAjout)
-        btnModification.pack()
+    
+        self.boutonNouvelleClasse = Button(frame3, text="Ajouter nouvelle classe")
+        self.boutonNouvelleClasse.pack(side =TOP)  
+       
         
     def creerMenuAjout(self):
         #enlever la premiere fenetre
@@ -294,10 +325,16 @@ class Vue():
         print(self.entryResponsabilite.get())
     
     def box_focused(self, event):
-        self.focused_box = event.widget
+        self.focused_box = event.widget  
+        #lorsque le focus est sur la liste de classes
+        self.btnSuppression.config(state=ACTIVE)
+        self.btnModification.config(state=ACTIVE)
         
     def box_unfocused(self, event):
         self.focused_box = None
+        #lorsque le focus n'est pas sur la liste de classes
+        self.btnSuppression.config(state=DISABLED)
+        self.btnModification.config(state=DISABLED)
         
     def confirmer(self):
         saisieNomClasse = self.entryNomClasse.get()
@@ -321,9 +358,15 @@ class Vue():
             messagebox.showwarning("Attention", "Saisir les informations manquantes")
         
         else: 
+            classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilites, self.listeCollaboration)
+            self.parent.modele.insertionConfirmer(classe)
             self.canceler() #retour à au menu de base CRC  
             
-
+    def chercherClasse(self):
+        classes = self.parent.serveur.selectionAllSQL("Classes")
+        for classe in classes:
+            self.listeClasses.insert(END,classe[3])
+            
 class Modele():
     def __init__(self, parent, serveur):
         self.parent=parent
@@ -366,30 +409,60 @@ class Modele():
         #classes = ["nom1","nom2","nom3","nom4"]
         return classes    
        
+    def insertionConfirmer(self, classe):
+        #insérer la classe 
+        valeurs = (self.parent.idProjet, classe.proprietaire,classe.nom)
+        self.parent.serveur.insertionSQL("Classes",valeurs)
+      
+        #insérer les responsabilites
+        idClasse = 5
+        #parcorir tous les éléments de la listbox responsabilités    
+        for i in range (classe.responsabilites.size()):
+            nom = classe.responsabilites.get(i)   
+            valeurs = (idClasse, nom)
+            self.parent.serveur.insertionSQL("Responsabilites",valeurs)
+            
+        #insérer les collaborateurs
+        #parcorir tous les éléments de la listbox responsabilités    
+        for i in range (classe.collaborateurs.size()):
+            nom = classe.collaborateurs.get(i)   
+            valeurs = (idClasse, nom)
+            self.parent.serveur.insertionSQL("Collaborations",valeurs)
+        
     
 class Controleur():
     def __init__(self):
         #informations du système quand le programme est lancé
         #self.idClient = 999;
+        '''
+        self.saasIP=sys.argv[1]
+        self.utilisateur=sys.argv[2]
+        self.organisation=sys.argv[3]
+        self.idProjet=sys.argv[4]
+        self.clientIP=sys.argv[5]
+        self.adresseServeur="http://"+self.saasIP+":9998"
         
-        self.ip = 999;
-        self.idProjet = 999;
-          
-        #connexion au proxy
-        ad="http://"+str(self.ip)+":9999"
+        connexion au proxy
+        ad="http://"+self.saasIP+":9999"
+        
         self.serveur = ServerProxy(ad)
+        '''
         
+        self.saasIP= None
+        self.utilisateur=None
+        self.organisation=None
+        self.idProjet=None
+        self.clientIP=None
+        self.adresseServeur=None
+        self.serveur = None
+            
         #MVC
         self.modele=Modele(self, self.serveur)
         self.vue=Vue(self)
-        
-
-        
+           
         #self.serveur = self.connectionServeur()
         
-        
         self.vue.root.mainloop()
-      
     
     def connectionServeur(self):
         ad="http://"+pUsagerIP+":9998"

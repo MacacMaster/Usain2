@@ -100,7 +100,7 @@ class Vue():
         self.canevaOutil.create_window(200,100,window=self.listeOutils)
         self.canevaOutil.create_window(200,450,window=btnconnecter,width=100,height=30)
         
-        self.cadreOutil.pack(side=LEFT)
+        #self.cadreOutil.pack(side=LEFT)
         
     def creerCadreModules(self):
         self.cadreCentral2=Frame(self.cadreApplication)
