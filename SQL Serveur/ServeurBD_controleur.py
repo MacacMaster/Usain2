@@ -28,10 +28,10 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
-        donnees = c.fetchall()
-        print(donnees)
+        print(c.fetchall())
+        return(c.fetchall())
         conn.close()
-        return donnees
+     
 
         
     def updateDonnees(self,nomTable,champ,description,where,where2,indice1,indice2):
@@ -41,7 +41,7 @@ class ControleurServeurBD():
         conn.commit()
         conn.close()
     
-    def selDonneesComplexe1(self,nomTable,champs,where,indice):
+    def selDonneesComplexe1(self,nomTable,champs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+where +'''=?''', (indice))
@@ -56,6 +56,14 @@ class ControleurServeurBD():
         donnees = c.fetchall()
         conn.close()
         return donnees
+    
+    def selDonnees3(self,nomTable,champs, where, idProjet):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        laselection=c.fetchall()
+        conn.close()
+        return laselection
     
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''
