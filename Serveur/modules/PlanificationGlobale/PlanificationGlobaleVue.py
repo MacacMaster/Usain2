@@ -24,6 +24,7 @@ class Vue():
         self.barreTaches()
         self.framePrincipal()
         self.frameCommandes()
+        self.frameAjoutModif()
         
     def barreTaches(self):
         #menu deroulante
@@ -75,6 +76,7 @@ class Vue():
         self.listFonct.insert(END, "World")
         print("cur:"+str(self.listFonct.get(ACTIVE)))
         
+      
     
     def frameCommandes(self):
         self.frameCommandes = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
@@ -90,24 +92,28 @@ class Vue():
         self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
         self.btnChangerProjet=Button(self.frameCommandes, text="Changer de projet", width=40, bg="light blue")
         self.canCommandes.create_window(900,35,window=self.btnChangerProjet,width=150,height=35)
-        
     
-    def frameCommandes(self):
-        self.frameCommandes = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
-        self.frameCommandes.pack(fill=X)
-        self.canCommandes=Canvas(self.frameCommandes, width=1000, height=70, bg="light grey", )
-        self.canCommandes.pack()
-        
-        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink")
-        self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
-        self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink",)
-        self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
-        self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink", command=self.fenetreConfirmation)
-        self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
-        self.btnChangerProjet=Button(self.frameCommandes, text="Changer de projet", width=40, bg="light blue")
-        self.canCommandes.create_window(900,35,window=self.btnChangerProjet,width=150,height=35)
     
+    def frameAjoutModif(self):
+        self.frameAjoutModif = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
+        self.frameAjoutModif.pack(fill=X)
+        self.canAjoutModif=Canvas(self.frameAjoutModif, width=1000, height=200, bg="steelblue")
+        self.canAjoutModif.pack()
         
+        self.lblAMFonctionnalite=Label(self.frameAjoutModif, text="Fonctionnalite: ", width=150, height=25)
+        self.canAjoutModif.create_window(90,40, window=self.lblAMFonctionnalite, width=120, height=25)
+        
+        self.lblAMPriorite=Label(self.frameAjoutModif, text="Priorite: ", width=150, height=25)
+        self.canAjoutModif.create_window(90,70, window=self.lblAMPriorite, width=120, height=25)
+        
+        self.lblAMSprint=Label(self.frameAjoutModif, text="Sprint: ", width=150, height=25)
+        self.canAjoutModif.create_window(90,100, window=self.lblAMSprint, width=120, height=25)
+        
+        self.lblAMPourcent=Label(self.frameAjoutModif, text="%: ", width=150, height=25)
+        self.canAjoutModif.create_window(90,130, window=self.lblAMPourcent, width=120, height=25)
+        
+        self.lblAMResponsable=Label(self.frameAjoutModif, text="Responsable: ", width=150, height=25)
+        self.canAjoutModif.create_window(90,160, window=self.lblAMResponsable, width=120, height=25)
         
     def fenetreConfirmation(self):
         self.topConfirm=Toplevel(height=200)
