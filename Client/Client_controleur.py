@@ -10,7 +10,7 @@ import os
 
 ######################################################
 # TODO 
-# Fermeture du programme, fermeture du proxy
+# impossible de ouvrir 2 fois. Sinon erreur list out of range# Fermeture du programme, fermeture du proxy
 # 
 ######################################################
 
@@ -77,6 +77,8 @@ class Controleur():
             self.vue.logInClientFail()
             
         self.serveur.selectionSQL("Projets","id")
+        self.serveur.insertionSQL("Organisations"," 'allo' ")
+        self.serveur.selectionSQL("Organisations", "id, nom")
             
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)
