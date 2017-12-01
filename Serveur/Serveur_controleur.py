@@ -7,6 +7,7 @@
 #      ex:  self.serveur.insertionSQL("Organisations", " 4, 'allo' ")
 # Premier paramètre est le nom de la table en string, le deuxième est un long string qui est la liste des valeurs à ajouter. Si cette liste a des string, les mettre entre ' ' .
 #        self.selDonnees("Organisations","id, nom")
+#Les ids uniquies sont pris en charge avec la fonction
 # 
 # ex: self.serveur.selectionSQL("Projets","id")
 #        Premier paramètre est le nom de la table en string, puis la liste des colonnes dont vous voulez les données
@@ -163,6 +164,9 @@ class ControleurServeur():
     
     def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
         return self.serveurBD.selDonneesComplexe2(nomTable,champs,un,deux,indice1,indice2)
+    
+    def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
     
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)

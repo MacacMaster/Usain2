@@ -57,6 +57,14 @@ class ControleurServeurBD():
         conn.close()
         return donnees
     
+    def selDonnees3(self,nomTable,champs, where, idProjet):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        laselection=c.fetchall()
+        conn.close()
+        return laselection
+    
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''
         idOrgaBD = ''+idorga+''
