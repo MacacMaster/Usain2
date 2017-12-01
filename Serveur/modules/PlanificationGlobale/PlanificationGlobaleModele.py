@@ -42,7 +42,7 @@ class SQL():
         elif (priorite==1):
             priorite="Haute"    
         print("PlanifGlobales",self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
-        #self.Saas.insertionSQL("PlanifGlobales",self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
+        self.Saas.insertionSQL('PlanifGlobales',self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
         #fonction d'ecriture dans la table planification
         
         pass

@@ -27,10 +27,9 @@ from subprocess import Popen
 
 class Controleur():
     def __init__(self):
-        
             
-        """     
-        self.saasIP="10.57.47.6" #sys.argv[1]
+               
+        self.saasIP="10.57.47.7" #sys.argv[1]
         self.utilisateur="BOB"  #sys.argv[2]
         self.organisation="Organe"  #sys.argv[3]
         self.idProjet="123"   #sys.argv[4]
@@ -42,17 +41,21 @@ class Controleur():
         self.modele=Modele(self)
         self.sql=SQL(self)
 
+        self.vue=Vue(self)
 
         self.writeLog("Ouverture du Module")
 
         
         self.listeFonctions=self.sql.selDonnees("nom")
+        #self.listeFonctions=self.sql.selDonnees("nom")
         
-        self.sql.creerFonction("Sprint 1","FonctionNom","priorite","debut","fin")
-        self.sql.calculPourcent()"""
-        
-        
-        self.vue=Vue(self)
+        #self.sql.creerFonction("Sprint 1","FonctionNom","priorite","debut","fin")
+        self.sql.calculPourcent()
+        self.sql.creerFonction('Sprint1','FonctionNom','priorite','debut','fin')
+        self.sql.calculPourcent()
+
+
+
         self.vue.root.mainloop()
         
     def fermerProgramme(self):
