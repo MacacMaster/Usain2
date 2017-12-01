@@ -285,18 +285,20 @@ from xmlrpc.client import ServerProxy
 
 class Controleur():
     def __init__(self):
+         
         self.saasIP=sys.argv[1]
-        self.adresseServeur="http://"+self.saasIP+":9998"
+        self.adresseServeur="http://"+self.saasIP+":9999"
         self.serveur = self.connectionServeur()
-        self.idScena=0
         self.vue = Vue(self)
+        self.idScena=0
+       
         self.unReprend=False
         self.id=1
        
         self.utilisateur=sys.argv[2]
         self.idProjet=sys.argv[4]
         self.clientIP=sys.argv[5]
-        
+        self.remplirListeCas()
         self.vue.root.mainloop()
         print("controleur")
    
@@ -305,59 +307,59 @@ class Controleur():
         serveur=ServerProxy(self.adresseServeur)
         return serveur
     
-    #def remplirListeCas(self):
-     #  return self.serveur.selDonnees("CasUsages","description")
-      
-    #def remplirListeEtat(self):
-     #   return self.serveur.selDonnees("CasUsages","etat")
+    def remplirListeCas(self):
+        return self.serveur.selectionSQL("CasUsages","description")
+    
+    def remplirListeEtat(self):
+        return self.serveur.selectionSQL("CasUsages","etat")
            
     def envoyerCas(self,cas,usager,machine):
         self.id+=1
         indice=str(self.id)
-        self.serveur.insDonnees("CasUsages",indice+","+str(self.idProjet)+",'"+cas+"','Termine'")
-        self.serveur.insDonnees("Humains",str(self.idScena)+","+str(self.id)+",'"+usager+"'")
-        self.serveur.insDonnees("Machines",str(self.idScena)+","+str(self.id)+",'"+machine+"'")
+        self.serveur.insertionSQL("CasUsages",indice+","+str(self.idProjet)+",'"+cas+"','Termine'")
+        self.serveur.insertionSQL("Humains",str(self.idScena)+","+str(self.id)+",'"+usager+"'")
+        self.serveur.insertionSQL("Machines",str(self.idScena)+","+str(self.id)+",'"+machine+"'")
         self.vue.mettreAJourListes()
    
     def chercherBdcas(self,indice):
-        return self.serveur.selDonneesComplexe1("CasUsages","description","id",indice)
+        return self.serveur.selectionSQL1("CasUsages","description","id",indice)
        
     def chercherUtilisateur(self,indice):
-        utilisateur=self.serveur.selDonneesComplexe2("Humains","etat","id","id_CasUsage",self.idScena,indice)
+        utilisateur=self.serveur.selectionSQL2("Humains","etat","id","id_CasUsage",self.idScena,indice)
         return utilisateur
     
     def chercherMachine(self,indice):
-       machine=self.serveur.selDonneesComplexe2("Machines","etat","id","id_CasUsage",self.idScena,indice)
+       machine=self.serveur.selectionSQL2("Machines","etat","id","id_CasUsage",self.idScena,indice)
        return machine
     
     def modifierCas(self,cas,usager,machine):
-        self.serveur.updateDonnees("CasUsages",cas,"description","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet)
-        self.serveur.updateDonnees("Humains",usager,"etat","id","id_CasUsage",self.idScena,self.vue.indiceCasModifier+1)
-        self.serveur.updateDonnees("Machines",machine,"etat","id","id_CasUsage",self.idMach,self.vue.indiceCasModifier+1)
+        self.serveur.updateSQL("CasUsages",cas,"description","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet)
+        self.serveur.updateSQL("Humains",usager,"etat","id","id_CasUsage",self.idScena,self.vue.indiceCasModifier+1)
+        self.serveur.updateSQL("Machines",machine,"etat","id","id_CasUsage",self.idMach,self.vue.indiceCasModifier+1)
    
    
     def changerEtat(self,indice):
-        Etat=self.serveur.selDonneesComplexe1("CasUsages","etat","id",indice)
+        Etat=self.serveur.selectionSQL1("CasUsages","etat","id",indice)
         nomTableGood=str(Etat)[3:int(len(Etat)-5)]
         print(nomTableGood)
         
         if(nomTableGood=="NonTermine"): 
-            self.serveur.updateDonnees("CasUsages","Termine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+            self.serveur.updateSQL("CasUsages","Termine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
         elif(nomTableGood=="Termine"):
-            self.serveur.updateDonnees("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+            self.serveur.updateSQL("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
         elif(nomTableGood=="Reprendre"):
-            self.serveur.updateDonnees("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+            self.serveur.updateSQL("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
         self.unReprend=False;
         self.vue.caneva.forget()
         self.vue.menuInitial()
 
     def changerReprendre(self,indice):
-        Etat=self.serveur.selDonneesComplexe1("CasUsages","etat","id",indice)
+        Etat=self.serveur.selectionSQL1("CasUsages","etat","id",indice)
         nomTableGood=str(Etat)[3:int(len(Etat)-5)]
         if(nomTableGood=="NonTermine"):
-            self.serveur.updateDonnees("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+            self.serveur.updateSQL("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
         elif(nomTableGood=="Termine"):
-            self.serveur.updateDonnees("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+            self.serveur.updateSQL("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
             self.unReprend=True;
         self.vue.caneva.forget()
         self.vue.menuInitial()
@@ -466,6 +468,7 @@ class Vue():
     def remplirListBoxCas(self):
         self.listecas.delete(0, END)
         for i in self.listeCas:
+            print(i)
             self.listecas.insert(END,i)
         self.listeCas.clear()
             

@@ -159,14 +159,15 @@ class ControleurServeur():
         self.serveurBD.insDonnees(nomTable, valeurs)
     
     def selectionSQL1(self,nomTable,champs,where,indice):
-        return self.serveurBD.selDonnees(nomTable,champs)
+        return self.serveurBD.selDonneesComplexe1(nomTable,champs)
     
     def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
-        return self.serveurBD.selDonnees(nomTable,champs)
+        return self.serveurBD.selDonneesComplexe2(nomTable,champs)
     
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)
-        
+    
+    
     def updateSQL(self,nomTable):
         self.serveurBD.updateDonnes(nomTable,champs,valeur)
     
