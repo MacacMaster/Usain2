@@ -47,7 +47,10 @@ class Log():
     #La fonction d'écriture du log
     def writeLog(self,action="Actionman",module="Client"):
         #print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
-        self.parent.serveur.writeLog(self.getTime(),self.organisation,self.user,self.clientip,self.dbip,module,action)
+        if (self.parent.serveur.writeLog(self.getTime(),self.organisation,self.user,self.clientip,self.dbip,module,action)):
+            return True
+        else:
+            return False
         
     
     #===========================================================================

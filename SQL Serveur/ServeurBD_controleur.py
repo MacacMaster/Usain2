@@ -4,6 +4,7 @@ from xmlrpc.server import SimpleXMLRPCServer
  #création de l'objet qui écoute  Q
 import socket
 import sqlite3
+from IdMaker import *
 
 
 
@@ -11,11 +12,15 @@ class ControleurServeurBD():
     def __init__(self):
         self.database = sqlite3.connect('SprintMasterData.db')
         self.curseur = self.database.cursor()
+        self.id=0
+        
+        
         
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        c.execute('''INSERT into '''+nomTable+''' VALUES ( '''+valeurs+''' )''')
+        self.id+=1
+        c.execute('''INSERT into '''+nomTable+''' VALUES (''' +str(self.id)+', '+valeurs+''' )''')
         conn.commit()
         conn.close()
     
@@ -24,15 +29,33 @@ class ControleurServeurBD():
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
         print(c.fetchall())
+        return(c.fetchall())
         conn.close()
+     
+
         
-    def selAll(self,nomTable):
+    def updateDonnees(self,nomTable,champ,description,where,where2,indice1,indice2):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        c.execute('''SELECT * from '''+nomTable)
-        requete = c.fetchall()
+        c.execute('''UPDATE '''+ nomTable+ ''' SET '''+ description +''' =? WHERE '''+ where+''' =? and '''+where2 +''' =? ''', (champ,indice1,indice2))
+        conn.commit()
         conn.close()
-        return requete
+    
+    def selDonneesComplexe1(self,nomTable,champs):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+where +'''=?''', (indice))
+        donnees = c.fetchall()
+        conn.close()
+        return donnees
+    
+    def selDonneesComplexe2(self,nomTable,champs,un,deux,indice1,indice2):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+ un +'''=? and '''+deux+''' =?''' , (indice1,indice2))
+        donnees = c.fetchall()
+        conn.close()
+        return donnees
     
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''
@@ -116,5 +139,11 @@ daemon.register_instance(objetControleurServeurBD)
 print("Création du serveur BD terminé")
 daemon.serve_forever()
 
-
+def selDonnees3(self,nomTable,champs, where, idProjet):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        laselection=c.fetchall()
+        conn.close()
+        return laselection
 

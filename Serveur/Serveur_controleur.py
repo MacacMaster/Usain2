@@ -158,20 +158,31 @@ class ControleurServeur():
     def insertionSQL(self,nomTable,valeurs):
         self.serveurBD.insDonnees(nomTable, valeurs)
     
+    def selectionSQL1(self,nomTable,champs,where,indice):
+        return self.serveurBD.selDonneesComplexe1(self,nomTable,champs,where,indice)
+    
+    def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
+        return self.serveurBD.selDonneesComplexe2(nomTable,champs)
+    
     def selectionSQL(self,nomTable,champs):
-        self.serveurBD.selDonnees(nomTable,champs)
-        
-    def selectionAllSQL(self,nomTable):
-        return self.serveurBD.selAll(nomTable)
+        return self.serveurBD.selDonnees(nomTable,champs)
+    
+    
+    def updateSQL(self,nomTable,champs,valeur):
+        self.serveurBD.updateDonnes(nomTable,champs,valeur)
+        return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
+    
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
         logLocation='Logs.sqlite'
+        print ("Log Open")
         logdb = sqlite3.connect(logLocation)
         curseur = logdb.cursor()
         curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,))
         logdb.commit()
         logdb.close()
+        print ("Log Close")
         return True 
     
 print("Création du serveur...")
@@ -180,3 +191,6 @@ objetControleurServeur=ControleurServeur()
 daemon.register_instance(objetControleurServeur)
 print("Création du serveur terminé")
 daemon.serve_forever()
+
+def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees(nomTable,champs, where, idProjet)
