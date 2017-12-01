@@ -160,6 +160,9 @@ class ControleurServeur():
     
     def selectionSQL(self,nomTable,champs):
         self.serveurBD.selDonnees(nomTable,champs)
+        
+    def selectionAllSQL(self,nomTable):
+        return self.serveurBD.selAll(nomTable)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):

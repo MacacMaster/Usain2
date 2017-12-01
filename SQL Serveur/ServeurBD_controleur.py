@@ -25,6 +25,14 @@ class ControleurServeurBD():
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
         print(c.fetchall())
         conn.close()
+        
+    def selAll(self,nomTable):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT * from '''+nomTable)
+        requete = c.fetchall()
+        conn.close()
+        return requete
     
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''

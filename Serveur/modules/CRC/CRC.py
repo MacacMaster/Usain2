@@ -43,13 +43,17 @@ class Vue():
         #chercher la liste des classes
 
     def choisirClasse(self,event):
-        
         #vider la liste
         self.listeResponsabilites.delete(0, END) #effacer la liste
         self.listeCollaboration.delete(0, END) #effacer la liste
+        #obtenir l'index correspondant a la classe selectionnee dans la liste de classes
         index = self.listeClasses.curselection()[0]
-        id = self.classes[index][0]
-        print(id)
+        #self.classes est un tableau qui contient toutes les informations sur les classes...
+        #alors que self.listeClasses ne contient que les noms des classes...
+        idClasse = self.classes[index][0] #l'index 0 d'un element est son id
+        print(idClasse)
+        
+        #requete = self.serveur.selectionSQL("Classes", )
         for classes in self.classes:
             self.listeResponsabilites.insert(END,classes[2])
             self.listeCollaboration.insert(END,classes[1])
