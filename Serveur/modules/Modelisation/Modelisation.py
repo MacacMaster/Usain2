@@ -153,6 +153,11 @@ class Vue():
         self.canevaAffichageChamps.create_window(300,270,window=self.listBoxChampsTable)
         
         self.controleur.modele.remplirListBoxChamps(self.listBoxChampsTable)
+        
+        #self.btnNewChamp=Button(self.canevaAffichageChamps,text="Ajouter un champs",width=20,command=self.allezMenuAjouterChamps())
+        #self.canevaAffichageChamps.create_window(200,550,window=self.btnAjouterChamps,width=150,height=20)
+
+        
         self.btnAnnulerAffichageChamps=Button(self.canevaAffichageChamps,text="Annuler",width=20,command=self.annulerAffichageChamps)
         self.canevaAffichageChamps.create_window(600,550,window=self.btnAnnulerAffichageChamps,width=150,height=20)
     

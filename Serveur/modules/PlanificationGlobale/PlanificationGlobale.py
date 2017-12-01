@@ -46,10 +46,16 @@ class Controleur():
         self.writeLog("Ouverture du Module")
 
         
+        self.listeFonctions=self.sql.selDonnees("nom")
         #self.listeFonctions=self.sql.selDonnees("nom")
         
+        #self.sql.creerFonction("Sprint 1","FonctionNom","priorite","debut","fin")
+        self.sql.calculPourcent()
         self.sql.creerFonction('Sprint1','FonctionNom','priorite','debut','fin')
         self.sql.calculPourcent()
+
+
+
         self.vue.root.mainloop()
         
     def fermerProgramme(self):
