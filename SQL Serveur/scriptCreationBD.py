@@ -82,6 +82,7 @@ curseur.execute("INSERT INTO Organisations VALUES ('2', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('1', '1', 't', 't')")
 curseur.execute("INSERT INTO Usagers VALUES ('2', '1', 'a', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('3', '2', 'a', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('4','1', 'admin', 'a')")
 
 
 curseur.execute("INSERT INTO Projets VALUES ('1', '1', 'ProjetTest')")

@@ -38,7 +38,7 @@ class Vue():
     def framePrincipal(self):
         self.framePrincipal = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
         self.framePrincipal.pack(fill=X)
-        self.canPrincipal=Canvas(self.framePrincipal, width=1000, height=730, bg="steelblue", )
+        self.canPrincipal=Canvas(self.framePrincipal, width=1000, height=530, bg="steelblue", )
         self.canPrincipal.pack()
         
         self.lblProchain=Label(self.framePrincipal, text="Prochaine action: ", width=150, height=30, bg="light blue")
@@ -59,16 +59,16 @@ class Vue():
         self.lblResponsable=Label(self.framePrincipal, text="Responsable", width=160, height=25, bg="white", relief=RAISED )
         self.canPrincipal.create_window(900,90,window=self.lblResponsable, width=160, height=25)
         
-        self.listFonct=Listbox(self.framePrincipal, width=599, height=600)
-        self.canPrincipal.create_window(330,405,window=self.listFonct, width=599, height=600)
-        self.listPriorite=Listbox(self.framePrincipal, width=59, height=600)
-        self.canPrincipal.create_window(660,405,window=self.listPriorite, width=59, height=600)
-        self.listSprint=Listbox(self.framePrincipal, width=59, height=600)
-        self.canPrincipal.create_window(720,405,window=self.listSprint, width=59, height=600)
-        self.listPourcentage=Listbox(self.framePrincipal, width=69, height=600)
-        self.canPrincipal.create_window(785,405,window=self.listPourcentage, width=69, height=600)
-        self.listResponsable=Listbox(self.framePrincipal, width=159, height=600)
-        self.canPrincipal.create_window(900,405,window=self.listResponsable, width=159, height=600)
+        self.listFonct=Listbox(self.framePrincipal, width=599, height=400)
+        self.canPrincipal.create_window(330,305,window=self.listFonct, width=599, height=400)
+        self.listPriorite=Listbox(self.framePrincipal, width=59, height=400)
+        self.canPrincipal.create_window(660,305,window=self.listPriorite, width=59, height=400)
+        self.listSprint=Listbox(self.framePrincipal, width=59, height=400)
+        self.canPrincipal.create_window(720,305,window=self.listSprint, width=59, height=400)
+        self.listPourcentage=Listbox(self.framePrincipal, width=69, height=400)
+        self.canPrincipal.create_window(785,305,window=self.listPourcentage, width=69, height=400)
+        self.listResponsable=Listbox(self.framePrincipal, width=159, height=400)
+        self.canPrincipal.create_window(900,305,window=self.listResponsable, width=159, height=400)
         
         #A RETIRER!
         self.listFonct.insert(END, "Hello")

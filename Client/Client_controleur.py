@@ -76,10 +76,13 @@ class Controleur():
                 self.vue.chargerCentral(reponseServeur[0][1],reponseServeur[0][2],reponseServeur[0][3],reponseServeur[0][4])
         else:
             self.vue.logInClientFail()
+        self.serveur.selectionSQL("Projets","id")
+        
+    def creerProjet(self,nom):
+            print
+            self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
             
-        #self.serveur.selectionSQL("Projets","id")
-        #self.serveur.insertionSQL("Organisations"," 'allo' ")
-        #self.serveur.selectionSQL("Organisations", "id, nom")
+
             
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)

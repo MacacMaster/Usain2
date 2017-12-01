@@ -35,7 +35,7 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
-        print(c.fetchall())
+       # print(c.fetchall())
         return(c.fetchall())
         conn.close()
      
@@ -63,6 +63,14 @@ class ControleurServeurBD():
         donnees = c.fetchall()
         conn.close()
         return donnees
+    
+    def selDonnees3(self,nomTable,champs, where, idProjet):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        laselection=c.fetchall()
+        conn.close()
+        return laselection
     
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''
@@ -138,6 +146,13 @@ class ControleurServeurBD():
         return tabProjet
 
     
+    def selDonnees3(self,nomTable,champs, where, idProjet):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        laselection=c.fetchall()
+        conn.close()
+        return laselection
     
 print("Création du serveur pour la BD...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998),allow_none = 1)
@@ -146,11 +161,5 @@ daemon.register_instance(objetControleurServeurBD)
 print("Création du serveur BD terminé")
 daemon.serve_forever()
 
-def selDonnees3(self,nomTable,champs, where, idProjet):
-        conn= sqlite3.connect('SprintMasterData.db')
-        c = conn.cursor()
-        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
-        laselection=c.fetchall()
-        conn.close()
-        return laselection
+
 
