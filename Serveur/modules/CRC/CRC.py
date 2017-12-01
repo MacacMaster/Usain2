@@ -78,6 +78,9 @@ class Vue():
         self.listeClasses = Listbox(frame2, height=25)
         self.listeClasses.pack(side=LEFT,fill="y")
         self.listeClasses.bind('<<ListboxSelect>>',self.choisirClasse)
+        #quand on désélectionne cette liste, on veut désactivier le bouton supprimer
+        self.listeClasses.bind("<FocusOut>", self.box_unfocused)
+        self.listeClasses.bind("<FocusIn>", self.box_focused)
         
         scrollbar = Scrollbar(frame2, orient = "vertical")
         scrollbar.config(command=self.listeClasses.yview)  
@@ -92,12 +95,15 @@ class Vue():
         #for x in range(30):
         #    listeClasses.insert(END, str(x))
 
-        
-        frame3 = Frame(self.menuGauche)
+        frame3 = Frame(self.menuGauche, bg="steelblue")
         frame3.pack(fill=BOTH, expand=True, pady = 5)
         
-        btnSuppression = Button(self.menuGauche, text = "Suppression")
-        btnSuppression.pack()
+        self.btnSuppression = Button(frame3, text = "Suppression")
+        self.btnSuppression.pack(side = LEFT)
+        
+        self.btnModification = Button(frame3, text = "Modification", command=self.creerMenuAjout)
+        self.btnModification.pack(side = RIGHT)
+
         
     
     def creerMenuDroite(self):
@@ -133,11 +139,12 @@ class Vue():
         self.listeCollaboration = Listbox(frame2)
         self.listeCollaboration.pack()
         
-        frame3 = Frame(self.menuDroite)
+        frame3 = Frame(self.menuDroite, bg="steelblue")
         frame3.pack(fill=BOTH, expand=True, pady = 5)
-        
-        btnModification = Button(self.menuDroite, text = "Modification", command=self.creerMenuAjout)
-        btnModification.pack()
+    
+        self.boutonNouvelleClasse = Button(frame3, text="Ajouter nouvelle classe")
+        self.boutonNouvelleClasse.pack(side =TOP)  
+       
         
     def creerMenuAjout(self):
         #enlever la premiere fenetre
@@ -294,10 +301,16 @@ class Vue():
         print(self.entryResponsabilite.get())
     
     def box_focused(self, event):
-        self.focused_box = event.widget
+        self.focused_box = event.widget  
+        #lorsque le focus est sur la liste de classes
+        self.btnSuppression.config(state=ACTIVE)
+        self.btnModification.config(state=ACTIVE)
         
     def box_unfocused(self, event):
         self.focused_box = None
+        #lorsque le focus n'est pas sur la liste de classes
+        self.btnSuppression.config(state=DISABLED)
+        self.btnModification.config(state=DISABLED)
         
     def confirmer(self):
         saisieNomClasse = self.entryNomClasse.get()
