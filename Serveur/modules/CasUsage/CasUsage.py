@@ -321,7 +321,7 @@ class Controleur():
         self.vue.mettreAJourListes()
    
     def chercherBdcas(self,indice):
-        return self.serveur.selectionSQL1("CasUsages","description","id",indice)
+        return self.serveur.selectionSQL3("CasUsages","description","id",indice)
        
     def chercherUtilisateur(self,indice):
         utilisateur=self.serveur.selectionSQL2("Humains","etat","id","id_CasUsage",self.idScena,indice)
@@ -338,7 +338,7 @@ class Controleur():
    
    
     def changerEtat(self,indice):
-        Etat=self.serveur.selectionSQL1("CasUsages","etat","id",indice)
+        Etat=self.serveur.selectionSQL3("CasUsages","etat","id",indice)
         nomTableGood=str(Etat)[3:int(len(Etat)-5)]
         print(nomTableGood)
         
@@ -353,7 +353,7 @@ class Controleur():
         self.vue.menuInitial()
 
     def changerReprendre(self,indice):
-        Etat=self.serveur.selectionSQL1("CasUsages","etat","id",indice)
+        Etat=self.serveur.selectionSQL3("CasUsages","etat","id",indice)
         nomTableGood=str(Etat)[3:int(len(Etat)-5)]
         if(nomTableGood=="NonTermine"):
             self.serveur.updateSQL("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)

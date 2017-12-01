@@ -28,15 +28,10 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
-<<<<<<< HEAD
-        #print(c.fetchall())
+        print(c.fetchall())
         return(c.fetchall())
-=======
-        donnees = c.fetchall()
-        print(donnees)
->>>>>>> 6d48f2e8fc2dedf9fb8b33f64953c7d0f99dcee7
         conn.close()
-        return donnees
+     
 
         
     def updateDonnees(self,nomTable,champ,description,where,where2,indice1,indice2):
