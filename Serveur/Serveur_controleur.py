@@ -159,16 +159,16 @@ class ControleurServeur():
         self.serveurBD.insDonnees(nomTable, valeurs)
     
     def selectionSQL1(self,nomTable,champs,where,indice):
-        return self.serveurBD.selDonneesComplexe1(nomTable,champs)
+        return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
     
     def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
-        return self.serveurBD.selDonneesComplexe2(nomTable,champs)
+        return self.serveurBD.selDonneesComplexe2(nomTable,champs,un,deux,indice1,indice2)
     
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)
         
-    def updateSQL(self,nomTable):
-        self.serveurBD.updateDonnes(nomTable,champs,valeur)
+    def updateSQL(self,nomTable,champ,description,where,where2,indice1,indice2):
+        self.serveurBD.updateDonnes(nomTable,champ,description,where,where2,indice1,indice2)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
