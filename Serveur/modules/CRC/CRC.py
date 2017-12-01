@@ -52,15 +52,24 @@ class Vue():
         #alors que self.listeClasses ne contient que les noms des classes...
         idClasse = self.classes[index][0] #l'index 0 d'un element est son id
         print(idClasse)
+   
+        #trouver lesresponsabilites de la classe
+        requete = self.serveur.selectionAllSQL("Responsabilites")
+        for element in requete: 
+            #chercher parmi les responsabilites celles qui a le même ID classe que celle qu'on veut
+            if (element[1] == idClasse):
+                self.listeResponsabilites.insert(END,element[2]) #le champ avec index 2 correspond au nom
         
-        #requete = self.serveur.selectionSQL("Classes", )
-        for classes in self.classes:
-            self.listeResponsabilites.insert(END,classes[2])
-            self.listeCollaboration.insert(END,classes[1])
-            
+        #trouver les collabrateurs de la classe
+                requete = self.serveur.selectionAllSQL("Responsabilites")
+        for element in requete: 
+            #chercher parmi les collaborateurs celles qui a le même ID classe que celle qu'on veut
+            if (element[1] == idClasse):
+                self.listeCollaboration.insert(END,classes[2]) #le champ avec index 2 correspond au nom
+      
         #informations sur le propriétaire
-        self.lblNomClasse.config(text = self.classes[index][2])
-        self.lblProprietaire.config(text  = self.classes[index][3])
+        self.lblNomClasse.config(text = self.classes[index][3]) # 3 = nom de la classe
+        self.lblProprietaire.config(text  = self.classes[index][2]) # 2 = proprietaire de la classe
        
         
     def creerMenuGauche(self):
