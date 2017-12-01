@@ -417,6 +417,8 @@ class Vue():
         
         else: 
             classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilites, self.listeCollaboration)
+            self.parent.modele.insertionConfirmer(classe)
+            
             #self.parent.modele.insertionConfirmer(classe)
             self.canceler() #retour à au menu de base CRC  
             
@@ -471,9 +473,15 @@ class Modele():
        
     def insertionConfirmer(self, classe):
         #insérer la classe 
-        valeurs = (self.parent.idProjet, classe.proprietaire,classe.nom)
-        self.parent.serveur.insertionSQL("Classes",valeurs)
-      
+        #valeurs = (self.parent.idProjet, classe.proprietaire,classe.nom)
+        #chaine = "'1','1','555'"
+        chaine = "'" + str(self.parent.idProjet) + "','" +str(classe.proprietaire) + "','"  + str(classe.nom)+ "'"
+        self.serveur.insertionSQL("Classes", chaine)
+        #classe.proprietaire
+        #classe.nom
+        #self.parent.serveur.insertionSQL("Classes",valeurs)
+        pass
+        '''
         #insérer les responsabilites
         idClasse = 5
         #parcorir tous les éléments de la listbox responsabilités    
@@ -488,7 +496,10 @@ class Modele():
             nom = classe.collaborateurs.get(i)   
             valeurs = (idClasse, nom)
             self.parent.serveur.insertionSQL("Collaborations",valeurs)
-        
+        '''
+   
+    def creerChaine(liste):
+        pass
     
 class Controleur():
     def __init__(self):
