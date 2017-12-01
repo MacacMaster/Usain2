@@ -163,7 +163,7 @@ class ControleurServeur():
         return self.serveurBD.selDonneesComplexe1(self,nomTable,champs,where,indice)
     
     def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
-        return self.serveurBD.selDonneesComplexe2(nomTable,champs)
+        return self.serveurBD.selDonneesComplexe2(nomTable,champs,un,deux,indice1,indice2)
     
     def selectionSQL3(self,nomTable,champs, where, idProjet):
         return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
