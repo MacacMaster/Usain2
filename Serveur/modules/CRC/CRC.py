@@ -156,8 +156,8 @@ class Vue():
         self.btnSuppression = Button(frame3, text = "Suppression", state=DISABLED)
         self.btnSuppression.pack(side = LEFT)
         
-        self.btnModification = Button(frame3, text = "Modification", command=self.creerMenuAjout, state=DISABLED)
-        self.btnModification.pack(side = RIGHT)
+        self.btnModification = Button(frame3, text = "Modification",state=DISABLED, command=lambda: self.creerMenuAjout(1))
+        self.btnModification.pack(side = RIGHT) 
 
     
         
@@ -199,11 +199,17 @@ class Vue():
         frame3 = Frame(self.menuDroite, bg="steelblue")
         frame3.pack(fill=BOTH, expand=True, pady = 5)
     
-        self.boutonNouvelleClasse = Button(frame3, text="Ajouter nouvelle classe")
+        self.boutonNouvelleClasse = Button(frame3, text="Ajouter nouvelle classe",  command=lambda: self.creerMenuAjout(2))
         self.boutonNouvelleClasse.pack(side =TOP)  
        
         
-    def creerMenuAjout(self):
+    def creerMenuAjout(self, bouton):
+        if bouton == 1: #modifier classe
+            print("hha")
+        elif bouton == 2: #nouvelle classe
+            self.nomClasse.set("")
+            self.nomProprietaire.set("")
+        
         #enlever la premiere fenetre
         self.menuDroite.pack_forget()
         self.menuGauche.pack_forget()
