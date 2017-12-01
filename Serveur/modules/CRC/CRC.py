@@ -44,7 +44,7 @@ class Vue():
         #self.menu.pack_propagate(0)
         #self.classes = self.parent.modele.nomsDesClasses()
         #test
-        self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
+        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
 
         self.creerMenuGauche()
         self.creerMenuDroite()
@@ -103,6 +103,9 @@ class Vue():
         self.listeClasses.bind("<FocusOut>", self.box_unfocused)
         self.listeClasses.bind("<FocusIn>", self.box_focused)
         
+        #loader la liste de classes
+        self.chercherClasse()
+        
         scrollbar = Scrollbar(frame2, orient = "vertical")
         scrollbar.config(command=self.listeClasses.yview)  
         scrollbar.pack(side=LEFT,fill="y")
@@ -119,10 +122,10 @@ class Vue():
         frame3 = Frame(self.menuGauche, bg="steelblue")
         frame3.pack(fill=BOTH, expand=True, pady = 5)
         
-        self.btnSuppression = Button(frame3, text = "Suppression")
+        self.btnSuppression = Button(frame3, text = "Suppression", state=DISABLED)
         self.btnSuppression.pack(side = LEFT)
         
-        self.btnModification = Button(frame3, text = "Modification", command=self.creerMenuAjout)
+        self.btnModification = Button(frame3, text = "Modification", command=self.creerMenuAjout, state=DISABLED)
         self.btnModification.pack(side = RIGHT)
 
         
@@ -358,7 +361,12 @@ class Vue():
             classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilites, self.listeCollaboration)
             self.parent.modele.insertionConfirmer(classe)
             self.canceler() #retour à au menu de base CRC  
-
+            
+    def chercherClasse(self):
+        classes = self.parent.serveur.selectionAllSQL("Classes")
+        for classe in classes:
+            self.listeClasses.insert(END,classe[3])
+            
 class Modele():
     def __init__(self, parent, serveur):
         self.parent=parent
@@ -403,12 +411,9 @@ class Modele():
        
     def insertionConfirmer(self, classe):
         #insérer la classe 
-        valeurs = (self.controleur.idProjet, classe.proprietaire,classe.nom)
+        valeurs = (self.parent.idProjet, classe.proprietaire,classe.nom)
         self.parent.serveur.insertionSQL("Classes",valeurs)
-        
-        
-
-        
+      
         #insérer les responsabilites
         idClasse = 5
         #parcorir tous les éléments de la listbox responsabilités    
@@ -429,29 +434,35 @@ class Controleur():
     def __init__(self):
         #informations du système quand le programme est lancé
         #self.idClient = 999;
-              
+        '''
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
         self.idProjet=sys.argv[4]
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9998"
-          
-        #connexion au proxy
-        ad="http://"+self.saasIP+":9999"
-        self.serveur = ServerProxy(ad)
         
+        connexion au proxy
+        ad="http://"+self.saasIP+":9999"
+        
+        self.serveur = ServerProxy(ad)
+        '''
+        
+        self.saasIP= None
+        self.utilisateur=None
+        self.organisation=None
+        self.idProjet=None
+        self.clientIP=None
+        self.adresseServeur=None
+        self.serveur = None
+            
         #MVC
         self.modele=Modele(self, self.serveur)
         self.vue=Vue(self)
-        
-
-        
+           
         #self.serveur = self.connectionServeur()
         
-        
         self.vue.root.mainloop()
-      
     
     def connectionServeur(self):
         ad="http://"+pUsagerIP+":9998"
