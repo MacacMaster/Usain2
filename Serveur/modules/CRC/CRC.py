@@ -38,6 +38,8 @@ class Vue():
         self.responsabilites = []
         self.focused_box = None
         
+        self.nomProprietaire =  StringVar( value='propriétaire')
+        self.nomClasse= StringVar( value='nom de classe')
       
     def loaderNomClasses(self):
         self.parent.modele.nomsDesClasses()
@@ -70,11 +72,7 @@ class Vue():
         #alors que self.listeClasses ne contient que les noms des classes...
         
         classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
-        
-        
-       
-        
-        
+
         #trouver les collaborateurs de la classe
         collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(index)
         for element in collaborateursDeLaClasse:
@@ -101,8 +99,16 @@ class Vue():
       '''
         #informations sur le propriétaire
         #self.lblNomClasse.config(text = self.classes[index][3]) # 3 = nom de la classe
-        self.lblNomClasse.config(text = classeChoisi[3])
-        self.lblProprietaire.config(text  = self.parent.modele.classes[index][2]) # 2 = proprietaire de la classe
+        proprietaire= self.parent.modele.classes[index][2]
+        classe = self.parent.modele.classes[index][3]
+        
+       #self.nomProprietaire.set(self.parent.modele.classes[index][2])
+        self.lblNomClasse.config(text = classe)
+        self.lblProprietaire.config(text  = proprietaire) # 2 = proprietaire de la classe
+        
+        #chargera automatiquement le nom de la classe quand on ouvre la fenêtre modifier une classe
+        self.nomProprietaire.set(proprietaire)
+        self.nomClasse.set(classe)
         
     def creerMenuGauche(self):
         self.menuGauche = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -212,7 +218,7 @@ class Vue():
         lblNomClasse = Label(frame1, text="Nom (classe)", width=25)
         lblNomClasse.pack(side=LEFT)  
         
-        self.entryNomClasse = Entry(frame1, text="", width=25)
+        self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state = DISABLED)
         self.entryNomClasse.pack(side=LEFT)
         #entryNomClasse.insert(END,"nom de la classe");
         
@@ -223,8 +229,13 @@ class Vue():
         lblProprietaire = Label(frame2, text="Propriétaire", width=25)
         lblProprietaire.pack(side=LEFT)  
         
-        self.entryProprietaire = Entry(frame2, width=25)
+        #self.nomProprietaire =  StringVar(frame2, value='allo') // textvariable=self.nomProprietaire
+        
+        #self.nomProprietaire =  StringVar( value='wafwafe')
+        self.entryProprietaire = Entry(frame2, width=25, textvariable=self.nomProprietaire)
         self.entryProprietaire.pack(side=LEFT)
+        #self.entryProprietaire.delete(0,END)
+        #self.entryProprietaire.insert(END, 'default text')
         #entryNomClasse.insert(END,"nom de la classe");
         
         #zone responsabilités et zone collaboration (labels)
@@ -242,6 +253,8 @@ class Vue():
         frame4.pack(fill=X, pady=5)
         
         largeur = 55;
+        
+        
         self.entryResponsabilite = Entry(frame4, text="", width=15)
         self.entryResponsabilite.pack(side=LEFT, padx = largeur)
         self.entryResponsabilite.bind('<Return>',self.saisirResponsabilite)
