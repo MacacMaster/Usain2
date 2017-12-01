@@ -160,29 +160,40 @@ class ControleurServeur():
         self.serveurBD.insDonnees(nomTable, valeurs)
     
     def selectionSQL1(self,nomTable,champs,where,indice):
-        return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
+        return self.serveurBD.selDonneesComplexe1(self,nomTable,champs,where,indice)
     
     def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
-        return self.serveurBD.selDonneesComplexe2(nomTable,champs,un,deux,indice1,indice2)
+        return self.serveurBD.selDonneesComplexe2(nomTable,champs)
     
     def selectionSQL3(self,nomTable,champs, where, idProjet):
         return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
     
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)
-        
-    def updateSQL(self,nomTable,champ,description,where,where2,indice1,indice2):
-        self.serveurBD.updateDonnes(nomTable,champ,description,where,where2,indice1,indice2)
+    
+    
+    def updateSQL(self,nomTable,champs,valeur):
+        self.serveurBD.updateDonnes(nomTable,champs,valeur)
+        return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
+    
+    def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
+    
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
         logLocation='Logs.sqlite'
+        print ("Log Open")
         logdb = sqlite3.connect(logLocation)
         curseur = logdb.cursor()
         curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,))
         logdb.commit()
         logdb.close()
+        print ("Log Close")
         return True 
+    
+    def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
     
 print("Création du serveur...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)
@@ -190,3 +201,4 @@ objetControleurServeur=ControleurServeur()
 daemon.register_instance(objetControleurServeur)
 print("Création du serveur terminé")
 daemon.serve_forever()
+

@@ -10,7 +10,7 @@ import os
 
 ######################################################
 # TODO 
-# impossible de ouvrir 2 fois. Sinon erreur list out of range
+# impossible de ouvrir 2 fois. Sinon erreur list out of range# Fermeture du programme, fermeture du proxy
 # 
 ######################################################
 
@@ -49,6 +49,8 @@ class Controleur():
         return clientIP
 
     def fermerApplication(self):
+        
+        self.log.writeLog("Fermeture du Client")
         self.vue.root.destroy()
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):

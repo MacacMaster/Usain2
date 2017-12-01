@@ -1,64 +1,85 @@
 from tkinter import *
 from logging.config import listen
-from ServeurBDcas import *
+from xmlrpc.client import ServerProxy
 
 class Controleur():
     def __init__(self):
-        self.serveur=ServeurBDcas(self)
+        self.saasIP=sys.argv[1]
+        self.adresseServeur="http://"+self.saasIP+":9999"
+        self.serveur = self.connectionServeur()
         self.vue = Vue(self)
-        self.modele = Modele(self)
+        self.idScena=0
+       
         self.unReprend=False
+        self.id=1
+       
+        self.utilisateur=sys.argv[2]
+        self.idProjet=sys.argv[4]
+        self.clientIP=sys.argv[5]
+        self.remplirListeCas()
         self.vue.root.mainloop()
         print("controleur")
-    
-    
-    def FermerBD(self):
-        self.serveur.fermerBd()
+   
+    def connectionServeur(self):
+        print("Connection au serveur BD...")
+        serveur=ServerProxy(self.adresseServeur)
+        return serveur
     
     def remplirListeCas(self):
-       return self.serveur.remplirListeCas()
+        return self.serveur.selectionSQL("CasUsages","description")
     
     def remplirListeEtat(self):
-        return self.serveur.remplirListeEtat()
-    
-    def modifierCas(self,cas,usager,machine):
-        self.serveur.modifierCas(cas,usager,machine,self.vue.indiceCasModifier+1)
-        
-        
+        return self.serveur.selectionSQL("CasUsages","etat")
+           
     def envoyerCas(self,cas,usager,machine):
-        print(cas,usager,machine)
-        self.serveur.envoyerCas(cas)
-        self.envoyerScenari(usager, machine)
-
+        self.id+=1
+        indice=str(self.id)
+        self.serveur.insertionSQL("CasUsages","'"+str(self.idProjet)+"','"+cas+"','Termine'")
+        self.serveur.insertionSQL("Humains","'"+str(self.id)+"','"+usager+"'")
+        self.serveur.insertionSQL("Machines","'"+str(self.id)+"','"+machine+"'")
         self.vue.mettreAJourListes()
-    def envoyerScenari(self,utlisateur,machine):
-        self.serveur.envoyerScenari(utlisateur,machine)
-        
+   
     def chercherBdcas(self,indice):
-        cas=self.serveur.chercherBdcas(indice)
-        return cas
-
+        return self.serveur.selectionSQL3("CasUsages","description","id",indice)
+       
     def chercherUtilisateur(self,indice):
-        utilisateur=self.serveur.chercherBdUtilisateur(indice)
+        utilisateur=self.serveur.selectionSQL2("Humains","etat","id","id_CasUsage",self.idScena,indice)
         return utilisateur
     
     def chercherMachine(self,indice):
-        machine=self.serveur.chercherBdMachine(indice)
-        return machine
+       machine=self.serveur.selectionSQL2("Machines","etat","id","id_CasUsage",self.idScena,indice)
+       return machine
     
-    def changerEtat(self,cas):
-        self.unReprend=self.serveur.changerEtat(cas)
-        self.vue.caneva.forget()
-        self.vue.menuInitial()
-    def changerReprendre(self,etat):
-        self.serveur.changerEtatReprendre(etat)
+    def modifierCas(self,cas,usager,machine):
+        self.serveur.updateSQL("CasUsages",cas,"description","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet)
+        self.serveur.updateSQL("Humains",usager,"etat","id","id_CasUsage",self.idScena,self.vue.indiceCasModifier+1)
+        self.serveur.updateSQL("Machines",machine,"etat","id","id_CasUsage",self.idMach,self.vue.indiceCasModifier+1)
+   
+   
+    def changerEtat(self,indice):
+        Etat=self.serveur.selectionSQL3("CasUsages","etat","id",indice)
+        nomTableGood=str(Etat)[3:int(len(Etat)-5)]
+        print(nomTableGood)
+        if(nomTableGood=="NonTermine"): 
+            self.serveur.updateSQL("CasUsages","Termine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+        elif(nomTableGood=="Termine"):
+            self.serveur.updateSQL("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+        elif(nomTableGood=="Reprendre"):
+            self.serveur.updateSQL("CasUsages","NonTermine","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+        self.unReprend=False;
         self.vue.caneva.forget()
         self.vue.menuInitial()
 
-class Modele():
-    def __init__(self, pControleur):
-        self.controleur = pControleur
-        print("modele")
+    def changerReprendre(self,indice):
+        Etat=self.serveur.selectionSQL3("CasUsages","etat","id",indice)
+        nomTableGood=str(Etat)[3:int(len(Etat)-5)]
+        if(nomTableGood=="NonTermine"):
+            self.serveur.updateSQL("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+        elif(nomTableGood=="Termine"):
+            self.serveur.updateSQL("CasUsages","Reprendre","etat","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet,)
+            self.unReprend=True;
+        self.vue.caneva.forget()
+        self.vue.menuInitial()
     
 class Vue():
     def __init__(self, pControleur):
@@ -68,16 +89,11 @@ class Vue():
         self.root = Tk()
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.fenetre.pack()
-        self.liste={"a","b","c","a2","b2","c2"}
         self.listeCas=[]
         self.listeEtat=[]
         self.dejaOuvert=False
         self.indiceCasModifier=0
         self.menuInitial()
-      
-       
-        
-    
 
     def mettreAJourListes(self):
         self.remplirListeEtat()
@@ -86,7 +102,6 @@ class Vue():
         self.remplirListBoxCas()    
     
     def menuInitial(self):
-        
         self.caneva = Canvas(self.fenetre, width = self.largeur, height=self.hauteur, bg="steelblue")
         self.caneva.pack()
         self.labnbe=Label(text="Cas d'usage       ",bg="lightblue")
@@ -109,8 +124,8 @@ class Vue():
         self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
         self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
         
-        self.bntSupprimer=Button(self.caneva,text="Terminé/NonTerminé",width=20,command=self.supprimer)#
-        self.caneva.create_window(100,550,window=self.bntSupprimer,width=150,height=20)
+        self.bntTermine=Button(self.caneva,text="Terminé/NonTerminé",width=20,command=self.supprimer)#
+        self.caneva.create_window(100,550,window=self.bntTermine,width=150,height=20)
         
         self.bntReprendre=Button(self.caneva,text="Reprendre",width=20,command=self.reprendre)
         self.caneva.create_window(self.largeur/2,550,window=self.bntReprendre,width=150,height=20)
@@ -125,7 +140,7 @@ class Vue():
 
         if(self.dejaOuvert==False):
             self.ouvrirReprendre()
-            
+        
     def unSeulReprendre(self):
         for i in range(1,self.listeetat.size()+1):
             etat=self.listeetat.get(ACTIVE)
@@ -133,7 +148,7 @@ class Vue():
             etat2= str(etat)
             if(etat2=="('Reprendre',)"):
                 self.controleur.unReprend=True
-                
+
                 
     def ouvrirReprendre(self):
         compteur=0
@@ -146,7 +161,6 @@ class Vue():
                 self.indiceCasModifier=compteur-1
                 self.dejaOuvert=True
                 self.menuModifier()
-               
         
     def reprendre(self):
         self.unSeulReprendre()
@@ -160,9 +174,7 @@ class Vue():
         self.indiceCasModifier=self.listecas.curselection()[0]
         print("indice a modifier : ",self.indiceCasModifier)
         self.menuModifier()
-    def recevoirDonnees(self,liste):
-        pass
-    
+
     def remplirListeCas(self):
         self.listeCas=self.controleur.remplirListeCas()
    
@@ -171,14 +183,19 @@ class Vue():
     
     def remplirListBoxCas(self):
         self.listecas.delete(0, END)
-        for i in self.listeCas:
+        laselection=self.controleur.remplirListeCas()
+        for i in laselection:
+            temp=str(i)[3:int(len(i)-5)]
+            self.listeetat.insert(END,temp)
+            print(temp)
             self.listecas.insert(END,i)
         self.listeCas.clear()
             
     def remplirListBoxEtat(self):
         self.listeetat.delete(0, END)
         for i in self.listeEtat:
-            self.listeetat.insert(END,i)
+            temp=str(i)
+            self.listeetat.insert(END,temp)
         self.listeEtat.clear()
         
     def menuModifier(self):
@@ -195,14 +212,13 @@ class Vue():
         self.labelActionUsager=Entry(bg="white")
         self.labelActionMachine=Entry(bg="white")
         self.canevaMod.create_window(650,200,window=self.labelActionMachine,width=150,height=250)
-    
+        
         cas=self.controleur.chercherBdcas(self.indiceCasModifier+1,);
         self.labelCasUsage.insert(END, str (cas))
-       
+        
         usager=self.controleur.chercherUtilisateur(self.indiceCasModifier+1,)#
         self.labelActionUsager.insert(END, str(usager))
-        
-        
+
         machine=self.controleur.chercherMachine(self.indiceCasModifier+1,)#
         self.labelActionMachine.insert(END,str(machine))
         
@@ -211,28 +227,27 @@ class Vue():
         self.canevaMod.create_window(650,50,window=self.labnbe)
         self.btnEnvoyerUsager=Button(self.canevaMod,text="Envoyer",width=20,command=self.envoyerTexte)
         self.canevaMod.create_window(400,200,window=self.btnEnvoyerUsager,width=150,height=20)
-    
         self.btnRetour=Button(self.canevaMod,text="Retour",width=20,command=self.menuInitialMod)
         self.canevaMod.create_window(100,550,window=self.btnRetour,width=150,height=20)
-        
         self.bntModifier=Button(self.canevaMod,text="Modifier",width=20,command=self.modifierTexte)
         self.canevaMod.create_window(150,400,window=self.bntModifier,width=150,height=20)
     
         
     def supprimer(self):
         self.indiceCasModifier=self.listeetat.curselection()[0]
-        self.controleur.changerEtat(self.indiceCasModifier)
-        
+        print(self.indiceCasModifier)
+        self.controleur.changerEtat(self.indiceCasModifier+1)
+    
     def menuInitialMod(self):
         self.canevaMod.forget()
         self.menuInitial()
-        
+       
     def modifierTexte(self):
         cas=self.labelCasUsage.get()
         usager=self.labelActionUsager.get()
         machine=self.labelActionMachine.get()
         self.controleur.modifierCas(cas,usager,machine)
-    
+        
     def envoyerTexte(self):
         cas=self.labelCasUsage.get()
         usager=self.labelActionUsager.get()
@@ -241,9 +256,9 @@ class Vue():
         self.labelActionUsager.delete(0, 'end')
         self.labelCasUsage.delete(0, 'end')
         self.labelActionMachine.delete(0, 'end')
-    
+
     def insererCas(self,cas,usager,machine):
-       self.controleur.envoyerCas(cas,usager,machine)
+        self.controleur.envoyerCas(cas,usager,machine)
     
 if __name__ == '__main__':
     c = Controleur()
