@@ -173,11 +173,13 @@ class ControleurServeur():
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
         logLocation='Logs.sqlite'
+        print ("Log Open")
         logdb = sqlite3.connect(logLocation)
         curseur = logdb.cursor()
         curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,))
         logdb.commit()
         logdb.close()
+        print ("Log Close")
         return True 
     
 print("Création du serveur...")

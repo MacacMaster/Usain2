@@ -10,7 +10,7 @@ import os
 
 ######################################################
 # TODO 
-# 
+# Fermeture du programme, fermeture du proxy
 # 
 ######################################################
 
@@ -49,6 +49,8 @@ class Controleur():
         return clientIP
 
     def fermerApplication(self):
+        
+        self.serveur.writeLog("Fermeture du CLient")
         self.vue.root.destroy()
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
