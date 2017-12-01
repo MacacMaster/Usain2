@@ -38,11 +38,12 @@ class Vue():
         self.focused_box = None
       
     def loaderNomClasses(self):
-        classes = self.parent.modele.nomsDesClasses()
-        self.lblNomClasse.config(text="")
-        self.lblNomClasse.config(text= classes)
+        self.parent.modele.nomsDesClasses()
+        classes = self.parent.modele.classes
         for i in  classes:
             self.listeClasses.insert(END,i[3])
+        
+            
     
     def creerVueMenu(self):  
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -399,11 +400,11 @@ class Modele():
     
     def nomsDesClasses(self):
         selected = self.serveur.selectionSQL("Classes", "id, id_projet, proprietaire, nom")
-        classes = []
+        self.classes = []
         for element in selected:
-            if element[1] == self.parent.idProjet:
-                classes.append(element)
-        return classes    
+            if (str(element[1]) == str(self.parent.idProjet)):
+            #if element[3] == self.parent.idProjet:
+                self.classes.append(element)
        
     def insertionConfirmer(self, classe):
         #insérer la classe 
