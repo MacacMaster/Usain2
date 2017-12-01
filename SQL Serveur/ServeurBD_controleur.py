@@ -23,32 +23,34 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
-        print(c.fetchall())
-        return(c.fetchall())
+        donnees = c.fetchall()
+        print(donnees)
         conn.close()
+        return donnees
 
         
     def updateDonnees(self,nomTable,champ,description,where,where2,indice1,indice2):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''UPDATE '''+ nomTable+ ''' SET '''+ description +''' =? WHERE '''+ where+''' =? and '''+where2 +''' =? ''', (champ,indice1,indice2))
-        requete = c.fetchall()
         conn.commit()
         conn.close()
     
     def selDonneesComplexe1(self,nomTable,champs,where,indice):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        self.c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+where +'''=?''', (indice,))
-        return self.c.fetchall()
+        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+where +'''=?''', (indice,))
+        donnees = c.fetchall()
         conn.close()
+        return donnees
     
     def selDonneesComplexe2(self,nomTable,champs,un,deux,indice1,indice2):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        self.c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+ un +'''=? and '''+deux+''' =?''' , (indice1,indice2))
-        return self.c.fetchall()
+        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+ un +'''=? and '''+deux+''' =?''' , (indice1,indice2))
+        donnees = c.fetchall()
         conn.close()
+        return donnees
     
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''
