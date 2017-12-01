@@ -10,7 +10,7 @@ import os
 
 ######################################################
 # TODO 
-# 
+# impossible de ouvrir 2 fois. Sinon erreur list out of range
 # 
 ######################################################
 

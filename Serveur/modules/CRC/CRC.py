@@ -36,7 +36,13 @@ class Vue():
         self.collaborateurs=[]
         self.responsabilites = []
         self.focused_box = None
-        
+      
+    def loaderNomClasses(self):
+        classes = self.parent.modele.nomsDesClasses()
+        self.lblNomClasse.config(text="")
+        self.lblNomClasse.config(text= classes)
+        for i in  classes:
+            self.listeClasses.insert(END,i[3])
     
     def creerVueMenu(self):  
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -48,6 +54,7 @@ class Vue():
 
         self.creerMenuGauche()
         self.creerMenuDroite()
+        self.loaderNomClasses()
         #chercher la liste des classes
 
     def choisirClasse(self,event):
@@ -103,8 +110,9 @@ class Vue():
         self.listeClasses.bind("<FocusOut>", self.box_unfocused)
         self.listeClasses.bind("<FocusIn>", self.box_focused)
         
+        
         #loader la liste de classes
-        self.chercherClasse()
+        #self.chercherClasse()
         
         scrollbar = Scrollbar(frame2, orient = "vertical")
         scrollbar.config(command=self.listeClasses.yview)  
@@ -225,7 +233,7 @@ class Vue():
         self.entryCollaboration.bind('<Return>',self.saisirCollaboration)
         '''
         #liste déroulante avec la liste des noms des classes existantes
-  
+       
         choix = self.parent.modele.nomsDesClasses()
         self.classeChoisie = StringVar(frame4)
         self.classeChoisie.set(0)#la valeur par défaut de la liste déroulante
@@ -359,7 +367,7 @@ class Vue():
         
         else: 
             classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilites, self.listeCollaboration)
-            self.parent.modele.insertionConfirmer(classe)
+            #self.parent.modele.insertionConfirmer(classe)
             self.canceler() #retour à au menu de base CRC  
             
     def chercherClasse(self):
@@ -387,26 +395,14 @@ class Modele():
         conn.commit()
         conn.close()
  
-    def insertionSQL(self):  
-        pass
-        
-    def lectureSQL(self):
-        pass
+    
     
     def nomsDesClasses(self):
-        champs = ["id_classes", "nom", "id_projet"]
-        #selected = self.serveur.sel("CRCClasse", champs)
-        #ajouter les classes correspondant au id projet à une liste
+        selected = self.serveur.selectionSQL("Classes", "id, id_projet, proprietaire, nom")
         classes = []
-        '''
-        for element in select:
-            if element[2] == self.parent.idProjet:
-                classes.append(element)    
-        '''
-        classes = []
-        for i in range (5):
-            classes.append(i)
-        #classes = ["nom1","nom2","nom3","nom4"]
+        for element in selected:
+            if element[1] == self.parent.idProjet:
+                classes.append(element)
         return classes    
        
     def insertionConfirmer(self, classe):
@@ -434,20 +430,19 @@ class Controleur():
     def __init__(self):
         #informations du système quand le programme est lancé
         #self.idClient = 999;
-        '''
+        
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
         self.idProjet=sys.argv[4]
         self.clientIP=sys.argv[5]
-        self.adresseServeur="http://"+self.saasIP+":9998"
+        self.adresseServeur="http://"+self.saasIP+":9999"
+        self.serveur = self.connectionServeur()
+
         
-        connexion au proxy
-        ad="http://"+self.saasIP+":9999"
         
-        self.serveur = ServerProxy(ad)
+        
         '''
-        
         self.saasIP= None
         self.utilisateur=None
         self.organisation=None
@@ -455,19 +450,22 @@ class Controleur():
         self.clientIP=None
         self.adresseServeur=None
         self.serveur = None
+        ''' 
             
         #MVC
+        
+    
+        
         self.modele=Modele(self, self.serveur)
-        self.vue=Vue(self)
-           
-        #self.serveur = self.connectionServeur()
+        self.vue=Vue(self)   
+       
         
         self.vue.root.mainloop()
     
     def connectionServeur(self):
-        ad="http://"+pUsagerIP+":9998"
+        ad="http://"+self.saasIP+":9999"
         print("Connection au serveur BD...")
-        serveur=ServerProxy(ad)
+        serveur=ServerProxy(self.adresseServeur)
         return serveur
         
 if __name__ == '__main__':
