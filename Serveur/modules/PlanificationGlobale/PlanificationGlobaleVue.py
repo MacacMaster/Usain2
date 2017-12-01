@@ -9,6 +9,7 @@ from _overlapped import NULL
 
 class Vue():
     def __init__(self, parent):
+        print("in vue")
         self.parent=parent
         self.root=Tk() #Fenetre
         self.root.title("Planification Globale")
@@ -69,6 +70,12 @@ class Vue():
         self.listResponsable=Listbox(self.framePrincipal, width=159, height=600)
         self.canPrincipal.create_window(900,405,window=self.listResponsable, width=159, height=600)
         
+        #A RETIRER!
+        self.listFonct.insert(END, "Hello")
+        self.listFonct.insert(END, "World")
+        print("cur:"+str(self.listFonct.get(ACTIVE)))
+        
+    
     def frameCommandes(self):
         self.frameCommandes = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
         self.frameCommandes.pack(fill=X)
@@ -77,26 +84,79 @@ class Vue():
         
         self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink")
         self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
-        self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink")
+        self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink",)
         self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
-        self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink")
+        self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink", command=self.fenetreConfirmation)
         self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
         self.btnChangerProjet=Button(self.frameCommandes, text="Changer de projet", width=40, bg="light blue")
         self.canCommandes.create_window(900,35,window=self.btnChangerProjet,width=150,height=35)
         
-        
-        """self.fentrecreationplanif.pack()
-        self.btnSauvegarder=Button(self.fentrecreationplanif)
-        
-        self.lbltemps=Label(self.fentrecreationplanif,font=("Arial",15,"bold"), bg="white")
-        self.lbltemps.configure(text=" " + str(self.parent.modele.getTime))
-        self.lblcrc= Label(master=self.fentrecreationplanif,text="")
-        pass"""
     
+    def frameCommandes(self):
+        self.frameCommandes = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
+        self.frameCommandes.pack(fill=X)
+        self.canCommandes=Canvas(self.frameCommandes, width=1000, height=70, bg="light grey", )
+        self.canCommandes.pack()
+        
+        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink")
+        self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
+        self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink",)
+        self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
+        self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink", command=self.fenetreConfirmation)
+        self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
+        self.btnChangerProjet=Button(self.frameCommandes, text="Changer de projet", width=40, bg="light blue")
+        self.canCommandes.create_window(900,35,window=self.btnChangerProjet,width=150,height=35)
     
+        
+        
     def fenetreConfirmation(self):
+        self.topConfirm=Toplevel(height=200)
+        self.topConfirm.title("Confimation de supression")
+        msg = Message(self.topConfirm, text="Voulez-vous vraiment supprimer cette fonctionnalité?")
+        msg.pack()
+        btnConfirmation=Button(self.topConfirm, text="Oui", command=self.optionAnnuler)
+        btnConfirmation.pack()
+        btnAnnuler=Button(self.topConfirm, text="Annuler", command=self.topConfirm.destroy)
+        btnAnnuler.pack()
         
-        pass
+    def optionAnnuler(self):
+        print("Envoi de la fonction supression du controleur avec listFonct.get(ACTIVE) en parametre")
+        index=self.listFonct.index(ACTIVE)
+        
+        #suppression dans les listbox
+        self.listFonct.delete(index)
+        self.listPriorite.delete(index)
+        self.listSprint.delete(index)
+        self.listPourcentage.delete(index)
+        self.listResponsable.delete(index)
+        
+        self.topConfirm.destroy()
+        
+    
+    def afficherListes(fonctions, priorites, sprints, pourcents, responsables):
+        
+        listFonct.delete(0,END)
+        listPriorite.delete(0,END)
+        listSprint.delete(0,END)
+        listPourcentage.delete(0,END)
+        listResponsable.delete(0,END)
+        
+        for item in fonctions:
+            self.listFonct.insert(END, item)
+            
+        for item in priorites:
+            self.listPriorite.insert(END, item)
+            
+        for item in sprints:
+            self.listSprint.insert(END, item)
+            
+        for item in pourcents:
+            self.listPourcentage.insert(END, item)
+            
+        for item in responsables:
+            self.listResponsable.insert(END, item)
+            
+    
     
     
     
