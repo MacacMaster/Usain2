@@ -33,7 +33,7 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Machines
              (id integer, id_CasUsage integer, etat text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Classes
-             (id integer, id_Projet integer, proprietaire text, nom text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, proprietaire text, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Responsabilites
              (id integer, id_Classe integer, nom text)''')

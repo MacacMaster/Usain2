@@ -44,6 +44,8 @@ class Vue():
     def loaderNomClasses(self):
         self.parent.modele.nomsDesClasses()
         classes = self.parent.modele.classes
+        #vider la liste
+        self.listeClasses.delete(0, END)
         for i in  classes:
             self.listeClasses.insert(END,i[3])
             
