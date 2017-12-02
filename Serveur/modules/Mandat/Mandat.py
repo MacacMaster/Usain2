@@ -7,6 +7,9 @@ import time
 from _overlapped import NULL
 from xmlrpc.client import ServerProxy
 from sqlite3.test.userfunctions import AggregateTests
+from tkinter import messagebox
+
+
 
 
 class Vue():
@@ -143,6 +146,10 @@ class Vue():
             self.parent.modele.uneExpression.contenu=self.mot    
             self.parent.modele.confirmer()
             self.resetVue()
+            self.updateExpressions()
+        else:
+            # message avertissement
+            messagebox.showinfo("SVP", "Informations manquantes")
             
 
         
@@ -181,7 +188,7 @@ class Vue():
             self.parent.modele.uneExpression.type="Supplementaire"
         
         self.parent.modele.uneExpression.contenu=self.mot
-        self.parent.modele.updateExpression()
+        #self.parent.modele.updateExpressions()
         self.afficheListBox()    
         #else:
         #    print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
@@ -308,6 +315,8 @@ class Vue():
     def specialEffect(self):
         self.text.tag_config('jaune', background='yellow')
   
+    def updateExpressions(self):
+        self.parent.modele.updateExpressions()
 
 class Expression():
     def __init__(self):
@@ -398,10 +407,11 @@ class Modele():
         #la valeur dans la bd de l'emplacement est de 0 si emplacement est NULL
         self.uneExpression.reinitier() #effacer les valeurs de l'expression pour mettre des nouvelles
         
-          
-    def updateExpression(self):
-        pass   
-        #self.tupleBD=self.lectureSQL()
+    def updateExpressions(self):  
+        #self.tupleBD=self.parent.modele.selectionLesExpressions()
+        self.requeteExpressions = 0 #le réinitialiser la liste chaque fois
+        self.requeteExpressions=self.selectionLesExpressions()
+        self.parent.vue.text.insert(END,"allo")
         #self.ajoutListe()
         #self.uneExpression=Expression()
     
@@ -439,18 +449,6 @@ class Modele():
         print("Envoi avec succes")
         self.database.commit()
         
-    def lectureSQL(self):
-
-        #sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
-        #c.execute(sql)
-        #c.execute(sql)
-        #c.execute("select name from BDD.sqlite where type = 'table'")
-        #tupleBD = c.fetchall()        
-        # pour fin de tests (a effacer)
-        tupleBD = ((1,"Explicite","","allo","Verbe"),(1,"Explicite","","allo","Verbe"))
-        self.database.commit()
-        
-        return tupleBD
     
     def loaderTexte(self):
         requete = self.parent.serveur.selectionSQL("Textes", "id_Projet, texte")
@@ -465,6 +463,14 @@ class Modele():
             print("erreur, rien a loader de la BD")
             return "Bienvenue au module Mandat" #pour le texte par defaut
         
+    def selectionLesExpressions(self):
+        requete = self.parent.serveur.selectionSQL("Mandats", "contenu, type, nature")
+        expressions = []
+        for element in requete:
+            if str(element[1]) == str(self.parent.idProjet):
+                expressions.append(element)
+        return expressions
+    
     def supprimerAncienTexte(self):
         self.parent.serveur.delete("Textes","id_Projet", str(self.parent.idProjet))
 
