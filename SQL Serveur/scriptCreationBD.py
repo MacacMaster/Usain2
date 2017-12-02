@@ -44,6 +44,9 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Collaborations
 curseur.execute('''CREATE TABLE IF NOT EXISTS Mandats
              (id integer, id_Projet integer, contenu text, type text, nature text, emplacement text)''')
 
+curseur.execute('''CREATE TABLE IF NOT EXISTS Textes
+             (id integer, id_Projet integer, texte text)''')
+
 curseur.execute('''CREATE TABLE IF NOT EXISTS PlanifGlobales
              (id integer, id_Projet integer, id_Sprint, id_Reponsable, priorite text, date_debut text, date_fin text)''')
 
