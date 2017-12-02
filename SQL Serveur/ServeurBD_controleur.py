@@ -75,6 +75,15 @@ class ControleurServeurBD():
         conn.close()
         return laselection
     
+    def delete(self, nomTable, where, condition):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        #c.execute('''DELETE FROM ''' + nomTable + where)
+        c.execute('''DELETE FROM ''' +nomTable + ''' where ''' +where + '''=?''', (condition,))
+        conn.commit()
+        conn.close()
+        
+    
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''
         idOrgaBD = ''+idorga+''

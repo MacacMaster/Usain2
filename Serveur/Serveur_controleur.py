@@ -182,6 +182,8 @@ class ControleurServeur():
     def selectionSQL3(self,nomTable,champs, where, idProjet):
         return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
     
+    def delete(self, nomTable, where, condition):
+        self.serveurBD.delete(nomTable, where, condition)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):

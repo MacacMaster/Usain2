@@ -73,7 +73,7 @@ class Vue():
         #self.classes est un tableau qui contient toutes les informations sur les classes...
         #alors que self.listeClasses ne contient que les noms des classes...
         
-        classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
+        self.classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
 
         #trouver les collaborateurs de la classe
         collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(index)
@@ -154,14 +154,18 @@ class Vue():
         frame3 = Frame(self.menuGauche, bg="steelblue")
         frame3.pack(fill=BOTH, expand=True, pady = 5)
         
-        self.btnSuppression = Button(frame3, text = "Suppression", state=DISABLED)
+        self.btnSuppression = Button(frame3, text = "Suppression", state=DISABLED, command = self.supprimerClasse)
         self.btnSuppression.pack(side = LEFT)
         
         self.btnModification = Button(frame3, text = "Modification",state=DISABLED, command=lambda: self.creerMenuAjout(1))
         self.btnModification.pack(side = RIGHT) 
 
     
-        
+    def supprimerClasse(self):
+        id = self.classeChoisi[0]
+        chaine = "WHERE id = " + str(id)
+        self.parent.serveur.delete("Classes","id", str(id)) 
+        self.loaderNomClasses() 
     
     def creerMenuDroite(self):
         self.menuDroite = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
