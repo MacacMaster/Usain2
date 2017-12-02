@@ -46,7 +46,7 @@ class Vue():
         classes = self.parent.modele.classes
         for i in  classes:
             self.listeClasses.insert(END,i[3])
-        
+            
     def creerVueMenu(self):  
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menu.pack(side=LEFT)
@@ -144,9 +144,9 @@ class Vue():
         self.listeClasses.config(yscrollcommand=scrollbar.set)
         
         #remplir la liste de classes
-        for classe in self.classes:
-            self.listeClasses.insert(END,classe[2]) #insérer le nom de la classe
-          
+        #for classe in self.classes:
+        #    self.listeClasses.insert(END,classe[2]) #insérer le nom de la classe
+        self.loaderNomClasses()  
         #for x in range(30):
         #    listeClasses.insert(END, str(x))
 
@@ -356,6 +356,7 @@ class Vue():
         #retour en arriere<
         self.menuGauche.pack(side=LEFT) 
         self.menuDroite.pack(side=LEFT) 
+        self.loaderNomClasses()  
        
         
     def saisirCollaboration(self):  
