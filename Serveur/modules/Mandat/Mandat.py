@@ -291,20 +291,19 @@ class Vue():
 class Expression():
     def __init__(self):
         self.id=NULL
-        self.type="Explicite"
-        self.nature=NULL
         self.contenu=NULL
+        #self.type="Explicite"
+        self.type= NULL
+        self.nature=NULL
         self.emplacement=NULL
         
-
-  
 class Modele():
     def __init__(self, parent):
         self.parent=parent
         #Connection à la bd temporaire
-        database = sqlite3.connect('BDD.sqlite')
+        #database = sqlite3.connect('BDD.sqlite')
         #Création du curseur de la bd temporaire
-        self.curseur = database.cursor()
+        #self.curseur = database.cursor()
         self.uneExpression=Expression()
         #self.tupleBD=self.lectureSQL()
         self.listeExpObj=[]
@@ -360,12 +359,12 @@ class Modele():
     def ajouterNouveauTexte(self,texteMandat):
         chaine = "'" + str(self.parent.idProjet) + "','" + str(texteMandat) + "'"
         self.parent.serveur.insertionSQL("Textes",chaine)
-    
+        
     def updateExpression(self):
         self.insertionSQL(self.uneExpression)
-        self.tupleBD=self.lectureSQL()
-        self.ajoutListe()
-        self.uneExpression=Expression()
+        #self.tupleBD=self.lectureSQL()
+        #self.ajoutListe()
+        #self.uneExpression=Expression()
     
      
     def enregistrer(self,texteMandat):
