@@ -123,17 +123,23 @@ class Vue():
         
     
         #deux labels pour identifier les expression
-        self.labelChoixNature = Label(self.frameCommande, text="nature choisie")
+        self.labelChoixNature = Label(self.frameCommande, text="-----")
         self.canCommande.create_window(525,70,window=self.labelChoixNature,width=110,height=30)
 
-        self.labelChoixType = Label(self.frameCommande, text="type choisi", bg="light blue")
+        self.labelChoixType = Label(self.frameCommande, text="-----", bg="light blue")
         self.canCommande.create_window(525,110,window=self.labelChoixType,width=110,height=30)
     
         #bouton confirmer
-        self.btnConfirmer=Button(self.frameCommande, text="Confirmer", width=30, command=lambda:self.choixNature(3))
+        #self.btnConfirmer=Button(self.frameCommande, text="Confirmer", width=30, command=lambda:self.choixNature(3))
+        self.btnConfirmer=Button(self.frameCommande, text="Confirmer", width=30, command=self.confirmer)
         self.canCommande.create_window(650,90,window=self.btnConfirmer,width=110,height=30)
     
-    
+    def confirmer(self):
+        self.parent.modele.uneExpression.contenu=self.mot    
+        self.parent.modele.confirmer()
+        
+        self.resetVue()
+        
     def choixNature(self,choix):
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
@@ -142,9 +148,9 @@ class Vue():
         elif choix==2:
             self.labelChoixNature.config(text="Action")
             self.parent.modele.uneExpression.nature="Action"
-        elif choix==3:
-            self.labelChoixNature.config(text="Attribut")
-            self.parent.modele.uneExpression.nature="Attribut"
+        #elif choix==3:
+            #self.labelChoixNature.config(text="Attribut")
+            #self.parent.modele.uneExpression.nature="Attribut"
         
         self.parent.modele.uneExpression.contenu=self.mot
         
@@ -245,6 +251,10 @@ class Vue():
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
         
+    def resetVue(self):
+        #enlever les elements entres (reset)
+        self.labelChoixNature.config(text = "-----")
+        self.labelChoixType.config(text = "-----")       
 
     def texteInitial(self):
         conn = sqlite3.connect('donnees.db')
@@ -290,6 +300,14 @@ class Vue():
 
 class Expression():
     def __init__(self):
+        self.id=NULL
+        self.contenu=NULL
+        #self.type="Explicite"
+        self.type= NULL
+        self.nature=NULL
+        self.emplacement=NULL
+        
+    def reinitier(self):
         self.id=NULL
         self.contenu=NULL
         #self.type="Explicite"
@@ -360,8 +378,18 @@ class Modele():
         chaine = "'" + str(self.parent.idProjet) + "','" + str(texteMandat) + "'"
         self.parent.serveur.insertionSQL("Textes",chaine)
         
+    def confirmer(self):
+        self.insererExpression()
+        
+    def insererExpression(self):  
+        chaine = "'" + str(self.parent.idProjet) + "','" +str(self.uneExpression.contenu) + "','"  + str(self.uneExpression.type)  + "','" +str(self.uneExpression.nature)  + "','" +str(self.uneExpression.emplacement) + "'"
+        self.parent.serveur.insertionSQL("Mandats",chaine)  
+        #la valeur dans la bd de l'emplacement est de 0 si emplacement est NULL
+        self.uneExpression.reinitier() #effacer les valeurs de l'expression pour mettre des nouvelles
+        
+          
     def updateExpression(self):
-        self.insertionSQL(self.uneExpression)
+        pass   
         #self.tupleBD=self.lectureSQL()
         #self.ajoutListe()
         #self.uneExpression=Expression()
@@ -425,7 +453,6 @@ class Modele():
         except NameError:
             print("erreur, rien a loader de la BD")
             return "Bienvenue au module Mandat" #pour le texte par defaut
-        
         
     def supprimerAncienTexte(self):
         self.parent.serveur.delete("Textes","id_Projet", str(self.parent.idProjet))
