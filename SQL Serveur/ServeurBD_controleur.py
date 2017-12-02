@@ -37,7 +37,7 @@ class ControleurServeurBD():
         c = conn.cursor()
         sql = '''SELECT ''' +champs+ ''' from '''+nomTable
         print(sql)
-        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
+        c.execute(sql)
        # print(c.fetchall())
         donnees = c.fetchall()
         conn.close()

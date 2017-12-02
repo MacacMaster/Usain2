@@ -279,14 +279,21 @@ class Vue():
         
         
         #liste qui contient le nom de toutes les classes
-        choix = []     
         requete = self.parent.modele.nomsDesClasses()
-        for i in requete:
-            choix.insert(len(choix), i[3])  
-        #liste =  self.parent.modele.nomsDesClasses()
         
+        if self.listeClasses.size() == 0:
+            valeur = ""
+            choix = [""]
+        else:
+            choix = []
+            for i in requete:
+                if str(i[1]) == str(self.parent.idProjet):
+                    choix.insert(len(choix), i[3])
+            valeur = requete[0][3]   
+        #liste =  self.parent.modele.nomsDesClasses()
+   
         self.classeChoisie = StringVar(frame4)
-        self.classeChoisie.set(requete[0][3])#la valeur par défaut de la liste déroulante
+        self.classeChoisie.set(valeur)#la valeur par défaut de la liste déroulante
         self.choixClasses = OptionMenu(frame4,self.classeChoisie,*choix)
         self.choixClasses.pack(side="left")
         
@@ -506,7 +513,12 @@ class Modele():
             nom = classe.responsabilites.get(i)   
             chaine = "'" + str(idClasse) + "','" +str(nom) + "'"
             self.parent.serveur.insertionSQL("Responsabilites",chaine)
-   
+        '''
+        for i in range (classe.collaborateurs.size()):
+            nom = classe.collaborateurs.get(i)   
+            chaine = "'" + str(idClasse) + "','" +str(nom) + "'"
+            self.parent.serveur.insertionSQL("Collaborations",chaine)
+        '''
     '''
     def creerChaine(liste):
         listeEnString = "'"
