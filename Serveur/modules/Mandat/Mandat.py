@@ -22,6 +22,10 @@ class Vue():
         self.fenetre.pack()
         self.text = ""
         self.mot=""
+        
+        #pour le bouton confirmer
+        self.choixNatureFait = False
+        self.choixTypeFait = False
                       
         self.ecranMandat()
         self.ecranCommande()
@@ -135,12 +139,15 @@ class Vue():
         self.canCommande.create_window(650,90,window=self.btnConfirmer,width=110,height=30)
     
     def confirmer(self):
-        self.parent.modele.uneExpression.contenu=self.mot    
-        self.parent.modele.confirmer()
-        
-        self.resetVue()
+        if (self.choixNatureFait and self.choixTypeFait):
+            self.parent.modele.uneExpression.contenu=self.mot    
+            self.parent.modele.confirmer()
+            self.resetVue()
+            
+
         
     def choixNature(self,choix):
+        self.choixNatureFait = True #utiliser pour la confirmation plus tard
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
             self.labelChoixNature.config(text="Objet")
@@ -161,6 +168,7 @@ class Vue():
             
     
     def choixType(self,choix):
+        self.choixTypeFait = True #utiliser pour la confirmation plus tard
         #if self.parent.modele.uneExpression.nature!=NULL:
         if choix==1:
             self.labelChoixType.config(text="Implicite")
@@ -240,7 +248,6 @@ class Vue():
         self.listImpAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,240,window=self.listImpAtt, width=220, height=120)
         
-        
         #4e ligne grille
         self.labelSupplementaire=Label(self.frameAnalyse, text="Supplementaire", width=100, height=80, bg="white", relief=RAISED )
         self.canAnalyse.create_window(75,360,window=self.labelSupplementaire, width=100, height=120)
@@ -254,7 +261,11 @@ class Vue():
     def resetVue(self):
         #enlever les elements entres (reset)
         self.labelChoixNature.config(text = "-----")
-        self.labelChoixType.config(text = "-----")       
+        self.labelChoixType.config(text = "-----")   
+        
+        #reset les variables
+        self.choixNatureFait = False
+        self.choixTypeFait = False    
 
     def texteInitial(self):
         conn = sqlite3.connect('donnees.db')
