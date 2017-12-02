@@ -128,13 +128,12 @@ class Vue():
         frame2.pack()
         
         #scrollbar   
-        self.listeClasses = Listbox(frame2, height=25)
-        self.listeClasses.pack(side=LEFT,fill="y")
+        self.listeClasses = Listbox(frame2, height=25)  
         self.listeClasses.bind('<<ListboxSelect>>',self.choisirClasse)
         #quand on désélectionne cette liste, on veut désactivier le bouton supprimer
         self.listeClasses.bind("<FocusOut>", self.box_unfocused)
         self.listeClasses.bind("<FocusIn>", self.box_focused)
-        
+        self.listeClasses.pack(side=LEFT,fill="y")
         
         #loader la liste de classes
         #self.chercherClasse()
@@ -278,12 +277,19 @@ class Vue():
         #liste déroulante avec la liste des noms des classes existantes
         #self.nomClasse.set("allo")
         
-        ''' 
+        
+        #liste qui contient le nom de toutes les classes
+        choix = []     
+        requete = self.parent.modele.nomsDesClasses()
+        for i in requete:
+            choix.insert(len(choix), i[3])  
+        #liste =  self.parent.modele.nomsDesClasses()
+        
         self.classeChoisie = StringVar(frame4)
-        self.classeChoisie.set(0)#la valeur par défaut de la liste déroulante
+        self.classeChoisie.set(requete[0][3])#la valeur par défaut de la liste déroulante
         self.choixClasses = OptionMenu(frame4,self.classeChoisie,*choix)
         self.choixClasses.pack(side="left")
-        '''
+        
         
         
         #bouton pour ajouter un collaborateur
@@ -356,9 +362,11 @@ class Vue():
         self.menuAjout.pack_forget()
         
         #retour en arriere<
+        
         self.menuGauche.pack(side=LEFT) 
-        self.menuDroite.pack(side=LEFT) 
+        self.menuDroite.pack(side=LEFT)
         self.loaderNomClasses()  
+        
        
         
     def saisirCollaboration(self):  
@@ -472,7 +480,7 @@ class Modele():
             if (str(element[1]) == str(self.parent.idProjet)):
             #if element[3] == self.parent.idProjet:
                 self.classes.append(element)
-        
+        return selected
        
     def insertionConfirmer(self, classe):
         #insérer la classe 
