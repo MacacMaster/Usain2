@@ -30,6 +30,7 @@ class ControleurServeurBD():
         c.execute('''INSERT into '''+nomTable+''' VALUES (''' +str(self.id)+', '+valeurs+''' )''')
         conn.commit()
         conn.close()
+        return self.id
     
     def selDonnees(self,nomTable,champs):
         conn= sqlite3.connect('SprintMasterData.db')

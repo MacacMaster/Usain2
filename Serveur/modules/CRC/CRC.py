@@ -475,32 +475,37 @@ class Modele():
         #insérer la classe 
         #valeurs = (self.parent.idProjet, classe.proprietaire,classe.nom)
         #chaine = "'1','1','555'"
+        #liste = (str(self.parent.idProjet), str(classe.proprietaire), str(classe.nom))
         chaine = "'" + str(self.parent.idProjet) + "','" +str(classe.proprietaire) + "','"  + str(classe.nom)+ "'"
-        self.serveur.insertionSQL("Classes", chaine)
+        idClasse = self.serveur.insertionSQL("Classes", chaine)
         #classe.proprietaire
         #classe.nom
         #self.parent.serveur.insertionSQL("Classes",valeurs)
-        pass
-        '''
+        
         #insérer les responsabilites
-        idClasse = 5
-        #parcorir tous les éléments de la listbox responsabilités    
+        #parcorir tous les éléments de la listbox responsabilités  
+        
+       
+        
+         
+        #insérer les collaborateurs
+        #parcorir tous les éléments de la listbox responsabilités  
+          
         for i in range (classe.responsabilites.size()):
             nom = classe.responsabilites.get(i)   
-            valeurs = (idClasse, nom)
-            self.parent.serveur.insertionSQL("Responsabilites",valeurs)
-            
-        #insérer les collaborateurs
-        #parcorir tous les éléments de la listbox responsabilités    
-        for i in range (classe.collaborateurs.size()):
-            nom = classe.collaborateurs.get(i)   
-            valeurs = (idClasse, nom)
-            self.parent.serveur.insertionSQL("Collaborations",valeurs)
-        '''
+            chaine = "'" + str(idClasse) + "','" +str(nom) + "'"
+            self.parent.serveur.insertionSQL("Responsabilites",chaine)
    
+    '''
     def creerChaine(liste):
-        pass
-    
+        listeEnString = "'"
+        for i in range(len(liste)):
+            listeEnString = listeEnString + "aaa"
+        
+        
+        return listeEnString
+    '''
+            
 class Controleur():
     def __init__(self):
         #informations du système quand le programme est lancé

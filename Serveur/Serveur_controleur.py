@@ -157,7 +157,7 @@ class ControleurServeur():
         return xmlrpc.client.Binary(contenu)
     
     def insertionSQL(self,nomTable,valeurs):
-        self.serveurBD.insDonnees(nomTable, valeurs)
+        return self.serveurBD.insDonnees(nomTable, valeurs)
     
     def selectionSQL1(self,nomTable,champs,where,indice):
         return self.serveurBD.selDonneesComplexe1(self,nomTable,champs,where,indice)
