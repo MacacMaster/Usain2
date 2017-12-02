@@ -6,6 +6,7 @@ import sqlite3
 import time
 from _overlapped import NULL
 from xmlrpc.client import ServerProxy
+from sqlite3.test.userfunctions import AggregateTests
 
 
 class Vue():
@@ -87,7 +88,7 @@ class Vue():
         self.text = Text(self.frameMandat, width=100, height=20)
         #le texte initial est le texte pr�load� de la derniere enregistrement
         #texteInitial = self.texteInitial()
-        texteInitial = ""
+        texteInitial = self.parent.modele.loaderTexte()
         self.text.insert("%d.%d" %(0,1),texteInitial)
         #self.text.bind("<Button-1>",self.tagging)
         self.text.bind("<ButtonRelease-1>", self.dragging)
@@ -356,6 +357,10 @@ class Modele():
             stop = ranges[i+1]
             self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))"""
     
+    def ajouterNouveauTexte(self,texteMandat):
+        chaine = "'" + str(self.parent.idProjet) + "','" + str(texteMandat) + "'"
+        self.parent.serveur.insertionSQL("Textes",chaine)
+    
     def updateExpression(self):
         self.insertionSQL(self.uneExpression)
         self.tupleBD=self.lectureSQL()
@@ -365,15 +370,10 @@ class Modele():
      
     def enregistrer(self,texteMandat):
         #texteMandat = texteMandat.get(1.0,'end-1c')
-        texteMandat = texteMandat.get(1.0,'end-1c')
-        #print(texteMandat)
-        conn = sqlite3.connect('BDD.sqlite')
-        c = conn.cursor()
-        #pour des fins de tests
-        c.execute('''DELETE FROM mandats''')
-        c.execute('INSERT INTO mandats VALUES(?)', (texteMandat,))
-        conn.commit()
-        conn.close()
+        #supprimer le vieux texte de la BD
+        self.supprimerAncienTexte()
+        self.ajouterNouveauTexte(texteMandat)
+   
  
             
     def explorateurFichiers(self,text):
@@ -413,6 +413,23 @@ class Modele():
         self.database.commit()
         
         return tupleBD
+    
+    def loaderTexte(self):
+        requete = self.parent.serveur.selectionSQL("Textes", "id_Projet, texte")
+        
+        try: 
+            for element in requete:
+                if str(element[0]) == str(self.parent.idProjet):
+                    texte = element[1]
+                    break
+            return texte
+        except NameError:
+            print("erreur, rien a loader de la BD")
+            return "Bienvenue au module Mandat" #pour le texte par defaut
+        
+        
+    def supprimerAncienTexte(self):
+        self.parent.serveur.delete("Textes","id_Projet", str(self.parent.idProjet))
 
 
 class Controleur():
