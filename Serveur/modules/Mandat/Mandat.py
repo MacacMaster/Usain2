@@ -486,8 +486,9 @@ class Modele():
         where = ["type"]
         valeur = ["Explicite"]
 
-        requete = self.parent.serveur.chercher(nomTable,champs,where,valeur)
+        
         #requete = self.parent.serveur.selectionSQL3("Mandats", "contenu, type, nature", "id_Projet", str(self.parent.idProjet))
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         return requete
     
     def supprimerAncienTexte(self):

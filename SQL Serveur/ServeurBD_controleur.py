@@ -38,7 +38,7 @@ class ControleurServeurBD():
         sql = '''SELECT ''' +champs+ ''' from '''+nomTable
         print(sql)
         c.execute(sql)
-       # print(c.fetchall())
+        print(c.fetchall())
         donnees = c.fetchall()
         conn.close()
         return donnees
@@ -90,10 +90,11 @@ class ControleurServeurBD():
             3.Les deux listes doivent etre de taille identique.Par contre, il n'y a pas de limite. 
         
     '''
-    def chercher(nomTable,champs,where,valeur):
+    def selDonneesWHERE(self,nomTable,champs,where,valeur):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        champs = "*"
+        
+        #batir la chaine sql
         sql = """SELECT """ 
         sql += champs
         sql += " FROM "
@@ -110,12 +111,16 @@ class ControleurServeurBD():
             else:
                 sql+= "AND "
             
-        print(sql)
+        #print(sql)
         c.execute(sql)
         laselection=c.fetchall()
         
-        print(laselection)
+        #print(laselection)
         conn.close()
+        return laselection
+    
+    def willTest(self):
+        print("allo")
 
     
     def delete(self, nomTable, where, condition):
