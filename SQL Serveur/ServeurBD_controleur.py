@@ -119,10 +119,6 @@ class ControleurServeurBD():
         conn.close()
         return laselection
     
-    def willTest(self):
-        print("allo")
-
-    
     def delete(self, nomTable, where, condition):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()

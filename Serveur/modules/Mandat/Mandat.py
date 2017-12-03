@@ -270,7 +270,7 @@ class Vue():
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
          
-       
+        
     def resetVue(self):
         #enlever les elements entres (reset)
         self.labelChoixNature.config(text = "-----")
