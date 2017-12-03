@@ -168,6 +168,9 @@ class ControleurServeur():
     def selectionSQL3(self,nomTable,champs, where, idProjet):
         return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
     
+    def chercher(nomTable,champs,where,valeur):
+        return self.serveurBD.chercher(nomTable,champs,where,valeur)
+    
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)
     

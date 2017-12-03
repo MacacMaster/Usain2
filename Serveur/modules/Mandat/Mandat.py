@@ -147,6 +147,10 @@ class Vue():
             self.parent.modele.confirmer()
             self.resetVue()
             self.updateExpressions()
+            self.listSupObj.insert(END, "a")
+            self.listSupObj.insert(END, str(self.parent.modele.requeteExpressions))
+            self.listSupObj.insert(END, "b")
+           
         else:
             # message avertissement
             messagebox.showinfo("SVP", "Informations manquantes")
@@ -189,7 +193,8 @@ class Vue():
         
         self.parent.modele.uneExpression.contenu=self.mot
         #self.parent.modele.updateExpressions()
-        self.afficheListBox()    
+        self.afficheListBox()
+          
         #else:
         #    print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
@@ -264,7 +269,8 @@ class Vue():
         self.canAnalyse.create_window(455,360,window=self.listSupAct, width=220, height=120)
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
-        
+         
+       
     def resetVue(self):
         #enlever les elements entres (reset)
         self.labelChoixNature.config(text = "-----")
@@ -409,12 +415,12 @@ class Modele():
         
     def updateExpressions(self):  
         #self.tupleBD=self.parent.modele.selectionLesExpressions()
-        self.requeteExpressions = 0 #le réinitialiser la liste chaque fois
-        self.requeteExpressions=self.selectionLesExpressions()
-        self.parent.vue.text.insert(END,"allo")
+        self.requeteExpressions = 0
+        self.requeteExpressions = self.selectionLesExpressions()
+        #self.parent.vue.text.insert(END,"allo")
         #self.ajoutListe()
         #self.uneExpression=Expression()
-    
+       
      
     def enregistrer(self,texteMandat):
         #texteMandat = texteMandat.get(1.0,'end-1c')
@@ -464,12 +470,25 @@ class Modele():
             return "Bienvenue au module Mandat" #pour le texte par defaut
         
     def selectionLesExpressions(self):
-        requete = self.parent.serveur.selectionSQL("Mandats", "contenu, type, nature")
-        expressions = []
+        #requete = self.parent.serveur.selectionSQL("Mandats", "contenu, type, nature")
+        #expressions = []
+        '''
         for element in requete:
             if str(element[1]) == str(self.parent.idProjet):
                 expressions.append(element)
-        return expressions
+        '''
+        #nomTable = "Mandats"
+        #champs = "*"
+        #where = ["id_Projet", "type", "nature"]
+        #valeur = [str(self.parent.idProjet), "Explicite", "Objet"]
+        nomTable = "Mandats"
+        champs = "id_projet, contenu"
+        where = ["type"]
+        valeur = ["Explicite"]
+
+        requete = self.parent.serveur.chercher(nomTable,champs,where,valeur)
+        #requete = self.parent.serveur.selectionSQL3("Mandats", "contenu, type, nature", "id_Projet", str(self.parent.idProjet))
+        return requete
     
     def supprimerAncienTexte(self):
         self.parent.serveur.delete("Textes","id_Projet", str(self.parent.idProjet))

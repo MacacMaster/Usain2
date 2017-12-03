@@ -75,6 +75,49 @@ class ControleurServeurBD():
         conn.close()
         return laselection
     
+    #
+    '''    
+            Comment utiliser cette fonction?
+            1.
+            where et valeur sont deux arguments qui doivent etre deux listes contenant des "string".
+            2.
+            Par exemple...
+            nomTable = "Mandats"
+            champs = "id_projet, contenu"
+            where = ["type","nature","id_projet"]
+            valeur = ["Explicite", "Objet","1"]
+
+            3.Les deux listes doivent etre de taille identique.Par contre, il n'y a pas de limite. 
+        
+    '''
+    def chercher(nomTable,champs,where,valeur):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        champs = "*"
+        sql = """SELECT """ 
+        sql += champs
+        sql += " FROM "
+        sql += nomTable
+        sql += " WHERE "
+        
+        for i in range(len(where)):
+            sql+= where[i] 
+            sql+= "='"
+            sql+= valeur[i] 
+            sql+= "' "
+            if (len(where) == i+1):
+                pass
+            else:
+                sql+= "AND "
+            
+        print(sql)
+        c.execute(sql)
+        laselection=c.fetchall()
+        
+        print(laselection)
+        conn.close()
+
+    
     def delete(self, nomTable, where, condition):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
