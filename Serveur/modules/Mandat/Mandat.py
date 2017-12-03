@@ -9,6 +9,10 @@ from xmlrpc.client import ServerProxy
 from sqlite3.test.userfunctions import AggregateTests
 from tkinter import messagebox
 
+#pour débugger plus facilement
+import socket
+from xmlrpc.client import ServerProxy
+
 
 
 
@@ -147,9 +151,6 @@ class Vue():
             self.parent.modele.confirmer()
             self.resetVue()
             self.updateExpressions()
-            self.listSupObj.insert(END, "a")
-            self.listSupObj.insert(END, str(self.parent.modele.requeteExpressions))
-            self.listSupObj.insert(END, "b")
            
         else:
             # message avertissement
@@ -270,6 +271,7 @@ class Vue():
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
          
+        
         
     def resetVue(self):
         #enlever les elements entres (reset)
@@ -497,6 +499,8 @@ class Modele():
 
 class Controleur():
     def __init__(self):
+        '''
+        #vraie version
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
@@ -504,11 +508,24 @@ class Controleur():
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
         
+        
+        
+        
+        
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
         self.vue.root.mainloop()
-    
+        '''
+        #pour débugger plus facilement
+        self.saasIP=socket.gethostbyname(socket.gethostname())
+        self.adresseServeur="http://"+self.saasIP+":9999"
+        self.idProjet= 1
+        self.serveur = self.connectionServeur()
+        self.modele=Modele(self)
+        self.vue=Vue(self)
+        self.vue.root.mainloop()
+        
     def connectionServeur(self):
         #ad="http://"+self.saasIP+":9998"
         print("Connection au serveur BD...")
