@@ -12,6 +12,7 @@ from tkinter import messagebox
 #pour débugger plus facilement
 import socket
 from xmlrpc.client import ServerProxy
+from subprocess import Popen
 
 
 
@@ -30,6 +31,16 @@ class Vue():
         self.text = ""
         self.mot=""
         
+        #listes de types et de natures
+        self.types = ["Explicite", "Implicite", "Supplementaire"]
+        self.natures = ["Objet", "Action", "Attribut"]
+        
+        #contiendra tous mes listbox
+        self.matrix = []
+        self.matrix.append([])
+        self.matrix.append([])
+        self.matrix.append([])
+        
         #pour le bouton confirmer
         self.choixNatureFait = False
         self.choixTypeFait = False
@@ -38,7 +49,7 @@ class Vue():
         self.ecranCommande()
         self.ecranAnalyse()   
         self.barreTaches()
-
+    
     def barreTaches(self):
         #menu deroulant
 
@@ -270,8 +281,38 @@ class Vue():
         self.canAnalyse.create_window(455,360,window=self.listSupAct, width=220, height=120)
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
-         
         
+        
+        
+        #mettre dans une matrice, pour faciliter le parcours des listbox
+        self.matrix[0].append(self.listExpObj)
+        self.matrix[0].append(self.listExpAct)
+        self.matrix[0].append(self.listExpAtt)
+        
+        self.matrix[1].append(self.listImpObj)
+        self.matrix[1].append(self.listImpAct)
+        self.matrix[1].append(self.listImpAtt)
+        
+        self.matrix[2].append(self.listSupObj)
+        self.matrix[2].append(self.listSupAct)
+        self.matrix[2].append(self.listSupAtt)
+        
+        
+        self.loaderLesListe()
+         
+    def loaderLesListe(self):
+        
+         
+        #for i in self.parent.modele.selectionLesExpressions():
+        #    self.matrix[0][0].insert(END,i[0])
+        for i in range(3):
+            for j in range(3):
+                    self.loaderUneListe(self.matrix[i][j], self.types[i],self.natures[j])   
+            
+    def loaderUneListe(self,liste, type,nature):
+        for i in self.parent.modele.selectionLesExpressions(type, nature):
+            liste.insert(END,i[0])
+        pass
         
     def resetVue(self):
         #enlever les elements entres (reset)
@@ -471,7 +512,7 @@ class Modele():
             print("erreur, rien a loader de la BD")
             return "Bienvenue au module Mandat" #pour le texte par defaut
         
-    def selectionLesExpressions(self):
+    def selectionLesExpressions(self,type,nature):
         #requete = self.parent.serveur.selectionSQL("Mandats", "contenu, type, nature")
         #expressions = []
         '''
@@ -484,9 +525,9 @@ class Modele():
         #where = ["id_Projet", "type", "nature"]
         #valeur = [str(self.parent.idProjet), "Explicite", "Objet"]
         nomTable = "Mandats"
-        champs = "id_projet, contenu"
-        where = ["type"]
-        valeur = ["Explicite"]
+        champs = "contenu"
+        where = ["type","nature"]
+        valeur = [type,nature]
 
         
         #requete = self.parent.serveur.selectionSQL3("Mandats", "contenu, type, nature", "id_Projet", str(self.parent.idProjet))
@@ -517,7 +558,7 @@ class Controleur():
         self.vue=Vue(self)
         self.vue.root.mainloop()
         '''
-        #pour débugger plus facilement
+        
         self.saasIP=socket.gethostbyname(socket.gethostname())
         self.adresseServeur="http://"+self.saasIP+":9999"
         self.idProjet= 1
