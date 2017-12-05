@@ -61,9 +61,9 @@ class Controleur():
             ad="http://"+self.saasIP+":9999"
             #print("Connection au serveur Saas en cours...")
             self.serveur=ServerProxy(ad,allow_none = 1)
-            print("Connection au serveur Saas réussi")
             #
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
+            print("Connection au serveur Saas réussi")
             
             if (reponseServeur == 0):
                 self.log.writeLog("Login Fail")
