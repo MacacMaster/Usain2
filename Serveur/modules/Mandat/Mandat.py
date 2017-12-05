@@ -161,8 +161,8 @@ class Vue():
             self.parent.modele.uneExpression.contenu=self.mot    
             self.parent.modele.confirmer()
             self.resetVue()
-            self.updateExpressions()
-           
+            #self.updateExpressions()
+            self.loaderLesListe()
         else:
             # message avertissement
             messagebox.showinfo("SVP", "Informations manquantes")
@@ -178,15 +178,15 @@ class Vue():
         elif choix==2:
             self.labelChoixNature.config(text="Action")
             self.parent.modele.uneExpression.nature="Action"
-        #elif choix==3:
-            #self.labelChoixNature.config(text="Attribut")
-            #self.parent.modele.uneExpression.nature="Attribut"
+        elif choix==3:
+            self.labelChoixNature.config(text="Attribut")
+            self.parent.modele.uneExpression.nature="Attribut"
         
         self.parent.modele.uneExpression.contenu=self.mot
         
         if self.mot==self.tfExpression.get():
-            self.parent.modele.insertionSQL()
-            #self.afficheListBox()
+            #self.parent.modele.insertionSQL()
+            pass
             
             
     
@@ -301,12 +301,13 @@ class Vue():
         self.loaderLesListe()
          
     def loaderLesListe(self):
-        
-         
         #for i in self.parent.modele.selectionLesExpressions():
         #    self.matrix[0][0].insert(END,i[0])
         for i in range(3):
             for j in range(3):
+                    #vider la liste
+                    self.matrix[i][j].delete(0,END)
+                    #la reloader
                     self.loaderUneListe(self.matrix[i][j], self.types[i],self.natures[j])   
             
     def loaderUneListe(self,liste, type,nature):
@@ -457,9 +458,10 @@ class Modele():
         self.uneExpression.reinitier() #effacer les valeurs de l'expression pour mettre des nouvelles
         
     def updateExpressions(self):  
+        pass
         #self.tupleBD=self.parent.modele.selectionLesExpressions()
         self.requeteExpressions = 0
-        self.requeteExpressions = self.selectionLesExpressions()
+        #self.requeteExpressions = self.selectionLesExpressions()
         #self.parent.vue.text.insert(END,"allo")
         #self.ajoutListe()
         #self.uneExpression=Expression()
@@ -489,6 +491,7 @@ class Modele():
             text.insert("%d.%d" %(1,0),content)
 
     def insertionSQL(self):  
+        pass
         sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id)+ "," +str(self.uneExpression.type) +"," + str(self.uneExpression.emplacement) +"," + str(self.uneExpression.contenu) +"," + str(self.uneExpression.nature) + ");"
         print(sql)
         print("Envoie a la BD")
