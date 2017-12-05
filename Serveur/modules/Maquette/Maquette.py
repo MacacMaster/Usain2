@@ -1,5 +1,6 @@
 from tkinter import *
 from xmlrpc.client import ServerProxy
+import sqlite3
 
 class Formes():
     def __init__(self, x1,y1,x2,y2, pNom, pText = "i"):
@@ -30,13 +31,14 @@ class Controleur():
     
     
     def chargerFormes(self):
-        '''for i in self.serveur.selectionSQL1("Formes",
-                                            "'x1', 'y1', 'x2', 'y2', 'texte', 'nom'",
-                                            "id_Projet",
-                                            "'"+str(self.idProjet)+"'"):
-            print(i.x1)
-            self.modele.formesTempo.append(forme)'''
-        pass
+        print("Je cherche des formes")
+        for i in self.serveur.selectionSQL3("Formes","x1, y1, x2, y2, texte, nom","id_Projet",self.idProjet):
+            print(i)
+            nom = i[5]
+            print(nom)
+            forme = Formes(i[0],i[1],i[2],i[3],i[4],nom)
+            self.modele.formesTempo.append(forme)
+        
     
     def commit(self):
         for i in self.modele.formes:

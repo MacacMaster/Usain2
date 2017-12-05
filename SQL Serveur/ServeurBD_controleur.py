@@ -28,7 +28,7 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable)
-       # print(c.fetchall())
+        print(c.fetchall())
         return(c.fetchall())
         conn.close()
      
@@ -126,9 +126,6 @@ class ControleurServeurBD():
             print("Echec de l'authentification")
             return 0
         
-
-         
-
     def rechercheProjetsDispo(self, id):
         print("je cherche des projets")
         t = (''+str(id)+'',)
@@ -137,17 +134,8 @@ class ControleurServeurBD():
             print (str(projet)[2:len(projet)-4])
             tabProjet.append(str(projet)[2:len(projet)-4])
         return tabProjet
-
     
-    def selDonnees3(self,nomTable,champs, where, idProjet):
-        conn= sqlite3.connect('SprintMasterData.db')
-        c = conn.cursor()
-        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
-        laselection=c.fetchall()
-        conn.close()
-        return laselection
-    
-print("Création du serveur pour la BD...")
+print("Création du serveur pour la BD jmd ...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998),allow_none = 1)
 objetControleurServeurBD=ControleurServeurBD()
 daemon.register_instance(objetControleurServeurBD)
