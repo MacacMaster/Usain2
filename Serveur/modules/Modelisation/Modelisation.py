@@ -18,6 +18,7 @@ class Controleur():
         print("controleur")
 
     def ajoutTableBD(self, nom):
+        print("j'insere1")
         self.serveur.insertionSQL("Tables",str(self.idProjet)+",'"+nom+"'")
         self.vue.canevaNouvelleTable.forget()
         self.vue.menuInitial()
@@ -26,15 +27,7 @@ class Controleur():
         print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
-    def ajoutTableBD(self, nom):
-        self.serveur.insertionSQL("Tables","10,"+self.idProjet+",'"+nom+"'")
-        self.vue.canevaNouvelleTable.forget()
-        self.vue.menuInitial()
-        
-    def connectionServeur(self):
-        print("Connection au serveur BD...")
-        serveur=ServerProxy(self.adresseServeur)
-        return serveur
+
 
 
 class Modele():
@@ -114,6 +107,7 @@ class Vue():
         else:
             nomTableGood=nomTable
         idTable=self.controleur.modele.idTableAjoutChamps(nomTableGood)
+        print("Je veux ouvrir la panoge affchage de champs")
         self.menuAffichageChamps()
         
     def menuAjouterTable(self):
@@ -153,6 +147,11 @@ class Vue():
         self.canevaAffichageChamps.create_window(300,270,window=self.listBoxChampsTable)
         
         self.controleur.modele.remplirListBoxChamps(self.listBoxChampsTable)
+        
+        #self.btnNewChamp=Button(self.canevaAffichageChamps,text="Ajouter un champs",width=20,command=self.allezMenuAjouterChamps)
+        #self.canevaAffichageChamps.create_window(200,550,window=self.btnNewChamp,width=150,height=20)
+
+        
         self.btnAnnulerAffichageChamps=Button(self.canevaAffichageChamps,text="Annuler",width=20,command=self.annulerAffichageChamps)
         self.canevaAffichageChamps.create_window(600,550,window=self.btnAnnulerAffichageChamps,width=150,height=20)
     
@@ -190,12 +189,12 @@ class Vue():
 
         self.listBoxTableFK=Listbox(self.canevaAjouterChamps,bg="white",borderwidth=0,relief=FLAT,width=25,height=3)
         self.canevaAjouterChamps.create_window(390,280,window=self.listBoxTableFK)
-        self.controleur.modele.remplirListBox(self.listBoxTableFK)
+        self.controleur.modele.remplirListBoxChamps(self.listBoxTableFK)
             
         self.listBoxChampsFK=Listbox(self.canevaAjouterChamps,bg="white",borderwidth=0,relief=FLAT,width=25,height=3)
         self.canevaAjouterChamps.create_window(390,360,window=self.listBoxChampsFK)
         
-        self.controleur.modele.remplirListBox(self.listBoxChampsFK)
+        self.controleur.modele.remplirListBoxContraintesChamps(self.listBoxChampsFK)
         
         self.lblChampsFK=Label(text="Champs : ",bg="lightblue")
         self.canevaAjouterChamps.create_window(260,360,window=self.lblChampsFK)

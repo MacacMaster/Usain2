@@ -7,6 +7,7 @@
 #      ex:  self.serveur.insertionSQL("Organisations", " 4, 'allo' ")
 # Premier paramètre est le nom de la table en string, le deuxième est un long string qui est la liste des valeurs à ajouter. Si cette liste a des string, les mettre entre ' ' .
 #        self.selDonnees("Organisations","id, nom")
+#Les ids uniquies sont pris en charge avec la fonction
 # 
 # ex: self.serveur.selectionSQL("Projets","id")
 #        Premier paramètre est le nom de la table en string, puis la liste des colonnes dont vous voulez les données
@@ -156,13 +157,19 @@ class ControleurServeur():
         return xmlrpc.client.Binary(contenu)
     
     def insertionSQL(self,nomTable,valeurs):
-        self.serveurBD.insDonnees(nomTable, valeurs)
+        return self.serveurBD.insDonnees(nomTable, valeurs)
     
     def selectionSQL1(self,nomTable,champs,where,indice):
         return self.serveurBD.selDonneesComplexe1(self,nomTable,champs,where,indice)
     
     def selectionSQL2(self,nomTable,champs,un,deux,indice1,indice2):
-        return self.serveurBD.selDonneesComplexe2(nomTable,champs)
+        return self.serveurBD.selDonneesComplexe2(nomTable,champs,un,deux,indice1,indice2)
+    
+    def selectionSQL3(self,nomTable,champs, where, idProjet):
+        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
+    
+    def selDonneesWHERE(self,nomTable,champs,where,valeur):
+        return self.serveurBD.selDonneesWHERE(nomTable,champs,where,valeur)
     
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)
@@ -172,9 +179,12 @@ class ControleurServeur():
         self.serveurBD.updateDonnes(nomTable,champs,valeur)
         return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
     
-    def selectionSQL3(self,nomTable,champs, where, idProjet):
-        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
-    
+    def insCustom(self,commande,values):
+        self.serveurBD.insCustom(self,commande,values)    
+        
+        
+    def delete(self, nomTable, where, condition):
+        self.serveurBD.delete(nomTable, where, condition)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
@@ -188,8 +198,6 @@ class ControleurServeur():
         print ("Log Close")
         return True 
     
-    def selectionSQL3(self,nomTable,champs, where, idProjet):
-        return self.serveurBD.selDonnees3(nomTable,champs, where, idProjet)
     
 print("Création du serveur...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)

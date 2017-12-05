@@ -6,6 +6,15 @@ import sqlite3
 import time
 from _overlapped import NULL
 from xmlrpc.client import ServerProxy
+from sqlite3.test.userfunctions import AggregateTests
+from tkinter import messagebox
+
+#pour débugger plus facilement
+import socket
+from xmlrpc.client import ServerProxy
+from subprocess import Popen
+
+
 
 
 class Vue():
@@ -21,12 +30,26 @@ class Vue():
         self.fenetre.pack()
         self.text = ""
         self.mot=""
+        
+        #listes de types et de natures
+        self.types = ["Explicite", "Implicite", "Supplementaire"]
+        self.natures = ["Objet", "Action", "Attribut"]
+        
+        #contiendra tous mes listbox
+        self.matrix = []
+        self.matrix.append([])
+        self.matrix.append([])
+        self.matrix.append([])
+        
+        #pour le bouton confirmer
+        self.choixNatureFait = False
+        self.choixTypeFait = False
                       
         self.ecranMandat()
         self.ecranCommande()
         self.ecranAnalyse()   
         self.barreTaches()
-
+    
     def barreTaches(self):
         #menu deroulant
 
@@ -87,7 +110,7 @@ class Vue():
         self.text = Text(self.frameMandat, width=100, height=20)
         #le texte initial est le texte pr�load� de la derniere enregistrement
         #texteInitial = self.texteInitial()
-        texteInitial = ""
+        texteInitial = self.parent.modele.loaderTexte()
         self.text.insert("%d.%d" %(0,1),texteInitial)
         #self.text.bind("<Button-1>",self.tagging)
         self.text.bind("<ButtonRelease-1>", self.dragging)
@@ -122,18 +145,32 @@ class Vue():
         
     
         #deux labels pour identifier les expression
-        self.labelChoixNature = Label(self.frameCommande, text="nature choisie")
+        self.labelChoixNature = Label(self.frameCommande, text="-----")
         self.canCommande.create_window(525,70,window=self.labelChoixNature,width=110,height=30)
 
-        self.labelChoixType = Label(self.frameCommande, text="type choisi", bg="light blue")
+        self.labelChoixType = Label(self.frameCommande, text="-----", bg="light blue")
         self.canCommande.create_window(525,110,window=self.labelChoixType,width=110,height=30)
     
         #bouton confirmer
-        self.btnConfirmer=Button(self.frameCommande, text="Confirmer", width=30, command=lambda:self.choixNature(3))
+        #self.btnConfirmer=Button(self.frameCommande, text="Confirmer", width=30, command=lambda:self.choixNature(3))
+        self.btnConfirmer=Button(self.frameCommande, text="Confirmer", width=30, command=self.confirmer)
         self.canCommande.create_window(650,90,window=self.btnConfirmer,width=110,height=30)
     
-    
+    def confirmer(self):
+        if (self.choixNatureFait and self.choixTypeFait):
+            self.parent.modele.uneExpression.contenu=self.mot    
+            self.parent.modele.confirmer()
+            self.resetVue()
+            self.updateExpressions()
+           
+        else:
+            # message avertissement
+            messagebox.showinfo("SVP", "Informations manquantes")
+            
+
+        
     def choixNature(self,choix):
+        self.choixNatureFait = True #utiliser pour la confirmation plus tard
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
             self.labelChoixNature.config(text="Objet")
@@ -141,9 +178,9 @@ class Vue():
         elif choix==2:
             self.labelChoixNature.config(text="Action")
             self.parent.modele.uneExpression.nature="Action"
-        elif choix==3:
-            self.labelChoixNature.config(text="Attribut")
-            self.parent.modele.uneExpression.nature="Attribut"
+        #elif choix==3:
+            #self.labelChoixNature.config(text="Attribut")
+            #self.parent.modele.uneExpression.nature="Attribut"
         
         self.parent.modele.uneExpression.contenu=self.mot
         
@@ -154,6 +191,7 @@ class Vue():
             
     
     def choixType(self,choix):
+        self.choixTypeFait = True #utiliser pour la confirmation plus tard
         #if self.parent.modele.uneExpression.nature!=NULL:
         if choix==1:
             self.labelChoixType.config(text="Implicite")
@@ -166,8 +204,9 @@ class Vue():
             self.parent.modele.uneExpression.type="Supplementaire"
         
         self.parent.modele.uneExpression.contenu=self.mot
-        self.parent.modele.updateExpression()
-        self.afficheListBox()    
+        #self.parent.modele.updateExpressions()
+        self.afficheListBox()
+          
         #else:
         #    print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
@@ -233,7 +272,6 @@ class Vue():
         self.listImpAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,240,window=self.listImpAtt, width=220, height=120)
         
-        
         #4e ligne grille
         self.labelSupplementaire=Label(self.frameAnalyse, text="Supplementaire", width=100, height=80, bg="white", relief=RAISED )
         self.canAnalyse.create_window(75,360,window=self.labelSupplementaire, width=100, height=120)
@@ -244,6 +282,46 @@ class Vue():
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
         
+        
+        
+        #mettre dans une matrice, pour faciliter le parcours des listbox
+        self.matrix[0].append(self.listExpObj)
+        self.matrix[0].append(self.listExpAct)
+        self.matrix[0].append(self.listExpAtt)
+        
+        self.matrix[1].append(self.listImpObj)
+        self.matrix[1].append(self.listImpAct)
+        self.matrix[1].append(self.listImpAtt)
+        
+        self.matrix[2].append(self.listSupObj)
+        self.matrix[2].append(self.listSupAct)
+        self.matrix[2].append(self.listSupAtt)
+        
+        
+        self.loaderLesListe()
+         
+    def loaderLesListe(self):
+        
+         
+        #for i in self.parent.modele.selectionLesExpressions():
+        #    self.matrix[0][0].insert(END,i[0])
+        for i in range(3):
+            for j in range(3):
+                    self.loaderUneListe(self.matrix[i][j], self.types[i],self.natures[j])   
+            
+    def loaderUneListe(self,liste, type,nature):
+        for i in self.parent.modele.selectionLesExpressions(type, nature):
+            liste.insert(END,i[0])
+        pass
+        
+    def resetVue(self):
+        #enlever les elements entres (reset)
+        self.labelChoixNature.config(text = "-----")
+        self.labelChoixType.config(text = "-----")   
+        
+        #reset les variables
+        self.choixNatureFait = False
+        self.choixTypeFait = False    
 
     def texteInitial(self):
         conn = sqlite3.connect('donnees.db')
@@ -286,24 +364,33 @@ class Vue():
     def specialEffect(self):
         self.text.tag_config('jaune', background='yellow')
   
+    def updateExpressions(self):
+        self.parent.modele.updateExpressions()
 
 class Expression():
     def __init__(self):
         self.id=NULL
-        self.type="Explicite"
-        self.nature=NULL
         self.contenu=NULL
+        #self.type="Explicite"
+        self.type= NULL
+        self.nature=NULL
         self.emplacement=NULL
-        
-
-  
+    """    
+    def reinitier(self):
+        self.id=NULL
+        self.contenu=NULL
+        #self.type="Explicite"
+        self.type= NULL
+        self.nature=NULL
+        self.emplacement=NULL
+        """
 class Modele():
     def __init__(self, parent):
         self.parent=parent
         #Connection à la bd temporaire
-        database = sqlite3.connect('BDD.sqlite')
+        #database = sqlite3.connect('BDD.sqlite')
         #Création du curseur de la bd temporaire
-        self.curseur = database.cursor()
+        #self.curseur = database.cursor()
         self.uneExpression=Expression()
         #self.tupleBD=self.lectureSQL()
         self.listeExpObj=[]
@@ -356,24 +443,34 @@ class Modele():
             stop = ranges[i+1]
             self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))"""
     
-    def updateExpression(self):
-        self.insertionSQL(self.uneExpression)
-        self.tupleBD=self.lectureSQL()
-        self.ajoutListe()
-        self.uneExpression=Expression()
-    
+    def ajouterNouveauTexte(self,texteMandat):
+        chaine = "'" + str(self.parent.idProjet) + "','" + str(texteMandat) + "'"
+        self.parent.serveur.insertionSQL("Textes",chaine)
+        
+    def confirmer(self):
+        self.insererExpression()
+        
+    def insererExpression(self):  
+        chaine = "'" + str(self.parent.idProjet) + "','" +str(self.uneExpression.contenu) + "','"  + str(self.uneExpression.type)  + "','" +str(self.uneExpression.nature)  + "','" +str(self.uneExpression.emplacement) + "'"
+        self.parent.serveur.insertionSQL("Mandats",chaine)  
+        #la valeur dans la bd de l'emplacement est de 0 si emplacement est NULL
+        self.uneExpression.reinitier() #effacer les valeurs de l'expression pour mettre des nouvelles
+        
+    def updateExpressions(self):  
+        #self.tupleBD=self.parent.modele.selectionLesExpressions()
+        self.requeteExpressions = 0
+        self.requeteExpressions = self.selectionLesExpressions()
+        #self.parent.vue.text.insert(END,"allo")
+        #self.ajoutListe()
+        #self.uneExpression=Expression()
+       
      
     def enregistrer(self,texteMandat):
         #texteMandat = texteMandat.get(1.0,'end-1c')
-        texteMandat = texteMandat.get(1.0,'end-1c')
-        #print(texteMandat)
-        conn = sqlite3.connect('BDD.sqlite')
-        c = conn.cursor()
-        #pour des fins de tests
-        c.execute('''DELETE FROM mandats''')
-        c.execute('INSERT INTO mandats VALUES(?)', (texteMandat,))
-        conn.commit()
-        conn.close()
+        #supprimer le vieux texte de la BD
+        self.supprimerAncienTexte()
+        self.ajouterNouveauTexte(texteMandat)
+   
  
             
     def explorateurFichiers(self,text):
@@ -392,31 +489,62 @@ class Modele():
             text.insert("%d.%d" %(1,0),content)
 
     def insertionSQL(self):  
-        sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id)+ "," +str(self.uneExpression.type) +"," + str(self.uneExpression.emplacement) +"," + str(self.uneExpression.contenu) +"," + str(self.uneExpression.nature) + ");"
+        '''sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id)+ "," +str(self.uneExpression.type) +"," + str(self.uneExpression.emplacement) +"," + str(self.uneExpression.contenu) +"," + str(self.uneExpression.nature) + ");"
         print(sql)
         print("Envoie a la BD")
+        '''
         
+        '''self.curseur.execute("INSERT INTO Mots VALUES(?,?,?,?,?)", (self.uneExpression.id,self.uneExpression.type,self.uneExpression.emplacement,self.uneExpression.contenu,self.uneExpression.nature,))
+        print("Envoi avec succes")'''
         
-        self.curseur.execute("INSERT INTO Mots VALUES(?,?,?,?,?)", (self.uneExpression.id,self.uneExpression.type,self.uneExpression.emplacement,self.uneExpression.contenu,self.uneExpression.nature,))
-        print("Envoi avec succes")
+        self.parent.serveur.insertionSQL(self,"Mandats",valeurs)
+        
         self.database.commit()
         
-    def lectureSQL(self):
+    
+    def loaderTexte(self):
+        requete = self.parent.serveur.selectionSQL("Textes", "id_Projet, texte")
+        
+        try: 
+            for element in requete:
+                if str(element[0]) == str(self.parent.idProjet):
+                    texte = element[1]
+                    break
+            return texte
+        except NameError:
+            print("erreur, rien a loader de la BD")
+            return "Bienvenue au module Mandat" #pour le texte par defaut
+        
+    def selectionLesExpressions(self,type,nature):
+        #requete = self.parent.serveur.selectionSQL("Mandats", "contenu, type, nature")
+        #expressions = []
+        '''
+        for element in requete:
+            if str(element[1]) == str(self.parent.idProjet):
+                expressions.append(element)
+        '''
+        #nomTable = "Mandats"
+        #champs = "*"
+        #where = ["id_Projet", "type", "nature"]
+        #valeur = [str(self.parent.idProjet), "Explicite", "Objet"]
+        nomTable = "Mandats"
+        champs = "contenu"
+        where = ["type","nature"]
+        valeur = [type,nature]
 
-        #sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
-        #c.execute(sql)
-        #c.execute(sql)
-        #c.execute("select name from BDD.sqlite where type = 'table'")
-        #tupleBD = c.fetchall()        
-        # pour fin de tests (a effacer)
-        tupleBD = ((1,"Explicite","","allo","Verbe"),(1,"Explicite","","allo","Verbe"))
-        self.database.commit()
         
-        return tupleBD
+        #requete = self.parent.serveur.selectionSQL3("Mandats", "contenu, type, nature", "id_Projet", str(self.parent.idProjet))
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        return requete
+    
+    def supprimerAncienTexte(self):
+        self.parent.serveur.delete("Textes","id_Projet", str(self.parent.idProjet))
 
 
 class Controleur():
     def __init__(self):
+        
+        #vraie version
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
@@ -424,11 +552,25 @@ class Controleur():
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
         
+        
+        
+        
+        
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
+
         self.vue=Vue(self)
         self.vue.root.mainloop()
-    
+        '''
+        
+        self.saasIP=socket.gethostbyname(socket.gethostname())
+        self.adresseServeur="http://"+self.saasIP+":9999"
+        self.idProjet= 1
+        self.serveur = self.connectionServeur()
+        self.modele=Modele(self)
+        self.vue=Vue(self)
+        self.vue.root.mainloop()
+        '''
     def connectionServeur(self):
         #ad="http://"+self.saasIP+":9998"
         print("Connection au serveur BD...")

@@ -8,6 +8,7 @@ from tkinter.filedialog import *
 from datetime import datetime
 from _overlapped import NULL
 
+import socket
 from xmlrpc.client import ServerProxy
 
 from PlanificationGlobaleVue  import *
@@ -20,6 +21,7 @@ from subprocess import Popen
  #TODO:
  #
  #Find why writeLog doesn't work
+ #Make the SQL shite work!!!
  #
  ################################################# 
   
@@ -30,6 +32,7 @@ class Controleur():
             
                
         self.saasIP="10.57.47.7" #sys.argv[1]
+        self.saasIP= socket.gethostbyname(socket.gethostname()) #sys.argv[1]
         self.utilisateur="BOB"  #sys.argv[2]
         self.organisation="Organe"  #sys.argv[3]
         self.idProjet="123"   #sys.argv[4]
@@ -46,10 +49,19 @@ class Controleur():
         self.writeLog("Ouverture du Module")
 
         
+
+        #self.sql.insCustom("sprint","nom","priorite","debut","fin")
+        self.listeFonctions=self.sql.selDonnees("nom")
         #self.listeFonctions=self.sql.selDonnees("nom")
         
+        #self.sql.creerFonction("Sprint 1","FonctionNom","priorite","debut","fin")
+        #self.sql.creerFonction('Sprint1','FonctionNom','priorite','debut','fin')
+        self.sql.calculPourcent()
         self.sql.creerFonction('Sprint1','FonctionNom','priorite','debut','fin')
         self.sql.calculPourcent()
+
+
+
         self.vue.root.mainloop()
         
     def fermerProgramme(self):

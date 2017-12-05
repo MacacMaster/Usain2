@@ -33,7 +33,7 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Machines
              (id integer, id_CasUsage integer, etat text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Classes
-             (id integer, id_Projet integer, proprietaire text, nom text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, proprietaire text, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Responsabilites
              (id integer, id_Classe integer, nom text)''')
@@ -43,6 +43,9 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Collaborations
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Mandats
              (id integer, id_Projet integer, contenu text, type text, nature text, emplacement text)''')
+
+curseur.execute('''CREATE TABLE IF NOT EXISTS Textes
+             (id integer, id_Projet integer, texte text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS PlanifGlobales
              (id integer, id_Projet integer, id_Sprint, id_Reponsable, priorite text, date_debut text, date_fin text)''')
@@ -78,6 +81,7 @@ curseur.execute("INSERT INTO Organisations VALUES ('2', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('1', '1', 't', 't')")
 curseur.execute("INSERT INTO Usagers VALUES ('2', '1', 'a', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('3', '2', 'a', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('4','1', 'admin', 'a')")
 
 
 curseur.execute("INSERT INTO Projets VALUES ('1', '1', 'ProjetTest')")

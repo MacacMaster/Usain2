@@ -33,24 +33,25 @@ class Controleur():
         #id du projet selectionne
         self.idProjet=None
         self.vue=Vue(self,self.clientIP)
+        
         self.vue.root.mainloop()
         
     
     def chargerProjet(self, nomprojet, idorga):
         idProjet = self.serveur.chargerProjet(nomprojet, idorga)
         self.idProjet = idProjet
-        print("id du projet coté client controleur", self.idProjet)
+        #print("id du projet coté client controleur", self.idProjet)
         return idProjet
     
     #trouve l'IP du client
     def chercherIP(self):
         clientIP = socket.gethostbyname(socket.gethostname())
-        print("L'addresse ip du client est: ", clientIP)
+        #print("L'addresse ip du client est: ", clientIP)
         return clientIP
 
     def fermerApplication(self):
         
-        self.log.writeLog("Fermeture du Client")
+        #self.log.writeLog("Fermeture du Client")
         self.vue.root.destroy()
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
@@ -58,12 +59,12 @@ class Controleur():
         if (pIdentifiantNomOrga !="" and pIdentifiantNomUsager !="" and pIdentifiantMotDePasse !="" ):
             #connection au Serveur
             ad="http://"+self.saasIP+":9999"
-            print("Connection au serveur Saas en cours...")
+            #print("Connection au serveur Saas en cours...")
             self.serveur=ServerProxy(ad,allow_none = 1)
             print("Connection au serveur Saas réussi")
             #
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
-            self.log.setLog(pIdentifiantNomOrga,pIdentifiantNomUsager, "LoginDB")
+            
             if (reponseServeur == 0):
                 self.log.writeLog("Login Fail")
                 self.vue.logInClientFail()
@@ -75,23 +76,25 @@ class Controleur():
                 self.vue.chargerCentral(reponseServeur[0][1],reponseServeur[0][2],reponseServeur[0][3],reponseServeur[0][4])
         else:
             self.vue.logInClientFail()
+        self.serveur.selectionSQL("Projets","id")
+        
+    def creerProjet(self,nom):
+            self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
             
-        #self.serveur.selectionSQL("Projets","id")
-        #self.serveur.insertionSQL("Organisations"," 'allo' ")
-        #self.serveur.selectionSQL("Organisations", "id, nom")
+
             
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)
         if rep:
-            print(rep[0])
+            #print(rep[0])
             cwd=os.getcwd()
             lieuApp="/"+rep[0]
             lieu=cwd+lieuApp
-            print(lieu)
+            #print(lieu)
             if not os.path.exists(lieu):
                 os.mkdir(lieu) #plante s'il existe deja
             reso=rep[1]
-            print(rep[1])
+            #print(rep[1])
             for i in rep[2]:
                 if i[0]=="fichier":
                     nom=reso+i[1]
@@ -129,15 +132,15 @@ class Controleur():
             cwd=os.getcwd()
             lieuApp="/"+rep[0]
             lieu=cwd+lieuApp
-            print(lieu)
+            #print(lieu)
             if not os.path.exists(lieu):
                 os.mkdir(lieu) #plante s'il exist deja
             reso=rep[1]
-            print(rep[1])
+            #print(rep[1])
             for i in rep[2]:
                 if i[0]=="fichier":
                     nom=reso+i[1]
-                    print("DODODOO",nom)
+                    #print("DODODOO",nom)
                     rep=self.serveur.requeteFichier(nom)
                     fiche=open(lieu+"/"+i[1],"wb")
                     fiche.write(rep.data)
