@@ -173,6 +173,7 @@ class Vue():
         self.choixNatureFait = True #utiliser pour la confirmation plus tard
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
+            print("valeur nature:" + self.parent.modele.uneExpression.nature)
             self.labelChoixNature.config(text="Objet")
             print("Envoie de la nature Objet dans l'expression: "+self.parent.modele.uneExpression.nature)
         elif choix==2:
@@ -185,7 +186,7 @@ class Vue():
         self.parent.modele.uneExpression.contenu=self.mot
         
         if self.mot==self.tfExpression.get():
-            self.parent.modele.insertionSQL()
+            self.parent.modele.insererExpression()
             #self.afficheListBox()
             
             
@@ -443,18 +444,21 @@ class Modele():
             stop = ranges[i+1]
             self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))"""
     
+    """
     def ajouterNouveauTexte(self,texteMandat):
         chaine = "'" + str(self.parent.idProjet) + "','" + str(texteMandat) + "'"
         self.parent.serveur.insertionSQL("Textes",chaine)
-        
+    """ 
     def confirmer(self):
         self.insererExpression()
         
     def insererExpression(self):  
-        chaine = "'" + str(self.parent.idProjet) + "','" +str(self.uneExpression.contenu) + "','"  + str(self.uneExpression.type)  + "','" +str(self.uneExpression.nature)  + "','" +str(self.uneExpression.emplacement) + "'"
+        chaine = "['" + str(self.parent.idProjet) + "','" +str(self.uneExpression.contenu) + "','"  + str(self.uneExpression.type)  + "','" +str(self.uneExpression.nature)  + "','" +str(self.uneExpression.emplacement) + "']"
         self.parent.serveur.insertionSQL("Mandats",chaine)  
+        
+        
         #la valeur dans la bd de l'emplacement est de 0 si emplacement est NULL
-        self.uneExpression.reinitier() #effacer les valeurs de l'expression pour mettre des nouvelles
+        #self.uneExpression.reinitier() #effacer les valeurs de l'expression pour mettre des nouvelles
         
     def updateExpressions(self):  
         #self.tupleBD=self.parent.modele.selectionLesExpressions()
@@ -487,7 +491,9 @@ class Modele():
             content = fichier.read()
             fichier.close()
             text.insert("%d.%d" %(1,0),content)
-
+    
+    
+    """
     def insertionSQL(self):  
         '''sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id)+ "," +str(self.uneExpression.type) +"," + str(self.uneExpression.emplacement) +"," + str(self.uneExpression.contenu) +"," + str(self.uneExpression.nature) + ");"
         print(sql)
@@ -500,7 +506,7 @@ class Modele():
         self.parent.serveur.insertionSQL(self,"Mandats",valeurs)
         
         self.database.commit()
-        
+        """    
     
     def loaderTexte(self):
         requete = self.parent.serveur.selectionSQL("Textes", "id_Projet, texte")
@@ -573,7 +579,6 @@ class Controleur():
         '''
     def connectionServeur(self):
         #ad="http://"+self.saasIP+":9998"
-        print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
         
