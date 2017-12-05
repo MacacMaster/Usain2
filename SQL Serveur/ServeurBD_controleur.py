@@ -36,9 +36,9 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         sql = '''SELECT ''' +champs+ ''' from '''+nomTable
-        print(sql)
+        #print(sql)
         c.execute(sql)
-        print(c.fetchall())
+      #  print(c.fetchall())              ################################# ERRREUURR FETCH 2x 
         donnees = c.fetchall()
         conn.close()
         return donnees
@@ -67,11 +67,12 @@ class ControleurServeurBD():
         conn.close()
         return donnees
     
-    def selDonnees3(self,nomTable,champs, where, idProjet):
+    def selDonnees3(self,nomTable,champs, where, id):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (id,))
         laselection=c.fetchall()
+        print(laselection)
         conn.close()
         return laselection
     
