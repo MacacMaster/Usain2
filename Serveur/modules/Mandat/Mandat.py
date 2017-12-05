@@ -58,19 +58,9 @@ class Vue():
         self.menubar.add_command(label="Charger un fichier", command= lambda: self.parent.modele.explorateurFichiers(self.text))
         self.root.config(menu=self.menubar)
         
-    def choisirMot(self,event):
-        start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
-        stop = self.text.index('@%s,%s wordend' % (event.x, event.y))
-        self.mot = repr(self.text.get(start, stop))
-        #pour enlever les guillemets au debut et a la fin du mot
-        self.mot = mot[1:-1]
-        return self.mot
+
       
     def dragging(self,event):
-        #start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
-        #end = self.text.index('@%s,%s wordend' % (event.x, event.y)) 
-        #start = self.text.index("sel.first")
-        #end = self.text.index("sel.last")
         fonctionne = True
         try:
             self.mot = self.text.selection_get()
@@ -83,26 +73,7 @@ class Vue():
             self.tfExpression.delete(0,END)
             self.tfExpression.insert(0,self.mot)
             self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
-            '''
-        # obtenir l'index du click
-        index = self.text.index("@%s,%s" % (event.x, event.y))
-        # objenir la caractere qui correspond au click
-        char = (self.parent.vue.text.get(index))
-        if (char != '\n'):
-            tag_indices = list(self.text.tag_ranges("jaune"))
-            #enlever le tag "jaune" qui se trouve dans l'index choisi
-            #index2 = index+1 
-            #self.text.tag_remove(str("jaune"),str(index),str(index+1))
-             
-            self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
-            self.propagateTag(event)
-            self.specialEffect()
-            self.parent.modele.ajouter(self.frameMandat)
-            mot = self.choisirMot(event)
-            self.tfExpression.delete(0,END)
-            self.tfExpression.insert(0,mot)           
-            self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
-            '''
+
     
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -166,9 +137,7 @@ class Vue():
         else:
             # message avertissement
             messagebox.showinfo("SVP", "Informations manquantes")
-            
-
-        
+                  
     def choixNature(self,choix):
         self.choixNatureFait = True #utiliser pour la confirmation plus tard
         if choix==1:
@@ -183,16 +152,10 @@ class Vue():
             self.parent.modele.uneExpression.nature="Attribut"
         
         self.parent.modele.uneExpression.contenu=self.mot
-        
-        if self.mot==self.tfExpression.get():
-            #self.parent.modele.insertionSQL()
-            pass
-            
-            
-    
+     
     def choixType(self,choix):
         self.choixTypeFait = True #utiliser pour la confirmation plus tard
-        #if self.parent.modele.uneExpression.nature!=NULL:
+        #if self.parent.modele.uneExpression.nature!=NULL: 
         if choix==1:
             self.labelChoixType.config(text="Implicite")
             self.parent.modele.uneExpression.type="Implicite"
@@ -204,36 +167,7 @@ class Vue():
             self.parent.modele.uneExpression.type="Supplementaire"
         
         self.parent.modele.uneExpression.contenu=self.mot
-        #self.parent.modele.updateExpressions()
-        self.afficheListBox()
-          
-        #else:
-        #    print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
-        #appel de la fonction SQL pour enregistrer dans la BD
-        
-        #self.parent.modele.insertionSQL(self.parent.modele.uneExpression)         
-        #self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
-        
-    def afficheListBox(self):
-        for item in self.parent.modele.listeExpObj:
-            self.listExpObj.append(item)
-        for item in self.parent.modele.listeExpAct:
-            self.listExpAct.append(item)
-        for item in self.parent.modele.listeExpAtt:
-            self.listExpAtt.append(item)
-        for item in self.parent.modele.listeImpObj:
-            self.listImpObj.append(item)
-        for item in self.parent.modele.listeImpAct:
-            self.listImpAct.append(item)
-        for item in self.parent.modele.listeImpAtt:
-            self.listImpAtt.append(item)
-        for item in self.parent.modele.listeSupObj:
-            self.listSupObj.append(item)
-        for item in self.parent.modele.listeSupAct:
-            self.listSupAct.append(item)
-        for item in self.parent.modele.listeSupAtt:
-            self.listSupAtt.append(item)
-   
+           
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
         self.frameAnalyse.pack(fill=X)
@@ -281,9 +215,7 @@ class Vue():
         self.canAnalyse.create_window(455,360,window=self.listSupAct, width=220, height=120)
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
-        
-        
-        
+               
         #mettre dans une matrice, pour faciliter le parcours des listbox
         self.matrix[0].append(self.listExpObj)
         self.matrix[0].append(self.listExpAct)
@@ -296,8 +228,7 @@ class Vue():
         self.matrix[2].append(self.listSupObj)
         self.matrix[2].append(self.listSupAct)
         self.matrix[2].append(self.listSupAtt)
-        
-        
+          
         self.loaderLesListe()
          
     def loaderLesListe(self):
@@ -313,7 +244,6 @@ class Vue():
     def loaderUneListe(self,liste, type,nature):
         for i in self.parent.modele.selectionLesExpressions(type, nature):
             liste.insert(END,i[0])
-        pass
         
     def resetVue(self):
         #enlever les elements entres (reset)
@@ -333,37 +263,6 @@ class Vue():
                
         conn.close()
         return texteMandat
-        
-              
-    def tagging(self,event):
-        # obtenir l'index du click
-        index = self.text.index("@%s,%s" % (event.x, event.y))
-        # objenir la caractere qui correspond au click
-        char = (self.parent.vue.text.get(index))
-        if (char != '\n'):
-            tag_indices = list(self.text.tag_ranges("jaune"))
-            #enlever le tag "jaune" qui se trouve dans l'index choisi
-            #index2 = index+1 
-            #self.text.tag_remove(str("jaune"),str(index),str(index+1))
-             
-            self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
-            self.propagateTag(event)
-            self.specialEffect()
-            self.parent.modele.ajouter(self.frameMandat)
-            self.mot = self.choisirMot(event)
-            self.tfExpression.delete(0,END)
-            self.tfExpression.insert(0,self.mot)
-            
-            self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
-        
-    def propagateTag(self, event):
-        
-        start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
-        end = self.text.index('@%s,%s wordend' % (event.x, event.y))
-        self.text.tag_add("jaune",start, end)    
-  
-    def specialEffect(self):
-        self.text.tag_config('jaune', background='yellow')
   
     def updateExpressions(self):
         self.parent.modele.updateExpressions()
@@ -543,7 +442,7 @@ class Modele():
 
 class Controleur():
     def __init__(self):
-        '''
+        
         #vraie version
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
@@ -552,16 +451,14 @@ class Controleur():
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
         
-        
-        
-        
-        
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
         self.vue.root.mainloop()
-        '''
         
+        
+        #version debug
+        '''
         self.saasIP=socket.gethostbyname(socket.gethostname())
         self.adresseServeur="http://"+self.saasIP+":9999"
         self.idProjet= 1
@@ -569,9 +466,9 @@ class Controleur():
         self.modele=Modele(self)
         self.vue=Vue(self)
         self.vue.root.mainloop()
+        '''
         
     def connectionServeur(self):
-        #ad="http://"+self.saasIP+":9998"
         print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur

@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 
+
+
 from xmlrpc.client import ServerProxy
 from tkinter import *
 from tkinter.filedialog import *
@@ -9,6 +11,10 @@ import sqlite3
 import time
 from _overlapped import NULL
 
+#pour débugger plus facilement
+import socket
+from xmlrpc.client import ServerProxy
+from subprocess import Popen
 
 class Classe():
     def __init__ (self, pProprietaire, pNom, pResponsabilites, pCollaborateurs):
@@ -77,13 +83,18 @@ class Vue():
 
         #trouver les collaborateurs de la classe
         collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(index)
-        for element in collaborateursDeLaClasse:
-            self.listeCollaboration.insert(END,element[2])
+        #for element in collaborateursDeLaClasse:
+        #    self.listeCollaboration.insert(END,element[2])
         #trouver les responsabilites de la classe
-        responsabilites = self.parent.modele.responsabilitiesDeLaClasse(index)
+        
+        responsabilites = self.parent.modele.responsabilitiesDeLaClasse(str(self.classeChoisi[0]))
         for element in responsabilites:
-            self.listeResponsabilites.insert(END,element[2])
-
+            self.listeResponsabilites.insert(END,element[0])
+        #for element in range(5):
+        #    self.listeResponsabilites.insert(END,"coucou")
+        
+            
+            
         
         '''
         requete = self.serveur.selectionAllSQL("Responsabilites")
@@ -455,11 +466,22 @@ class Modele():
         self.serveur = serveur
 
     def responsabilitiesDeLaClasse(self, id_classe):
-        requete = self.serveur.selectionSQL("Responsabilites", "id, id_Classe, nom")
+        #requete = self.parent.serveur.selectionSQL("Responsabilites", "id, id_Classe, nom")
+        requete = self.parent.serveur.selection
+        nomTable = "Responsabilites"
+        champs = "nom"
+        where = ["id_classe"]
+        valeur = [id_classe]
+        
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        
+        
+        
+        
         responsabilites = []
         for element in requete:
-            if str(element[1]) == str(id_classe):
-                responsabilites.append(element)
+            #if str(element[1]) == str(id_classe):
+            responsabilites.append(element)
         return responsabilites
     
     def collaborateursDeLaClasse(self, id_classe):
@@ -484,13 +506,15 @@ class Modele():
         conn.close()
  
     def nomsDesClasses(self):
-        selected = self.serveur.selectionSQL("Classes", "id, id_projet, proprietaire, nom")
+        selected = self.serveur.selectionSQL3("Classes", "*", "id_projet", str(self.parent.idProjet))
+        #selected = self.parent.serveur.selectionSQL3(self,"Classes", "nom", "id_projet", str(self.parent.idProjet))
+        #selected = self.serveur.selectionSQL("Classes", "id, id_projet, proprietaire, nom")
+        
         self.classes = []
         
         for element in selected:
-            if (str(element[1]) == str(self.parent.idProjet)):
-            #if element[3] == self.parent.idProjet:
-                self.classes.append(element)
+            #if (str(element[1]) == str(self.parent.idProjet)):
+            self.classes.append(element)
         return selected
        
     def insertionConfirmer(self, classe):
@@ -535,42 +559,34 @@ class Modele():
             
 class Controleur():
     def __init__(self):
-        #informations du système quand le programme est lancé
-        #self.idClient = 999;
-        
+        '''
+        #vraie version
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
         self.idProjet=sys.argv[4]
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
+        
+        self.modele=Modele(self)
         self.serveur = self.connectionServeur()
-
+        self.vue=Vue(self)
+        self.vue.root.mainloop()
         
         
         
         '''
-        self.saasIP= None
-        self.utilisateur=None
-        self.organisation=None
-        self.idProjet=None
-        self.clientIP=None
-        self.adresseServeur=None
-        self.serveur = None
-        ''' 
-            
-        #MVC
-        
-    
-        
-        self.modele=Modele(self, self.serveur)
-        self.vue=Vue(self)   
-       
-        
+        #version debug
+        self.saasIP=socket.gethostbyname(socket.gethostname())
+        self.adresseServeur="http://"+self.saasIP+":9999"
+        self.idProjet= 1
+        self.serveur = self.connectionServeur()
+        self.modele=Modele(self,self.serveur)
+        self.vue=Vue(self)
         self.vue.root.mainloop()
-    
+        
+        
     def connectionServeur(self):
-        ad="http://"+self.saasIP+":9999"
         print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
