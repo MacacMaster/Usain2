@@ -22,10 +22,10 @@ class SQL():
         self.parent=parent
         self.Saas=parent.serveur
           
-    def selDonnees(self,champ):
+    def selDonnees(self,champ): #WORKS returns [[row]]
         #(self,nomTable,champs,where,indice)
         
-        return self.Saas.selectionSQL1('PlanifGlobales',champ,'id_Projet',self.parent.idProjet)
+        return self.Saas.selectionSQL3('PlanifGlobales',champ,'id_Projet',self.parent.idProjet)
         
         
     def afficherFonctions(self):
@@ -42,15 +42,17 @@ class SQL():
         elif (priorite==1):
             priorite="Haute"    
         print("PlanifGlobales",self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
-        self.Saas.insertionSQL('PlanifGlobales',self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
+        #self.Saas.insertionSQL('PlanifGlobales',self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
         #fonction d'ecriture dans la table planification
         
         pass
     
     #"INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,)
-    #test
+
     def insCustom(self,sprint,nom,priorite,debut,fin):
         self.Saas.insCustom("INSERT INTO PlanifGlobales VALUES (?,?,?,?,?,?,?,?)",[self.parent.idProjet,sprint,nom,self.parent.utilisateur,priorite,debut,fin])
+    
+    
     def supressionFonction(self):
         pass
     
