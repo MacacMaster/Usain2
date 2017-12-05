@@ -15,13 +15,21 @@ class ControleurServeurBD():
         self.id=0
         
     #test pour envoyer une commande fait a la main -M-A
-    def insCustom(self,commande,values):
-        conn= sqlite3.connect('SprintMasterData.db')
-        c = conn.cursor()
-        self.id+=1
-        curseur.execute(commande, (self.id, values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],))
-        conn.commit()
-        conn.close()
+    #https://stackoverflow.com/questions/21142531/sqlite3-operationalerror-no-such-column
+    
+#     def insCustom(self,commande,values):
+#         conn= sqlite3.connect('SprintMasterData.db')
+#         c = conn.cursor()
+#         params = (userName, password, confirmPassword, firstName, lastName,
+#           companyName, email, phoneNumber, addressLine1, addressLine2, 
+#           addressLine3, zipCode, province, country, regDate)
+# 
+#         c.execute("INSERT INTO"+ People+"VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
+#         
+#         self.id+=1
+#         c.execute(commande, (self.id, values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],))
+#         conn.commit()
+#         conn.close()
         
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')
@@ -32,13 +40,24 @@ class ControleurServeurBD():
         conn.close()
         return self.id
     
+    #M-A id est un argument Facultatif FUCKIT
+    #def insDonneesPlanif(self,id,idprojet,idsprint,idresponsable,priorite,debut,fin):
+    def insDonneesPlanif(self,tableau,params):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        #self.id+=1
+        c.execute('''INSERT into '''+ tableau +''' VALUES (?,?,?,?,?,?,?,?)''',params)
+        conn.commit()
+        conn.close()
+        return self.id
+    
     def selDonnees(self,nomTable,champs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         sql = '''SELECT ''' +champs+ ''' from '''+nomTable
-        print(sql)
+        #print(sql)
         c.execute(sql)
-        print(c.fetchall())
+      #  print(c.fetchall())              ################################# ERRREUURR FETCH 2x 
         donnees = c.fetchall()
         conn.close()
         return donnees
@@ -67,11 +86,12 @@ class ControleurServeurBD():
         conn.close()
         return donnees
     
-    def selDonnees3(self,nomTable,champs, where, idProjet):
+    def selDonnees3(self,nomTable,champs, where, id):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (idProjet,))
+        c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (id,))
         laselection=c.fetchall()
+        print(laselection)
         conn.close()
         return laselection
     
@@ -90,6 +110,8 @@ class ControleurServeurBD():
             3.Les deux listes doivent etre de taille identique.Par contre, il n'y a pas de limite. 
         
     '''
+   
+   ##Pourquoi faire une telle fonction ? Il y a déjà une fonction de sélection complexe
     def selDonneesWHERE(self,nomTable,champs,where,valeur):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()

@@ -126,15 +126,16 @@ class Vue():
         self.canevaProjet.create_window(350,400,window=btnNProjet,width=50,height=30) 
         
     def okProjet(self):
-        self.controleur.creerProjet(self.entrerNomProjet.get())
-        self.creerCadreCentral()
+        self.nouveauProjet = self.controleur.creerProjet(self.entrerNomProjet.get())
+        self.listeProjets.insert(END,self.entrerNomProjet.get())
+        
         
         
         
     def chargerProjet(self):
             if self.listeProjets.curselection():
                 nomprojet=self.listeProjets.selection_get()
-                self.controleur.chargerProjet(nomprojet, self.controleur.idOrga);
+                self.controleur.chargerProjet(nomprojet);
                 self.changeCadre(self.cadreCentral2)
             else:
                 self.chooseProjectFail()

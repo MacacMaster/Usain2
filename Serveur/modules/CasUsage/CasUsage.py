@@ -32,22 +32,23 @@ class Controleur():
         return self.serveur.selectionSQL("CasUsages","etat")
            
     def envoyerCas(self,cas,usager,machine):
-        self.id+=1
-        indice=str(self.id)
         self.serveur.insertionSQL("CasUsages","'"+str(self.idProjet)+"','"+cas+"','Termine'")
-        self.serveur.insertionSQL("Humains","'"+str(self.id)+"','"+usager+"'")
-        self.serveur.insertionSQL("Machines","'"+str(self.id)+"','"+machine+"'")
+        indiceCas=self.serveur.selectionSQL3("CasUsages","id","description",str(cas))
+        self.serveur.insertionSQL("Humains","'"+str(indiceCas)+"','"+usager+"'")
+        self.serveur.insertionSQL("Machines","'"+str(indiceCas)+"','"+machine+"'")
         self.vue.mettreAJourListes()
    
     def chercherBdcas(self,indice):
-        return self.serveur.selectionSQL3("CasUsages","description","id",indice+1)
+        return self.serveur.selectionSQL3("CasUsages","description","id",indice)
        
     def chercherUtilisateur(self,indice):
-        utilisateur=self.serveur.selectionSQL2("Humains","etat","id","id_CasUsage",self.idScena,indice+1)
+        print("Indice humain cas"            ,self.vue.indiceCasModifier)
+        utilisateur=self.serveur.selectionSQL3("Humains","etat","id_CasUsage",self.vue.indiceCasModifier)
+        print("humains                  ",utilisateur)
         return utilisateur
     
     def chercherMachine(self,indice):
-       machine=self.serveur.selectionSQL2("Machines","etat","id","id_CasUsage",self.idScena,indice+1)
+       machine=self.serveur.selectionSQL2("Machines","etat","id","id_CasUsage",self.idScena,indice)
        return machine
     
     def modifierCas(self,cas,usager,machine):
@@ -55,6 +56,13 @@ class Controleur():
         self.serveur.updateSQL("Humains",usager,"etat","id","id_CasUsage",self.idScena,self.vue.indiceCasModifier+1)
         self.serveur.updateSQL("Machines",machine,"etat","id","id_CasUsage",self.idMach,self.vue.indiceCasModifier+1)
    
+
+    def indiceCasModifier(self, nomCas):
+        indice=self.serveur.selectionSQL3("CasUsages","id", "description", nomCas)
+        self.indice=str(indice)[2:int(len(indice)-3)]
+        indiceGood=self.indice
+        print("indice du cas a modifier  : ", indiceGood)
+        return indiceGood
     
 class Vue():
     def __init__(self, pControleur):
@@ -96,9 +104,12 @@ class Vue():
         self.btnEnvoyerUsager=Button(self.caneva,text="Envoyer",width=20,command=self.envoyerTexte)
         self.caneva.create_window(400,200,window=self.btnEnvoyerUsager,width=150,height=20)
     
-        self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
-        self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
+        #self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
+        #self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
         
+        self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.select)
+        self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
+
         self.listeetat=Listbox(self.caneva,bg="lightblue",borderwidth=0,relief=FLAT,width=12,height=12)
         self.caneva.create_window(670,350,window=self.listeetat)
        
@@ -107,10 +118,28 @@ class Vue():
         self.caneva.create_window(350,350,window=self.listecas)
         self.mettreAJourListes()
 
-    
+    def select(self):
+        print(self.controleur.serveur.selectionSQL("Humains","id"))
+        
+    def indiceCasModifier(self, nomCas):
+        print(nomCas,"indicecas2")
+        self.controleur.indiceCasModifier(nomCas)
+        #self.menuModifier()
+         
     def indiceDeLaBD(self):
-        self.indiceCasModifier=self.listecas.curselection()[0]
-        print("indice a modifier : ",self.indiceCasModifier)
+        #self.indiceCasModifier=self.listecas.curselection()[0]
+       # print("indice a modifier : ",self.indiceCasModifier)
+       # self.menuModifier()
+        position=self.listecas.curselection()[0] # indice du cas selectionné
+        print(position)
+        nomCasSelection=self.listecas.get(position, position)
+        if(position!=0):
+            nomCasSelectionGood=str(nomCasSelection)[4:int(len(nomCasSelection)-6)]
+        else: 
+            nomCasSelectionGood=str(nomCasSelection)[2:int(len(nomCasSelection)-2)]
+        print("nom cas a modifier : ",nomCasSelectionGood, "    : ", nomCasSelection)
+        self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
+        #humain=self.controleur.humainCasModifier(indice)
         self.menuModifier()
 
     def remplirListeCas(self):
@@ -122,10 +151,11 @@ class Vue():
     def remplirListBoxCas(self):
         self.listecas.delete(0, END)
         laselection=self.controleur.remplirListeCas()
+        
         for i in laselection:
             temp=str(i)[3:int(len(i)-5)]
             self.listeetat.insert(END,temp)
-            print(temp)
+            #print("CAS",i)
             self.listecas.insert(END,i)
         self.listeCas.clear()
             
@@ -151,13 +181,13 @@ class Vue():
         self.labelActionMachine=Entry(bg="white")
         self.canevaMod.create_window(650,200,window=self.labelActionMachine,width=150,height=250)
         
-        cas=self.controleur.chercherBdcas(self.indiceCasModifier+1,);
+        cas=self.controleur.chercherBdcas(self.indiceCasModifier,);
         self.labelCasUsage.insert(END, str (cas))
         
-        usager=self.controleur.chercherUtilisateur(self.indiceCasModifier+1,)#
+        usager=self.controleur.chercherUtilisateur(self.indiceCasModifier,)#
         self.labelActionUsager.insert(END, str(usager))
 
-        machine=self.controleur.chercherMachine(self.indiceCasModifier+1,),
+        machine=self.controleur.chercherMachine(self.indiceCasModifier,),
         self.labelActionMachine.insert(END,str(machine))
         
         self.canevaMod.create_window(400,200,window=self.labelActionUsager,width=150,height=250)
