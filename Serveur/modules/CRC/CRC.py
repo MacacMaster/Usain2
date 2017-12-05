@@ -38,6 +38,7 @@ class Vue():
         self.classes = []
         #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
      
+        
 
         self.creerVueMenu()
         self.collaborateurs=[]
@@ -69,7 +70,7 @@ class Vue():
         #chercher la liste des classes
 
     def choisirClasse(self,event):
-        
+        print("on choisit la classe")
         #vider la liste
         self.listeResponsabilites.delete(0, END) #effacer la liste
         self.listeCollaboration.delete(0, END) #effacer la liste
@@ -87,29 +88,18 @@ class Vue():
         #    self.listeCollaboration.insert(END,element[2])
         #trouver les responsabilites de la classe
         
+        #loader les responsabilités
         responsabilites = self.parent.modele.responsabilitiesDeLaClasse(str(self.classeChoisi[0]))
         for element in responsabilites:
             self.listeResponsabilites.insert(END,element[0])
         #for element in range(5):
         #    self.listeResponsabilites.insert(END,"coucou")
         
-            
-            
-        
-        '''
-        requete = self.serveur.selectionAllSQL("Responsabilites")
-        for element in requete: 
-            #chercher parmi les responsabilites celles qui a le même ID classe que celle qu'on veut
-            if (element[1] == idClasse):
-                self.listeResponsabilites.insert(END,element[2]) #le champ avec index 2 correspond au nom
-        
-        #trouver les collabrateurs de la classe
-                requete = self.serveur.selectionAllSQL("Responsabilites")
-        for element in requete: 
-            #chercher parmi les collaborateurs celles qui a le même ID classe que celle qu'on veut
-            if (element[1] == idClasse):
-                self.listeCollaboration.insert(END,classes[2]) #le champ avec index 2 correspond au nom
-      '''
+        #loader les collaborateurs
+        collaborateurs  = self.parent.modele.collaborateursDeLaClasse(str(self.classeChoisi[0]))
+        for element in collaborateurs:
+            self.listeCollaboration.insert(END,element[0])
+       
         #informations sur le propriétaire
         #self.lblNomClasse.config(text = self.classes[index][3]) # 3 = nom de la classe
         proprietaire= self.parent.modele.classes[index][2]
@@ -328,14 +318,12 @@ class Vue():
         
         scrollbar = Scrollbar(frame6, orient = "vertical")
         
-        self.listeResponsabilites = Listbox(frame6, height=25,yscrollcommand=scrollbar)
-        self.listeResponsabilites.pack(side=LEFT, fill=BOTH, expand=1)
-        self.listeResponsabilites.bind("<FocusIn>", self.box_focused)
-        self.listeResponsabilites.bind("<FocusOut>", self.box_unfocused)
+        self.listeResponsabilitesAjout = Listbox(frame6, height=25,yscrollcommand=scrollbar)
+        self.listeResponsabilitesAjout.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeResponsabilitesAjout.bind("<FocusIn>", self.box_focused)
+        self.listeResponsabilitesAjout.bind("<FocusOut>", self.box_unfocused)
  
-
-
-        scrollbar.config(command=self.listeResponsabilites.yview)  
+        scrollbar.config(command=self.listeResponsabilitesAjout.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
         
         #scrollbar droite
@@ -344,12 +332,12 @@ class Vue():
         
         scrollbar = Scrollbar(frame5, orient = "vertical")
         
-        self.listeCollaboration = Listbox(frame5, height=25,yscrollcommand=scrollbar)
-        self.listeCollaboration.pack(side=LEFT, fill=BOTH, expand=1)
-        self.listeCollaboration.bind("<FocusIn>", self.box_focused)
-        self.listeCollaboration.bind("<FocusOut>", self.box_unfocused)
+        self.listeCollaborationAjout = Listbox(frame5, height=25,yscrollcommand=scrollbar)
+        self.listeCollaborationAjout.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeCollaborationAjout.bind("<FocusIn>", self.box_focused)
+        self.listeCollaborationAjout.bind("<FocusOut>", self.box_unfocused)
         
-        scrollbar.config(command=self.listeCollaboration.yview)  
+        scrollbar.config(command=self.listeCollaborationAjout.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
                
         #bouton en bas
@@ -366,15 +354,15 @@ class Vue():
         boutonCanceler.pack(side = LEFT)  
         
                
-            
+  
             
             
     def canceler(self):
         #vider les listes, car aucune sauvegarde n'a été faite!
-        self.listeCollaboration = []
-        self.listeResponsabilites = []
-        self.collaborateurs = []
-        self.responsabilites = []  
+        #self.listeCollaboration = []
+        #self.listeResponsabilites = []
+        #self.collaborateurs = []
+        #self.responsabilites = []  
         self.entryNomClasse.delete(0, END)
         self.entryNomClasse.insert(0, "")
         self.entryProprietaire.delete(0, END)
@@ -394,23 +382,23 @@ class Vue():
     def saisirCollaboration(self):  
         saisie=  self.classeChoisie.get()
         self.collaborateurs.append(saisie)
-        self.listeCollaboration.insert(END,saisie)
+        self.listeCollaborationAjout.insert(END,saisie)
         #vider le Entry après avoir saisi quelque chose
         #self.entryCollaboration.delete(0,END)
         print(saisie)
         
     def supprimer(self):
-        if self.focused_box == self.listeCollaboration:
-            index = self.listeCollaboration.curselection()[0]
-            self.listeCollaboration.delete(index)
-        elif self.focused_box == self.listeResponsabilites:
-            index = self.listeResponsabilites.curselection()[0]
-            self.listeResponsabilites.delete(index)
+        if self.focused_box == self.listeCollaborationAjout:
+            index = self.listeCollaborationAjout.curselection()[0]
+            self.listeCollaborationAjout.delete(index)
+        elif self.focused_box == self.listeResponsabilitesAjout:
+            index = self.listeResponsabilitesAjout.curselection()[0]
+            self.listeResponsabilitesAjout.delete(index)
             
     def saisirResponsabilite(self,event):
         saisie = self.entryResponsabilite.get()
-        self.responsabilites.append(saisie)
-        self.listeResponsabilites.insert(END,saisie)
+        #self.listeResponsabilitesAjout.insert(saisie)
+        self.listeResponsabilitesAjout.insert(END,saisie)
         #vider le Entry après avoir saisi quelque chose
         self.entryResponsabilite.delete(0,END)
         print(self.entryResponsabilite.get())
@@ -449,7 +437,7 @@ class Vue():
             messagebox.showwarning("Attention", "Saisir les informations manquantes")
         
         else: 
-            classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilites, self.listeCollaboration)
+            classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilitesAjout, self.listeCollaborationAjout)
             self.parent.modele.insertionConfirmer(classe)
             
             #self.parent.modele.insertionConfirmer(classe)
@@ -467,31 +455,28 @@ class Modele():
 
     def responsabilitiesDeLaClasse(self, id_classe):
         #requete = self.parent.serveur.selectionSQL("Responsabilites", "id, id_Classe, nom")
-        requete = self.parent.serveur.selection
+        #requete = self.parent.serveur.selection
         nomTable = "Responsabilites"
         champs = "nom"
         where = ["id_classe"]
         valeur = [id_classe]
         
         requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-        
-        
-        
-        
-        responsabilites = []
-        for element in requete:
-            #if str(element[1]) == str(id_classe):
-            responsabilites.append(element)
-        return responsabilites
+ 
+        return requete
     
     def collaborateursDeLaClasse(self, id_classe):
         requete = self.serveur.selectionSQL("Collaborations", "id, id_Classe, nom")
         collaborateurs = []
-        for element in requete:
-            if str(element[1]) == str(id_classe):
-                collaborateurs.append(element)
-        return collaborateurs
+
+        requete = self.parent.serveur.selection
+        nomTable = "Collaborations"
+        champs = "nom"
+        where = ["id_classe"]
+        valeur = [str(id_classe)]
         
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        return requete
        
     def enregistrer(self,texteMandat):
         #texteMandat = texteMandat.get(1.0,'end-1c')
@@ -541,12 +526,12 @@ class Modele():
             nom = classe.responsabilites.get(i)   
             chaine = "'" + str(idClasse) + "','" +str(nom) + "'"
             self.parent.serveur.insertionSQL("Responsabilites",chaine)
-        '''
+        
         for i in range (classe.collaborateurs.size()):
             nom = classe.collaborateurs.get(i)   
             chaine = "'" + str(idClasse) + "','" +str(nom) + "'"
             self.parent.serveur.insertionSQL("Collaborations",chaine)
-        '''
+        
     '''
     def creerChaine(liste):
         listeEnString = "'"
