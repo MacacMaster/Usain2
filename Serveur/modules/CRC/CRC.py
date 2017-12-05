@@ -83,13 +83,18 @@ class Vue():
 
         #trouver les collaborateurs de la classe
         collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(index)
-        for element in collaborateursDeLaClasse:
-            self.listeCollaboration.insert(END,element[2])
+        #for element in collaborateursDeLaClasse:
+        #    self.listeCollaboration.insert(END,element[2])
         #trouver les responsabilites de la classe
-        responsabilites = self.parent.modele.responsabilitiesDeLaClasse(index)
+        
+        responsabilites = self.parent.modele.responsabilitiesDeLaClasse(str(self.classeChoisi[0]))
         for element in responsabilites:
-            self.listeResponsabilites.insert(END,element[2])
-
+            self.listeResponsabilites.insert(END,element[0])
+        #for element in range(5):
+        #    self.listeResponsabilites.insert(END,"coucou")
+        
+            
+            
         
         '''
         requete = self.serveur.selectionAllSQL("Responsabilites")
@@ -461,11 +466,22 @@ class Modele():
         self.serveur = serveur
 
     def responsabilitiesDeLaClasse(self, id_classe):
-        requete = self.serveur.selectionSQL("Responsabilites", "id, id_Classe, nom")
+        #requete = self.parent.serveur.selectionSQL("Responsabilites", "id, id_Classe, nom")
+        requete = self.parent.serveur.selection
+        nomTable = "Responsabilites"
+        champs = "nom"
+        where = ["id_classe"]
+        valeur = [id_classe]
+        
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        
+        
+        
+        
         responsabilites = []
         for element in requete:
-            if str(element[1]) == str(id_classe):
-                responsabilites.append(element)
+            #if str(element[1]) == str(id_classe):
+            responsabilites.append(element)
         return responsabilites
     
     def collaborateursDeLaClasse(self, id_classe):
