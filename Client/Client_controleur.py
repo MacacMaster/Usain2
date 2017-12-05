@@ -50,9 +50,16 @@ class Controleur():
         return clientIP
 
     def fermerApplication(self):
-        
+    
         #self.log.writeLog("Fermeture du Client")
+        if self.serveur:
+            self.serveur.fermeture(self.utilisateur)
         self.vue.root.destroy()
+        
+        
+        
+        
+        
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Vérification des informations avant l'envoi au serveur
@@ -80,8 +87,6 @@ class Controleur():
         
     def creerProjet(self,nom):
             self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
-            
-
             
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)

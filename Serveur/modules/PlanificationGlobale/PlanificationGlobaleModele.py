@@ -4,9 +4,12 @@ import sqlite3
 from time import *
 from PlanificationGlobale  import *
 
+#TODO - UPDATE
+
 class Modele():
     def __init__(self, parent):
         self.parent=parent
+        
         pass
         
     def importerDonnees(self,projectName):
@@ -33,16 +36,18 @@ class SQL():
         pass
     
     #(Numéro Sprint,Nom de la fonction, priorité(basse=3,moyenne=2,haute=1)
-    def creerFonction(self,sprint,nom,priorite,debut,fin):
-        #id,id_Projet,id_Sprint,nom,id_Responsable,priorite,date_debut,date_fin
+    def creerFonction(self,sprint,nomfonction,priorite,debut,fin):
+        #id,id_Projet,id_Sprint,responsable,id_Responsable,priorite,date_debut,date_fin
         if (priorite==3):
             priorite="Basse"
         elif (priorite==2):
             priorite="Moyenne"
         elif (priorite==1):
             priorite="Haute"    
-        print("PlanifGlobales",self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
-        #self.Saas.insertionSQL('PlanifGlobales',self.parent.idProjet+","+sprint+","+nom+","+ self.parent.utilisateur+","+priorite+","+debut+","+fin)
+
+        #id,idprojet,idsprint,idresponsable,priorite,debut,fin
+        params = (self.parent.id,self.parent.idProjet,sprint,self.parent.utilisateur,nomfonction,priorite,debut,fin)
+        self.Saas.insDonneesPlanif('''PlanifGlobales''',params)
         #fonction d'ecriture dans la table planification
         
         pass

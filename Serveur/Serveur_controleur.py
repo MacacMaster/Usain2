@@ -71,6 +71,7 @@ class ControleurServeur():
         self.modele= ModeleService(self)
         self.ipServeurBd = None
         self.serveurBD=None
+        self.nomUsager=""
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Connection au serveurDB
@@ -83,10 +84,11 @@ class ControleurServeur():
        
         
         #variables id
+        self.nomUsager = pIdentifiantNomUsager
         identifiantNomUsager = pIdentifiantNomUsager
         identifiantNomOrga = pIdentifiantNomOrga
         identifiantMotDePasse = pIdentifiantMotDePasse
-		#rep = self.serveurBD.selDonnees("Projets", "Nom")        clientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
+		#rep = self.serveurBD.selDonnees("Projets", "Nom")        
         clientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
         if (clientTempo == 0):
             return 0
@@ -105,6 +107,10 @@ class ControleurServeur():
         idProjet = self.serveurBD.chargerProjet(nomprojet, idorga)
         return idProjet
         
+    def fermeture(self, nomUtilisateur):
+        print("Ne ferme pas")
+        if nomUtilisateur == self.nomUsager:
+            self.nomUsager=""
         
     def finDuProgramme(self):
         daemon.shutdown()
@@ -158,6 +164,10 @@ class ControleurServeur():
     
     def insertionSQL(self,nomTable,valeurs):
         return self.serveurBD.insDonnees(nomTable, valeurs)
+    
+    #Gestion ID Manuelle M-A
+    def insDonneesPlanif(self,tableau,params):
+        return self.serveurBD.insDonneesPlanif(tableau,params)
     
     def selectionSQL1(self,nomTable,champs,where,indice):
         return self.serveurBD.selDonnees3(self,nomTable,champs,where,indice)
