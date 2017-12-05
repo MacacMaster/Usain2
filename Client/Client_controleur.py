@@ -40,13 +40,13 @@ class Controleur():
     def chargerProjet(self, nomprojet, idorga):
         idProjet = self.serveur.chargerProjet(nomprojet, idorga)
         self.idProjet = idProjet
-        print("id du projet coté client controleur", self.idProjet)
+        #print("id du projet coté client controleur", self.idProjet)
         return idProjet
     
     #trouve l'IP du client
     def chercherIP(self):
         clientIP = socket.gethostbyname(socket.gethostname())
-        print("L'addresse ip du client est: ", clientIP)
+        #print("L'addresse ip du client est: ", clientIP)
         return clientIP
 
     def fermerApplication(self):
@@ -59,7 +59,7 @@ class Controleur():
         if (pIdentifiantNomOrga !="" and pIdentifiantNomUsager !="" and pIdentifiantMotDePasse !="" ):
             #connection au Serveur
             ad="http://"+self.saasIP+":9999"
-            print("Connection au serveur Saas en cours...")
+            #print("Connection au serveur Saas en cours...")
             self.serveur=ServerProxy(ad,allow_none = 1)
             print("Connection au serveur Saas réussi")
             #
@@ -79,7 +79,6 @@ class Controleur():
         self.serveur.selectionSQL("Projets","id")
         
     def creerProjet(self,nom):
-            print
             self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
             
 
@@ -87,15 +86,15 @@ class Controleur():
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)
         if rep:
-            print(rep[0])
+            #print(rep[0])
             cwd=os.getcwd()
             lieuApp="/"+rep[0]
             lieu=cwd+lieuApp
-            print(lieu)
+            #print(lieu)
             if not os.path.exists(lieu):
                 os.mkdir(lieu) #plante s'il existe deja
             reso=rep[1]
-            print(rep[1])
+            #print(rep[1])
             for i in rep[2]:
                 if i[0]=="fichier":
                     nom=reso+i[1]
@@ -133,15 +132,15 @@ class Controleur():
             cwd=os.getcwd()
             lieuApp="/"+rep[0]
             lieu=cwd+lieuApp
-            print(lieu)
+            #print(lieu)
             if not os.path.exists(lieu):
                 os.mkdir(lieu) #plante s'il exist deja
             reso=rep[1]
-            print(rep[1])
+            #print(rep[1])
             for i in rep[2]:
                 if i[0]=="fichier":
                     nom=reso+i[1]
-                    print("DODODOO",nom)
+                    #print("DODODOO",nom)
                     rep=self.serveur.requeteFichier(nom)
                     fiche=open(lieu+"/"+i[1],"wb")
                     fiche.write(rep.data)

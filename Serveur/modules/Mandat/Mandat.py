@@ -375,7 +375,7 @@ class Expression():
         self.type= NULL
         self.nature=NULL
         self.emplacement=NULL
-        
+    """    
     def reinitier(self):
         self.id=NULL
         self.contenu=NULL
@@ -383,7 +383,7 @@ class Expression():
         self.type= NULL
         self.nature=NULL
         self.emplacement=NULL
-        
+        """
 class Modele():
     def __init__(self, parent):
         self.parent=parent
@@ -489,13 +489,16 @@ class Modele():
             text.insert("%d.%d" %(1,0),content)
 
     def insertionSQL(self):  
-        sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id)+ "," +str(self.uneExpression.type) +"," + str(self.uneExpression.emplacement) +"," + str(self.uneExpression.contenu) +"," + str(self.uneExpression.nature) + ");"
+        '''sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id)+ "," +str(self.uneExpression.type) +"," + str(self.uneExpression.emplacement) +"," + str(self.uneExpression.contenu) +"," + str(self.uneExpression.nature) + ");"
         print(sql)
         print("Envoie a la BD")
+        '''
         
+        '''self.curseur.execute("INSERT INTO Mots VALUES(?,?,?,?,?)", (self.uneExpression.id,self.uneExpression.type,self.uneExpression.emplacement,self.uneExpression.contenu,self.uneExpression.nature,))
+        print("Envoi avec succes")'''
         
-        self.curseur.execute("INSERT INTO Mots VALUES(?,?,?,?,?)", (self.uneExpression.id,self.uneExpression.type,self.uneExpression.emplacement,self.uneExpression.contenu,self.uneExpression.nature,))
-        print("Envoi avec succes")
+        self.parent.serveur.insertionSQL(self,"Mandats",valeurs)
+        
         self.database.commit()
         
     
@@ -540,7 +543,7 @@ class Modele():
 
 class Controleur():
     def __init__(self):
-        '''
+        
         #vraie version
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
@@ -555,6 +558,7 @@ class Controleur():
         
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
+
         self.vue=Vue(self)
         self.vue.root.mainloop()
         '''
@@ -566,7 +570,7 @@ class Controleur():
         self.modele=Modele(self)
         self.vue=Vue(self)
         self.vue.root.mainloop()
-        
+        '''
     def connectionServeur(self):
         #ad="http://"+self.saasIP+":9998"
         print("Connection au serveur BD...")
