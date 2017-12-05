@@ -90,6 +90,8 @@ class ControleurServeurBD():
             3.Les deux listes doivent etre de taille identique.Par contre, il n'y a pas de limite. 
         
     '''
+   
+   ##Pourquoi faire une telle fonction ? Il y a déjà une fonction de sélection complexe
     def selDonneesWHERE(self,nomTable,champs,where,valeur):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
