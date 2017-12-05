@@ -81,8 +81,6 @@ class Controleur():
     def creerProjet(self,nom):
             self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
             
-
-            
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)
         if rep:
