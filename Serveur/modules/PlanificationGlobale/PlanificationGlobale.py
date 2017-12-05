@@ -30,11 +30,12 @@ from subprocess import Popen
 class Controleur():
     def __init__(self):
             
-               
+
         #self.saasIP="10.57.47.8" #sys.argv[1]
         self.saasIP= socket.gethostbyname(socket.gethostname()) #sys.argv[1]
         self.utilisateur="BOB"  #sys.argv[2]
         self.organisation="Organe"  #sys.argv[3]
+
         self.idProjet="111"   #sys.argv[4]
         self.clientIP="10.57.47.7"   #sys.argv[5]
         self.portSaas=":9999"
@@ -44,20 +45,25 @@ class Controleur():
         self.modele=Modele(self)
         self.sql=SQL(self)
 
+
         self.vue=Vue(self)
+
 
         self.writeLog("Ouverture du Module")
 
         
 
         #self.sql.insCustom("sprint","nom","priorite","debut","fin")
+
         self.listeFonctions=self.sql.selDonnees("*")
         print (self.listeFonctions)
         
         #self.sql.creerFonction("Sprint 1","FonctionNom","priorite","debut","fin")
         #self.sql.creerFonction('Sprint1','FonctionNom','priorite','debut','fin')
         self.sql.calculPourcent()
+
         self.sql.creerFonction("Sprint1","FonctionNom","priorite","debut","fin")
+
 
         self.vue.root.mainloop()
         
