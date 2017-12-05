@@ -155,7 +155,7 @@ class Vue():
      
     def choixType(self,choix):
         self.choixTypeFait = True #utiliser pour la confirmation plus tard
-        #if self.parent.modele.uneExpression.nature!=NULL:
+        #if self.parent.modele.uneExpression.nature!=NULL: 
         if choix==1:
             self.labelChoixType.config(text="Implicite")
             self.parent.modele.uneExpression.type="Implicite"
