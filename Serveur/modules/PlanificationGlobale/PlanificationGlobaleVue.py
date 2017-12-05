@@ -100,20 +100,35 @@ class Vue():
         self.canAjoutModif=Canvas(self.frameAjoutModif, width=1000, height=200, bg="steelblue")
         self.canAjoutModif.pack()
         
-        self.lblAMFonctionnalite=Label(self.frameAjoutModif, text="Fonctionnalite: ", width=150, height=25)
+        self.lblAMFonctionnalite=Label(self.frameAjoutModif, text="Fonctionnalite: ", width=120, height=25)
         self.canAjoutModif.create_window(90,40, window=self.lblAMFonctionnalite, width=120, height=25)
         
-        self.lblAMPriorite=Label(self.frameAjoutModif, text="Priorite: ", width=150, height=25)
+        self.lblAMPriorite=Label(self.frameAjoutModif, text="Priorite: ", width=120, height=25)
         self.canAjoutModif.create_window(90,70, window=self.lblAMPriorite, width=120, height=25)
         
-        self.lblAMSprint=Label(self.frameAjoutModif, text="Sprint: ", width=150, height=25)
+        self.lblAMSprint=Label(self.frameAjoutModif, text="Sprint: ", width=120, height=25)
         self.canAjoutModif.create_window(90,100, window=self.lblAMSprint, width=120, height=25)
         
-        self.lblAMPourcent=Label(self.frameAjoutModif, text="%: ", width=150, height=25)
+        self.lblAMPourcent=Label(self.frameAjoutModif, text="%: ", width=120, height=25)
         self.canAjoutModif.create_window(90,130, window=self.lblAMPourcent, width=120, height=25)
         
-        self.lblAMResponsable=Label(self.frameAjoutModif, text="Responsable: ", width=150, height=25)
+        self.lblAMResponsable=Label(self.frameAjoutModif, text="Responsable: ", width=120, height=25)
         self.canAjoutModif.create_window(90,160, window=self.lblAMResponsable, width=120, height=25)
+        
+        self.tfFonctionnalite=Entry(self.frameAjoutModif, width=750)
+        self.canAjoutModif.create_window(575,40, window=self.tfFonctionnalite, width=750, height=25)
+        
+        self.tfPriorite=Entry(self.frameAjoutModif, width=750)
+        self.canAjoutModif.create_window(575,70, window=self.tfPriorite, width=750, height=25)
+        
+        self.tfSprint=Entry(self.frameAjoutModif, width=750)
+        self.canAjoutModif.create_window(575,100, window=self.tfSprint, width=750, height=25)
+        
+        self.tfPourcent=Entry(self.frameAjoutModif, width=750)
+        self.canAjoutModif.create_window(575,130, window=self.tfPourcent, width=750, height=25)
+        
+        self.tfResponsable=Entry(self.frameAjoutModif, width=750)
+        self.canAjoutModif.create_window(575,160, window=self.tfResponsable, width=750, height=25)
         
     def fenetreConfirmation(self):
         self.topConfirm=Toplevel(height=200)

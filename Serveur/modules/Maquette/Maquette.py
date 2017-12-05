@@ -1,7 +1,9 @@
 from tkinter import *
+from xmlrpc.client import ServerProxy
+import sqlite3
 
 class Formes():
-    def __init__(self, x1,y1,x2,y2, pNom, pText = ""):
+    def __init__(self, x1,y1,x2,y2, pNom, pText = "i"):
         #self.modele=pModele
         self.nom = pNom
         self.x1 = x1
@@ -13,12 +15,41 @@ class Formes():
 class Controleur():
     def __init__(self):
         self.modele = Modele(self)
+        self.idProjet = int(sys.argv[4])
+        self.saasIP = sys.argv[1]
+        self.connexionSaas()
+        self.chargerFormes()
         self.vue = Vue(self)
         self.unReprend=False
         self.vue.root.mainloop()
         print("controleur")
+    
+    def connexionSaas(self):
+        ad="http://"+self.saasIP+":9999"
+        print("Connection au serveur Saas en cours...")
+        self.serveur=ServerProxy(ad,allow_none = 1)
+    
+    
+    def chargerFormes(self):
+        print("Je cherche des formes")
+        for i in self.serveur.selectionSQL3("Formes","x1, y1, x2, y2, texte, nom","id_Projet",self.idProjet):
+            print(i)
+            nom = i[5]
+            print(nom)
+            forme = Formes(i[0],i[1],i[2],i[3],i[4],nom)
+            self.modele.formesTempo.append(forme)
         
+    
+    def commit(self):
+        for i in self.modele.formes:
+            self.serveur.insertionSQL("Formes", "'"+str(self.idProjet)+"', '"+str(i.x1)+"', '"+str(i.y1)+"', '"+str(i.x2)+"', '"+str(i.y2)+"', '"+i.text+"', '"+i.nom+"'")
 
+        
+        for i in self.modele.formes:
+            self.modele.formes.remove(i)
+            
+        for i in self.modele.formes:
+            print(i)
     
 class Vue():
     def __init__(self, pControleur):
@@ -43,7 +74,7 @@ class Vue():
         
     def afficherCaneva(self):
         #self.caneva.delete(ALL)
-        for i in self.controleur.modele.formes:
+        for i in self.controleur.modele.formesTempo:
             if (i.nom == "Rectangle"):
                 print("Dessine")
                 self.caneva.create_rectangle(i.x1,i.y1,i.x2,i.y2)
@@ -83,12 +114,13 @@ class Vue():
         self.bntFleche=Button(self.cadreBtn,text="Fleche",width=30, command = self.creeFleche)
         self.cadreBtn.create_window(100,300,window=self.bntFleche,width=150,height=30)
 
-        self.btnRectangle=Button(self.cadreBtn,text="Commit",width=30)
+        self.btnRectangle=Button(self.cadreBtn,text="Commit",width=30, command = self.commit)
         self.cadreBtn.create_window(100,500,window=self.btnRectangle,width=150,height=30)
     
-        self.btnCercle=Button(self.cadreBtn,text="Supprimer",width=30)
+        self.btnSuppr=Button(self.cadreBtn,text="Supprimer",width=30)
         
-        self.cadreBtn.create_window(100,550,window=self.btnCercle,width=150,height=30)
+        self.cadreBtn.create_window(100,550,window=self.btnSuppr,width=150,height=30)
+        
         self.caneva.bind('<B1-Motion>', self.bouge)
         self.caneva.pack(padx =5, pady =5)
         
@@ -117,7 +149,7 @@ class Vue():
         #self.caneva.select_clear()
         if (self.choix == "ModeEcriture"):
             forme = Formes(self.x1,self.y1,None,None,"Texte", self.entryTemp.get()) #la position de la forme n'a que une pair de x et de y
-            self.controleur.modele.formes.append(forme)
+            self.controleur.modele.formesTempo.append(forme)
             self.afficherCaneva()   
             #effacer le contenu de l'entry temporaire
             self.entryTemp.delete(0,END)
@@ -143,12 +175,17 @@ class Vue():
 
     def release(self,event):
         forme = None
-        if self.choix != "Text":
+        if self.choix != "Texte":
             forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
             print(forme.nom)
             forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
+            self.controleur.modele.formesTempo.append(forme)
             self.controleur.modele.formes.append(forme)
             self.afficherCaneva()
+            
+    def commit(self):
+        self.controleur.commit()
+            
     
     def creeTexte(self):
         self.choix = "Texte"
@@ -161,7 +198,7 @@ class Vue():
    
     def creeRectangle(self):
         self.choix = "Rectangle"
-        print("rectangle")
+        print("Rectangle")
                     
     def detruitTempo(self):
        pass
@@ -184,10 +221,9 @@ class Vue():
 class Modele():
     def __init__(self, pControleur):
         self.controleur = pControleur
-        self.formes = [ ]
-        
-        
-        
+        self.formesTempo = [ ]
+        self.formes = [ ]    
+    
 '''    
 class Controleur():
     def __init__(self):
