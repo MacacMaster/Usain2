@@ -159,6 +159,10 @@ class ControleurServeur():
     def insertionSQL(self,nomTable,valeurs):
         return self.serveurBD.insDonnees(nomTable, valeurs)
     
+    #Gestion ID Manuelle M-A
+    def insDonneesPlanif(self,tableau,params):
+        return self.serveurBD.insDonneesPlanif(tableau,params)
+    
     def selectionSQL1(self,nomTable,champs,where,indice):
         return self.serveurBD.selDonneesComplexe1(self,nomTable,champs,where,indice)
     

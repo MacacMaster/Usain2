@@ -48,7 +48,7 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Textes
              (id integer, id_Projet integer, texte text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS PlanifGlobales
-             (id integer, id_Projet integer, id_Sprint, id_Reponsable, priorite text, date_debut text, date_fin text)''')
+             (id integer, id_Projet integer, id_Sprint, id_Reponsable, nom_fonction text,priorite text, date_debut text, date_fin text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Sprints
              (id integer, date_debut text, date_fin text, nom text)''')
