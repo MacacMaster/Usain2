@@ -99,19 +99,19 @@ class Vue():
                 
      
     def selectFonct(self, e):
-        index=self.listFonct.curselection()
+        self.fonctEnCours=self.listFonct.curselection()
         self.tfFonctionnalite.delete(0,END)
-        self.tfFonctionnalite.insert(0,str(self.listFonct.get(index)))
+        self.tfFonctionnalite.insert(0,str(self.listFonct.get(self.fonctEnCours)))
         self.tfPriorite.delete(0,END)
-        self.tfPriorite.insert(0,str(self.listPriorite.get(index)))
+        self.tfPriorite.insert(0,str(self.listPriorite.get(self.fonctEnCours)))
         self.tfSprint.delete(0,END)
-        self.tfSprint.insert(0,str(self.listSprint.get(index)))
+        self.tfSprint.insert(0,str(self.listSprint.get(self.fonctEnCours)))
         self.tfDebut.delete(0,END)
-        self.tfDebut.insert(0,str(self.listDebut.get(index)))
+        self.tfDebut.insert(0,str(self.listDebut.get(self.fonctEnCours)))
         self.tfFin.delete(0,END)
-        self.tfFin.insert(0,str(self.listFin.get(index)))
+        self.tfFin.insert(0,str(self.listFin.get(self.fonctEnCours)))
         self.tfResponsable.delete(0,END)
-        self.tfResponsable.insert(0,str(self.listResponsable.get(index)))
+        self.tfResponsable.insert(0,str(self.listResponsable.get(self.fonctEnCours)))
         
     
     def frameCommandes(self):
@@ -155,24 +155,36 @@ class Vue():
         self.canAjoutModif.create_window(90,180, window=self.lblAMResponsable, width=120, height=25)
         
         #textfields
-        self.tfFonctionnalite=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,30, window=self.tfFonctionnalite, width=750, height=25)
+        self.tfFonctionnalite=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,30, window=self.tfFonctionnalite, width=700, height=25)
         
-        self.tfPriorite=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,60, window=self.tfPriorite, width=750, height=25)
+        self.tfPriorite=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,60, window=self.tfPriorite, width=700, height=25)
         
-        self.tfSprint=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,90, window=self.tfSprint, width=750, height=25)
+        self.tfSprint=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,90, window=self.tfSprint, width=700, height=25)
         
-        self.tfDebut=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,120, window=self.tfDebut, width=750, height=25)
+        self.tfDebut=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,120, window=self.tfDebut, width=700, height=25)
         
-        self.tfFin=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,150, window=self.tfFin, width=750, height=25)
+        self.tfFin=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,150, window=self.tfFin, width=700, height=25)
         
-        self.tfResponsable=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,180, window=self.tfResponsable, width=750, height=25)
+        self.tfResponsable=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,180, window=self.tfResponsable, width=700, height=25)
         
+        #bouton
+        self.btnEffacer=Button(self.frameAjoutModif, text="Clear", width=100, bg="pink", command=self.effacerChamps)
+        self.canAjoutModif.create_window(950,105,window=self.btnEffacer,width=50,height=120)
+    
+    def effacerChamps(self):
+        self.tfFonctionnalite.delete(0,END)
+        self.tfPriorite.delete(0,END)
+        self.tfSprint.delete(0,END)
+        self.tfDebut.delete(0,END)
+        self.tfFin.delete(0,END)
+        self.tfResponsable.delete(0,END)
+    
     def fenetreConfirmation(self):
         self.topConfirm=Toplevel(height=200)
         self.topConfirm.title("Confimation de supression")
