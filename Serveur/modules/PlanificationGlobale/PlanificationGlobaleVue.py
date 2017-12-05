@@ -57,6 +57,8 @@ class Vue():
         self.canPrincipal.create_window(720,90,window=self.lblSprint, width=60, height=25)
         self.lblPourcentage=Label(self.framePrincipal, text="%", width=70, height=25, bg="white", relief=RAISED )
         self.canPrincipal.create_window(785,90,window=self.lblPourcentage, width=70, height=25)
+        self.lblPourcentage=Label(self.framePrincipal, text="%", width=70, height=25, bg="white", relief=RAISED )
+        self.canPrincipal.create_window(785,90,window=self.lblPourcentage, width=70, height=25)
         self.lblResponsable=Label(self.framePrincipal, text="Responsable", width=160, height=25, bg="white", relief=RAISED )
         self.canPrincipal.create_window(900,90,window=self.lblResponsable, width=160, height=25)
         
@@ -71,12 +73,46 @@ class Vue():
         self.listResponsable=Listbox(self.framePrincipal, width=159, height=400)
         self.canPrincipal.create_window(900,305,window=self.listResponsable, width=159, height=400)
         
+        #creation de listbox non visibles pour debut et fin (pour constance lors de la select dune fonctionnalite
+        self.listDebut=Listbox(self.framePrincipal)
+        self.listFin=Listbox(self.framePrincipal)
+        
+        self.listFonct.bind('<<ListboxSelect>>',self.selectFonct)
+        
+        
+        
+        
         #A RETIRER!
         self.listFonct.insert(END, "Hello")
         self.listFonct.insert(END, "World")
-        print("cur:"+str(self.listFonct.get(ACTIVE)))
+        self.listPriorite.insert(END, "Iello")
+        self.listPriorite.insert(END, "Xorld")
+        self.listSprint.insert(END, "Sprint1")
+        self.listSprint.insert(END, "Sprint2")
+        self.listDebut.insert(END, "Debut1")
+        self.listDebut.insert(END, "Debut2")
+        self.listFin.insert(END, "Fin1")
+        self.listFin.insert(END, "Fin2")
+        self.listResponsable.insert(END, "Responsable1")
+        self.listResponsable.insert(END, "Responsable2")
         
-      
+                
+     
+    def selectFonct(self, e):
+        self.fonctEnCours=self.listFonct.curselection()
+        self.tfFonctionnalite.delete(0,END)
+        self.tfFonctionnalite.insert(0,str(self.listFonct.get(self.fonctEnCours)))
+        self.tfPriorite.delete(0,END)
+        self.tfPriorite.insert(0,str(self.listPriorite.get(self.fonctEnCours)))
+        self.tfSprint.delete(0,END)
+        self.tfSprint.insert(0,str(self.listSprint.get(self.fonctEnCours)))
+        self.tfDebut.delete(0,END)
+        self.tfDebut.insert(0,str(self.listDebut.get(self.fonctEnCours)))
+        self.tfFin.delete(0,END)
+        self.tfFin.insert(0,str(self.listFin.get(self.fonctEnCours)))
+        self.tfResponsable.delete(0,END)
+        self.tfResponsable.insert(0,str(self.listResponsable.get(self.fonctEnCours)))
+        
     
     def frameCommandes(self):
         self.frameCommandes = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
@@ -101,35 +137,54 @@ class Vue():
         self.canAjoutModif.pack()
         
         self.lblAMFonctionnalite=Label(self.frameAjoutModif, text="Fonctionnalite: ", width=120, height=25)
-        self.canAjoutModif.create_window(90,40, window=self.lblAMFonctionnalite, width=120, height=25)
+        self.canAjoutModif.create_window(90,30, window=self.lblAMFonctionnalite, width=120, height=25)
         
         self.lblAMPriorite=Label(self.frameAjoutModif, text="Priorite: ", width=120, height=25)
-        self.canAjoutModif.create_window(90,70, window=self.lblAMPriorite, width=120, height=25)
+        self.canAjoutModif.create_window(90,60, window=self.lblAMPriorite, width=120, height=25)
         
         self.lblAMSprint=Label(self.frameAjoutModif, text="Sprint: ", width=120, height=25)
-        self.canAjoutModif.create_window(90,100, window=self.lblAMSprint, width=120, height=25)
+        self.canAjoutModif.create_window(90,90, window=self.lblAMSprint, width=120, height=25)
         
-        self.lblAMPourcent=Label(self.frameAjoutModif, text="%: ", width=120, height=25)
-        self.canAjoutModif.create_window(90,130, window=self.lblAMPourcent, width=120, height=25)
+        self.lblAMDebut=Label(self.frameAjoutModif, text="Debut: ", width=120, height=25)
+        self.canAjoutModif.create_window(90,120, window=self.lblAMDebut, width=120, height=25)
+        
+        self.lblAMFin=Label(self.frameAjoutModif, text="Fin: ", width=120, height=25)
+        self.canAjoutModif.create_window(90,150, window=self.lblAMFin, width=120, height=25)
         
         self.lblAMResponsable=Label(self.frameAjoutModif, text="Responsable: ", width=120, height=25)
-        self.canAjoutModif.create_window(90,160, window=self.lblAMResponsable, width=120, height=25)
+        self.canAjoutModif.create_window(90,180, window=self.lblAMResponsable, width=120, height=25)
         
-        self.tfFonctionnalite=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,40, window=self.tfFonctionnalite, width=750, height=25)
+        #textfields
+        self.tfFonctionnalite=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,30, window=self.tfFonctionnalite, width=700, height=25)
         
-        self.tfPriorite=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,70, window=self.tfPriorite, width=750, height=25)
+        self.tfPriorite=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,60, window=self.tfPriorite, width=700, height=25)
         
-        self.tfSprint=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,100, window=self.tfSprint, width=750, height=25)
+        self.tfSprint=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,90, window=self.tfSprint, width=700, height=25)
         
-        self.tfPourcent=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,130, window=self.tfPourcent, width=750, height=25)
+        self.tfDebut=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,120, window=self.tfDebut, width=700, height=25)
         
-        self.tfResponsable=Entry(self.frameAjoutModif, width=750)
-        self.canAjoutModif.create_window(575,160, window=self.tfResponsable, width=750, height=25)
+        self.tfFin=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,150, window=self.tfFin, width=700, height=25)
         
+        self.tfResponsable=Entry(self.frameAjoutModif, width=700)
+        self.canAjoutModif.create_window(550,180, window=self.tfResponsable, width=700, height=25)
+        
+        #bouton
+        self.btnEffacer=Button(self.frameAjoutModif, text="Clear", width=100, bg="pink", command=self.effacerChamps)
+        self.canAjoutModif.create_window(950,105,window=self.btnEffacer,width=50,height=120)
+    
+    def effacerChamps(self):
+        self.tfFonctionnalite.delete(0,END)
+        self.tfPriorite.delete(0,END)
+        self.tfSprint.delete(0,END)
+        self.tfDebut.delete(0,END)
+        self.tfFin.delete(0,END)
+        self.tfResponsable.delete(0,END)
+    
     def fenetreConfirmation(self):
         self.topConfirm=Toplevel(height=200)
         self.topConfirm.title("Confimation de supression")

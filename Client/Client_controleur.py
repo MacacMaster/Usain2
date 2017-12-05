@@ -37,8 +37,8 @@ class Controleur():
         self.vue.root.mainloop()
         
     
-    def chargerProjet(self, nomprojet, idorga):
-        idProjet = self.serveur.chargerProjet(nomprojet, idorga)
+    def chargerProjet(self, nomprojet):
+        idProjet = self.serveur.chargerProjet(nomprojet, self.idOrga)
         self.idProjet = idProjet
         #print("id du projet coté client controleur", self.idProjet)
         return idProjet
@@ -50,9 +50,16 @@ class Controleur():
         return clientIP
 
     def fermerApplication(self):
-        
+    
         #self.log.writeLog("Fermeture du Client")
+        if self.serveur:
+            self.serveur.fermeture(self.utilisateur)
         self.vue.root.destroy()
+        
+        
+        
+        
+        
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Vérification des informations avant l'envoi au serveur
@@ -80,8 +87,6 @@ class Controleur():
         
     def creerProjet(self,nom):
             self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
-            
-
             
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)

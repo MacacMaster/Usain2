@@ -9,6 +9,7 @@ from PlanificationGlobale  import *
 class Modele():
     def __init__(self, parent):
         self.parent=parent
+        
         pass
         
     def importerDonnees(self,projectName):
