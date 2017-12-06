@@ -9,52 +9,52 @@ curseur = database.cursor()
 
 # Creer une table si elle n'existe pas
 curseur.execute('''CREATE TABLE IF NOT EXISTS Organisations
-             (id integer, nom text)''')
+             (id INTEGER PRIMARY KEY, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Usagers
-             (id integer, id_Organisation integer, nom text, motDePasse text)''')
+             (id INTEGER PRIMARY KEY, id_Organisation integer, nom text, motDePasse text)''')
              
 curseur.execute('''CREATE TABLE IF NOT EXISTS Projets
-             (id integer, id_Organisation integer, nom text)''')
+             (id INTEGER PRIMARY KEY, id_Organisation integer, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Tables
-             (id integer, id_Projet integer, nom text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Champs
-             (id integer, id_Table integer, nom text, contrainte text, type text, etat text)''')
+             (id INTEGER PRIMARY KEY, id_Table integer, nom text, contrainte text, type text, etat text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS CasUsages
-             (id integer, id_Projet integer, description text, etat text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, description text, etat text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Humains
-             (id integer, id_CasUsage integer, etat text)''')
+             (id INTEGER PRIMARY KEY, id_CasUsage integer, etat text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Machines
-             (id integer, id_CasUsage integer, etat text)''')
+             (id INTEGER PRIMARY KEY, id_CasUsage integer, etat text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Classes
              (id INTEGER PRIMARY KEY, id_Projet integer, proprietaire text, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Responsabilites
-             (id integer, id_Classe integer, nom text)''')
+             (id INTEGER PRIMARY KEY, id_Classe integer, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Collaborations
-             (id integer, id_Classe integer, nom text)''')
+             (id INTEGER PRIMARY KEY, id_Classe integer, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Mandats
-             (id integer, id_Projet integer, contenu text, type text, nature text, emplacement text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, contenu text, type text, nature text, emplacement text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Textes
-             (id integer, id_Projet integer, texte text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, texte text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS PlanifGlobales
-             (id integer, id_Projet integer, id_Sprint, id_Reponsable, nom_fonction text,priorite text, date_debut text, date_fin text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, id_Sprint, id_Reponsable, nom_fonction text,priorite text, date_debut text, date_fin text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Sprints
-             (id integer, date_debut text, date_fin text, nom text)''')
+             (id INTEGER PRIMARY KEY, date_debut text, date_fin text, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Formes
-             (id integer,id_Projet integer, x1 integer, y1 integer, x2 integer, y2 integer, texte text, nom text)''')
+             (id INTEGER PRIMARY KEY,id_Projet integer, x1 integer, y1 integer, x2 integer, y2 integer, texte text, nom text)''')
 
 # Supprimer tout ce qui se trouve dans la bd
 for comptes in curseur.execute('SELECT id FROM Organisations'):
