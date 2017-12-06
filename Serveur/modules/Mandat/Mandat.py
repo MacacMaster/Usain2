@@ -54,7 +54,7 @@ class Vue():
         #menu deroulant
 
         self.menubar = Menu(self.root)
-        self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text))
+        self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text.get(1.0,'end-1c')))
         self.menubar.add_command(label="Charger un fichier", command= lambda: self.parent.modele.explorateurFichiers(self.text))
         self.root.config(menu=self.menubar)
         
@@ -345,7 +345,7 @@ class Modele():
     
     def ajouterNouveauTexte(self,texteMandat):
         chaine = "'" + str(self.parent.idProjet) + "','" + str(texteMandat) + "'"
-        self.parent.serveur.insertionSQL("Textes",chaine)
+        self.parent.serveur.insertionSQL("Textes",chaine) 
         
     def confirmer(self):
         self.insererExpression()
@@ -444,6 +444,7 @@ class Controleur():
     def __init__(self):
         
         #vraie version
+        '''
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
@@ -455,10 +456,10 @@ class Controleur():
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
         self.vue.root.mainloop()
-        
+        '''
         
         #version debug
-        '''
+        
         self.saasIP=socket.gethostbyname(socket.gethostname())
         self.adresseServeur="http://"+self.saasIP+":9999"
         self.idProjet= 1
@@ -466,7 +467,7 @@ class Controleur():
         self.modele=Modele(self)
         self.vue=Vue(self)
         self.vue.root.mainloop()
-        '''
+        
         
     def connectionServeur(self):
         print("Connection au serveur BD...")
