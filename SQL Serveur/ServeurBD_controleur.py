@@ -34,8 +34,8 @@ class ControleurServeurBD():
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        self.id+=1
-        c.execute('''INSERT into '''+nomTable+''' VALUES ('''+str(self.id)+', '+valeurs+''' )''')
+        #self.id+=1
+        c.execute('''INSERT into '''+nomTable+''' VALUES ('''+'NULL'+', '+valeurs+''' )''')
         conn.commit()
         conn.close()
         return self.id
