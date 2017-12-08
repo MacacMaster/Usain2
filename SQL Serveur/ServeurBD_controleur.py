@@ -200,12 +200,21 @@ class ControleurServeurBD():
                 break
         
         if nomOrgaExiste:
-            
-            for usager in self.curseur.execute("SELECT nom FROM Usagers WHERE id_Organisation = ?", idOrga):
+            print("nomOrga ",nomOrgaExiste)
+            sql1="SELECT nom FROM Usagers WHERE id_Organisation = '"+str(idOrga)[1:len(idOrga)-3]+"'"
+            print(sql1)
+            for usager in self.curseur.execute(sql1).fetchall():
+            #for usager in self.curseur.execute("SELECT nom FROM Usagers WHERE id_Organisation = ?", idOrga):
+    
                 #print(str(usager)[2:len(usager)-4])
+                print("USER",usager)
                 if (str(usager)[2:int(len(usager)-4)] == pIdentifiantNom):
-                    nomUsager = (''+pIdentifiantNom+'',)
-                    idUsager = self.curseur.execute("SELECT id FROM Usagers WHERE nom = ?", nomUsager).fetchone()
+                    #nomUsager = (''+pIdentifiantNom+'',)
+                    print("idusager = ", pIdentifiantNom)
+                    sqlt = "SELECT id FROM Usagers WHERE nom = '"+pIdentifiantNom+"' and id_Organisation = '"+str(idOrga)[1:len(idOrga)-3]+"'"
+                    print(sqlt)
+                    idUsager = self.curseur.execute(sqlt).fetchone()
+                    #idUsager = self.curseur.execute("SELECT id FROM Usagers WHERE nom = ? and id_Organisation = ?", nomUsager, idOrga).fetchone()
                     print("id de l'usager : ", str(idUsager)[1:len(idUsager)-3])
                     nomUsaExiste = True
                     break
