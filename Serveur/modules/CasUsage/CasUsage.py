@@ -81,7 +81,27 @@ class Controleur():
         requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         print("humains ",requete)
         return requete
-   
+    
+    def changerEtat(self,indice):
+        nomTable = "CasUsages"
+        champs = "etat"
+        where = ["id","id_Projet"]
+        valeur = [indice,self.idProjet]
+
+        Etat = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        
+        nomTableGood=str(Etat)[3:int(len(Etat)-4)]
+        print(nomTableGood)
+        
+        if(nomTableGood=="NonTermine"): 
+            self.serveur.updateSQL2("CasUsages","Termine","etat","id",self.vue.indiceCasModifier)
+        elif(nomTableGood=="Termine"):
+            self.serveur.updateSQL2("CasUsages","NonTermine","etat","id",self.vue.indiceCasModifier)
+        elif(nomTableGood=="Reprendre"):
+            self.serveur.updateSQL2("CasUsages","NonTermine","etat","id",self.vue.indiceCasModifier)
+        self.unReprend=False;
+        self.vue.caneva.forget()
+        self.vue.menuInitial()
     
     def modifierCas(self,cas,usager,machine):
         print(type(cas))
@@ -141,6 +161,9 @@ class Vue():
         self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
         self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
         
+        self.bntSupprimer=Button(self.caneva,text="Terminé/NonTerminé",width=20,command=self.supprimer)#
+        self.caneva.create_window(100,550,window=self.bntSupprimer,width=150,height=20)
+        
         #self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.select)
         #self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
 
@@ -159,22 +182,19 @@ class Vue():
         #print(nomCas,"indicecas2")
         self.controleur.indiceCasModifier(nomCas)
         self.menuModifier()
-         
+   
     def indiceDeLaBD(self):
-        #self.indiceCasModifier=self.listecas.curselection()[0]
-       # print("indice a modifier : ",self.indiceCasModifier)
-       # self.menuModifier()
+     
         position=self.listecas.curselection()[0] # indice du cas selectionné
         print("position ", position)
         nomCasSelection=self.listecas.get(position, position)
-       #print("NOM DE CAS",nomCasSelection)
+  
         if(position!=0):
            nomCasSelectionGood=str(nomCasSelection)[2:int(len(nomCasSelection)-4)]
         else: 
             nomCasSelectionGood=nomCasSelection
         print("nom cas a modifier : ",nomCasSelectionGood, "    : ", nomCasSelection)
-        self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
-        #humain=self.controleur.chercherMachine(nomCasSelectionGood)
+        self.controleur.changerEtat(nomCasSelectionGood)
         self.menuModifier()
 
     def remplirListeCas(self):
@@ -238,9 +258,18 @@ class Vue():
     
         
     def supprimer(self):
-        self.indiceCasModifier=self.listeetat.curselection()[0]
-        print(self.indiceCasModifier)
-        self.controleur.changerEtat(self.indiceCasModifier+1)
+        position=self.listeetat.curselection()[0]
+
+        nomCas=self.listecas.get(position,position) # indice du cas selectionné
+        print("position ", position)
+        
+        if(position!=0):
+           nomCasSelectionGood=str(nomCas)[2:int(len(nomCas)-4)]
+        else: 
+            nomCasSelectionGood=nomCas
+        print("nom cas a modifier : ",nomCasSelectionGood, "    : ", nomCas)
+        self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
+        self.controleur.changerEtat(self.indiceCasModifier)
     
     def menuInitialMod(self):
         self.canevaMod.forget()
