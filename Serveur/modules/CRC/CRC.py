@@ -166,9 +166,14 @@ class Vue():
     
     def supprimerClasse(self):
         id = self.classeChoisi[0]
-        chaine = "WHERE id = " + str(id)
-        self.parent.serveur.delete("Classes","id", str(id)) 
+        self.parent.modele.supprimerClasse(id)
+        #chaine = "WHERE id = " + str(id)
+        #self.parent.serveur.delete("Classes","id", str(id)) 
         self.loaderNomClasses() 
+        self.listeResponsabilites.delete(0, END) #effacer la liste
+        self.listeCollaboration.delete(0, END) #effacer la liste
+        self.lblNomClasse.config(text = "Nom de classe")
+        self.lblProprietaire.config(text = "proprietaire")
     
     def creerMenuDroite(self):
         self.menuDroite = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -543,6 +548,17 @@ class Modele():
         
         return listeEnString
     '''
+    
+    def supprimerClasse(self,id_classe):
+        #chaine = "WHERE id = " + str(id_classe)
+        self.parent.serveur.delete("Classes","id", str(id_classe)) 
+        self.supprimerAttributs("Responsabilites",str(id_classe))
+        self.supprimerAttributs("Collaborations",str(id_classe))
+       
+
+    def supprimerAttributs(self,type,id_classe):
+        #chaine = "WHERE id_classe = " + str(id_classe)
+        self.parent.serveur.delete(type,"id_classe", str(id_classe)) 
             
 class Controleur():
     def __init__(self):

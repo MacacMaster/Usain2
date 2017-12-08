@@ -29,13 +29,12 @@ class SQL():
         #(self,nomTable,champs,where,indice)   
         return self.Saas.selectionSQL3('PlanifGlobales',champ,'id_Projet',self.parent.idProjet)
         
-        
     def afficherFonctions(self):
         #self.parent.serveur.
         pass
     
     def modifierFonction(self,valeurModifiee,champModifier,id):
-       return self.Saas.updateSQL2(self,'PlanifGlobales',valeurModifiee,champModifier,'id',id)
+       self.Saas.updateSQL2('PlanifGlobales',valeurModifiee,champModifier,'id',id)
        # UPDATE employees SET lastname = 'Smith' WHERE employeeid = 3;
        pass
     
@@ -50,11 +49,10 @@ class SQL():
             priorite="Haute"    
 
         #id,idprojet,idsprint,idresponsable,priorite,debut,fin
-        params = (self.parent.id,self.parent.idProjet,sprint,self.parent.utilisateur,nomfonction,priorite,debut,fin)
         self.parent.id+=1
+        params = (self.parent.id,self.parent.idProjet,sprint,self.parent.utilisateur,nomfonction,priorite,debut,fin)
         self.Saas.insDonneesPlanif('''PlanifGlobales''',params)
-        #fonction d'ecriture dans la table planification
-        
+        #fonction d'ecriture dans la table planification    
         pass
     
     #"INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,)
