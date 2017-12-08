@@ -53,14 +53,17 @@ class Controleur():
         #[r0=[c1,c2,c3...],R1...]
         self.listeFonctions=self.sql.selDonnees("*") 
         #Calcule automatiquement      
-        self.id = len(self.listeFonctions)+1
+        self.id = len(self.listeFonctions)
 
         ########
         # TEST #
         ########
         self.sql.creerFonction("Sprint1","FonctionNom","priorite","debut","fin")
-
-
+        self.sql.creerFonction("Sprint2","FonctionNom","priorite","debut","fin")
+        self.sql.creerFonction("Sprint3","FonctionNom","priorite","debut","fin")
+        self.sql.creerFonction("Sprint4","FonctionNom","priorite","debut","fin")
+        
+        self.sql.modifierFonction('pololo','id_Sprint','5')
         self.vue.root.mainloop()
         
     def fermerProgramme(self):
