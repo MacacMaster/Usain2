@@ -36,9 +36,13 @@ class ControleurServeurBD():
         c = conn.cursor()
         #self.id+=1
         c.execute('''INSERT into '''+nomTable+''' VALUES ('''+'NULL'+', '+valeurs+''' )''')
+        c.execute('''SELECT last_insert_rowid()''')
+        id = c.fetchone()[0]
         conn.commit()
         conn.close()
-        return self.id
+        #pour retourner le id de la dernière ligne insérée
+    
+        return id
     
     #M-A id est un argument Facultatif FUCKIT
     #def insDonneesPlanif(self,id,idprojet,idsprint,idresponsable,priorite,debut,fin):
