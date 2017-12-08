@@ -188,6 +188,9 @@ class ControleurServeur():
         self.serveurBD.updateDonnes(nomTable,champs,valeur)
         return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
     
+    def updateSQL2(self,nomTable,champ,description,where,indice1):
+        self.serveurBD.updateDonnees2(nomTable,champ,description,where,indice1)
+    
     def insCustom(self,commande,values):
         self.serveurBD.insCustom(self,commande,values)    
         

@@ -69,6 +69,13 @@ class ControleurServeurBD():
         c.execute('''UPDATE '''+ nomTable+ ''' SET '''+ description +''' =? WHERE '''+ where+''' =? and '''+where2 +''' =? ''', (champ,indice1,indice2))
         conn.commit()
         conn.close()
+        
+    def updateDonnees2(self,nomTable,champ,description,where,indice1):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute('''UPDATE '''+ nomTable+ ''' SET '''+ description +''' =? WHERE '''+ where+''' =?''', (champ,indice1))
+        conn.commit()
+        conn.close()
     
     def selDonneesComplexe1(self,nomTable,champs):
         conn= sqlite3.connect('SprintMasterData.db')
