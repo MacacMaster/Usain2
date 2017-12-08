@@ -453,8 +453,6 @@ class Vue():
             messagebox.showerror("Nom de table manquant a l'appel","Veuillez entrer un nom de table")
         elif(self.controleur.verificationExiste("nom", "Tables", "id_Projet", self.controleur.idProjet, nom)==False):
             messagebox.showerror("Table existante","Le nom de la table existe deja")
-        else:
-            self.controleur.ajoutTableBD(nom)
     
 if __name__ == '__main__':
     c = Controleur()
