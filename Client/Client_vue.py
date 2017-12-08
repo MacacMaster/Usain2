@@ -70,8 +70,15 @@ class Vue():
         print("Nom de l'organisation entré par l'usager:", identifiantNomOrga,"Nom entré par l'usager ", identifiantNomUsager, "Mot de passe entré par l'usager ", identifiantMotDePasse)
         self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
     
-    def logInClientFail(self):
-        messagebox.showwarning('Connexion refus�e', 'Nom de compte ou mot de passe incorrect.')
+    def logInClientFail(self, code):
+        if code == 0:
+            messagebox.showwarning('Connexion refus�e', 'Nom de compte ou mot de passe incorrect.')
+        elif code == 1:
+            messagebox.showwarning('Connexion refus�e', 'Un utilisateur utilise déjà ce compte.')
+        elif code == 2:
+            messagebox.showwarning('Connexion refus�e', 'Veuillez remplir les champs avant de vous connecter.')
+        else:
+            messagebox.showwarning('Connexion refus�e', 'Une erreur technique a eu lieu, merci de contacter le staff.')
         
     
     def chooseProjectFail(self):

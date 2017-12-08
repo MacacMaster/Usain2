@@ -112,3 +112,4 @@ Client/*/
 #except
 #!SprintMasterData.db
 *.pyc
+/.metadata

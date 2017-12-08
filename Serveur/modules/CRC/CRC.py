@@ -237,7 +237,11 @@ class Vue():
         
         #activer ou désactiver l'état du entry
         if bouton == 1:
-            self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state = DISABLED)
+            self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state = NORMAL)
+            
+            
+            
+            
         elif bouton == 2:
             self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state =  NORMAL)
         self.entryNomClasse.pack(side=LEFT)
@@ -333,6 +337,8 @@ class Vue():
         scrollbar.config(command=self.listeResponsabilitesAjout.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
         
+
+        
         #scrollbar droite
         frame5 = Frame(frameDeuxBox)
         frame5.pack(fill=X, pady=5, side=LEFT)
@@ -351,7 +357,7 @@ class Vue():
         frame7 = Frame(self.menuAjout)
         frame7.pack(fill=X, pady=5)
         
-        boutonConfirmer = Button(frame7, text="Confirmer", command = self.confirmer)
+        boutonConfirmer = Button(frame7, text="Confirmer", command=lambda: self.confirmer(bouton) )
         boutonConfirmer.pack(side = LEFT)
         
         boutonSupprimer = Button(frame7, text="Supprimer", command = self.supprimer)
@@ -361,7 +367,26 @@ class Vue():
         boutonCanceler.pack(side = LEFT)  
         
                
-  
+          # ajouter la liste des responsabilités de la classe choisie
+        if bouton == 1:
+            #index = self.listeClasses.curselection()[0]
+       
+            #self.classes est un tableau qui contient toutes les informations sur les classes...
+            #alors que self.listeClasses ne contient que les noms des classes...
+            
+            #self.classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
+          
+            #trouver les collaborateurs de la classe
+            collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(str(self.classeChoisi[0]))
+            for element in collaborateursDeLaClasse:
+                self.listeCollaborationAjout.insert(END,element[0])
+                
+            #trouver les responsabilites de la classe
+            #loader les responsabilités
+            responsabilites = self.parent.modele.responsabilitiesDeLaClasse(str(self.classeChoisi[0]))
+         
+            for element in responsabilites:
+                self.listeResponsabilitesAjout.insert(END,element[0])
             
             
     def canceler(self):
@@ -382,7 +407,12 @@ class Vue():
         
         self.menuGauche.pack(side=LEFT) 
         self.menuDroite.pack(side=LEFT)
-        self.loaderNomClasses()  
+        self.loaderNomClasses() 
+        
+        #empecher la modification et la suppression
+        self.btnSuppression.config(state=DISABLED)
+        self.btnModification.config(state=DISABLED)
+        
         
        
         
@@ -395,12 +425,16 @@ class Vue():
         print(saisie)
         
     def supprimer(self):
-        if self.focused_box == self.listeCollaborationAjout:
-            index = self.listeCollaborationAjout.curselection()[0]
-            self.listeCollaborationAjout.delete(index)
-        elif self.focused_box == self.listeResponsabilitesAjout:
-            index = self.listeResponsabilitesAjout.curselection()[0]
-            self.listeResponsabilitesAjout.delete(index)
+        try:
+            if self.focused_box == self.listeCollaborationAjout:
+                index = self.listeCollaborationAjout.curselection()[0]
+                self.listeCollaborationAjout.delete(index)
+            elif self.focused_box == self.listeResponsabilitesAjout:
+                index = self.listeResponsabilitesAjout.curselection()[0]
+                self.listeResponsabilitesAjout.delete(index)
+        except IndexError:#si rien n'est sélectionné
+            pass
+            
             
     def saisirResponsabilite(self,event):
         saisie = self.entryResponsabilite.get()
@@ -422,7 +456,7 @@ class Vue():
         self.btnSuppression.config(state=DISABLED)
         self.btnModification.config(state=DISABLED)
         
-    def confirmer(self):
+    def confirmer(self,bouton):
         saisieNomClasse = self.entryNomClasse.get()
         saisieProprietaire = self.entryProprietaire.get()
         
@@ -447,6 +481,8 @@ class Vue():
             classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilitesAjout, self.listeCollaborationAjout)
             self.parent.modele.insertionConfirmer(classe)
             
+            if (bouton == 1): #si on est en mode modification
+                self.supprimerClasse()  #enlever la classe modifiée pour l'écraser avec la nouvelle classe
             #self.parent.modele.insertionConfirmer(classe)
             self.canceler() #retour à au menu de base CRC  
             
@@ -510,6 +546,14 @@ class Modele():
         return selected
        
     def insertionConfirmer(self, classe):
+        if(self.parent.serveur.verificationExiste("nom", "Classes", "id_projet", self.parent.idProjet, classe.nom)==False):
+            messagebox.showerror("Nom de classe existant","Le nom de la classe existe deja")
+            return
+        else:
+            pass
+            
+        
+        
         #insérer la classe 
         #valeurs = (self.parent.idProjet, classe.proprietaire,classe.nom)
         #chaine = "'1','1','555'"

@@ -50,7 +50,8 @@ class Controleur():
         self.sql=SQL(self)
 
         #[r0=[c1,c2,c3...],R1...]
-        self.listeFonctions=self.sql.selDonnees("*") 
+        self.listeFonctions=self.sql.selDonnees("*")
+        print("dans le controleur: " + str(self.listeFonctions))
         #Calcule automatiquement      
         self.id = len(self.listeFonctions)
 
@@ -92,7 +93,9 @@ class Controleur():
         print("Connection au serveur Saas...")
         return ServerProxy(self.adresseServeur)
     
-        
+    def updateListe(self):
+        self.listeFonctions=self.sql.selDonnees("*")
+    
 if __name__ == '__main__':
     #parent = serveur Saas
     c=Controleur()

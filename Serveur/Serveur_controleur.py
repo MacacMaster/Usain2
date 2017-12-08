@@ -49,6 +49,7 @@ class ModeleService(object):
         self.clients={}
 
     def creerclient(self,nom, idOrga, id):
+        print ("id client = ", id)
         if id in self.clients.keys(): # on assure un nom unique
             return [0,"Simulation deja en cours"]
         # tout va bien on cree le client et lui retourne la seed pour le random
@@ -93,7 +94,10 @@ class ControleurServeur():
         else:
             print("Recherche du client terminé. Il s'agit de", clientTempo[0], "qui appartient a l'organisation numero ", clientTempo[1])
             client = self.modele.creerclient(clientTempo[0], clientTempo[1], clientTempo[2])
-            return [client, clientTempo[1]]
+            if client[1] == "Simulation deja en cours":
+                return "Simulation deja en cours"
+            else:
+                return [client, clientTempo[1]]
         
         
 
@@ -194,9 +198,6 @@ class ControleurServeur():
         
     def delete(self, nomTable, where, condition):
         self.serveurBD.delete(nomTable, where, condition)
-        
-    def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
-        return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action,errorid):
@@ -207,6 +208,9 @@ class ControleurServeur():
         logdb.commit()
         logdb.close()
         return True 
+    
+    def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
+        return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
     
     
 print("Création du serveur...")

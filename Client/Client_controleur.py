@@ -71,7 +71,10 @@ class Controleur():
             
             if (reponseServeur == 0):
                 self.log.writeLog("Login Fail")
-                self.vue.logInClientFail()
+                self.vue.logInClientFail(0)
+            elif reponseServeur == "Simulation deja en cours":
+                self.log.writeLog("Tentative de connexions multiple")
+                self.vue.logInClientFail(1)
             else:
                 self.utilisateur=pIdentifiantNomUsager
                 self.organisation=pIdentifiantNomOrga
@@ -79,7 +82,7 @@ class Controleur():
                 self.idOrga = reponseServeur[1]
                 self.vue.chargerCentral(reponseServeur[0][1],reponseServeur[0][2],reponseServeur[0][3],reponseServeur[0][4])
         else:
-            self.vue.logInClientFail()
+            self.vue.logInClientFail(2)
         self.serveur.selectionSQL("Projets","id")
         
     def creerProjet(self,nom):
