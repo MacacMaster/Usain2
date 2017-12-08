@@ -29,14 +29,14 @@ class Controleur():
     def remplirListeCas(self):
         return self.serveur.selectionSQL("CasUsages","description")
         
-     
-    
     def remplirListeEtat(self):
         return self.serveur.selectionSQL("CasUsages","etat")
            
     def envoyerCas(self,cas,usager,machine):
         self.serveur.insertionSQL("CasUsages","'"+str(self.idProjet)+"','"+cas+"','Termine'")
         indiceCas=self.serveur.selectionSQL3("CasUsages","id","description",str(cas))
+        indiceCas=str(indiceCas)[2:int(len(indiceCas)-3)]
+        print("indice du cas a envoyer",indiceCas)
         self.serveur.insertionSQL("Humains","'"+str(indiceCas)+"','"+usager+"'")
         self.serveur.insertionSQL("Machines","'"+str(indiceCas)+"','"+machine+"'")
         self.vue.mettreAJourListes()
@@ -45,14 +45,30 @@ class Controleur():
         return self.serveur.selectionSQL3("CasUsages","description","id",indice)
        
     def chercherUtilisateur(self,indice):
-       # print("Indice humain cas"            ,self.vue.indiceCasModifier)
-        utilisateur=self.serveur.selectionSQL3("Humains","etat","id_CasUsage",self.vue.indiceCasModifier)
-       # print("humains                  ",utilisateur)
-        return utilisateur
+
+        print("Indice humain cas",self.vue.indiceCasModifier)
+        nomTable = "Humains"
+        champs = "etat"
+        where = ["id_CasUsage"]
+        valeur = [indice]
+
+        requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+
+        print("humains ",requete)
+        return requete
     
     def chercherMachine(self,indice):
-       machine=self.serveur.selectionSQL3("Machines","etat","id","id_CasUsage",indice)
-       return machine
+        print("Indice machines cas",self.vue.indiceCasModifier)
+        
+        nomTable = "Machines"
+        champs = "etat"
+        where = ["id_CasUsage"]
+        valeur = [indice]
+
+        requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        print("humains ",requete)
+        return requete
+   
     
     def modifierCas(self,cas,usager,machine):
         self.serveur.updateSQL("CasUsages",cas,"description","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet)
@@ -61,11 +77,11 @@ class Controleur():
    
 
     def indiceCasModifier(self, nomCas):
-        print("NOM DU CAS A MODIFIER CONTROLEUR",nomCas)
+        #print("NOM DU CAS A MODIFIER CONTROLEUR",nomCas)
         indice=self.serveur.selectionSQL3("CasUsages","id", "description", nomCas)
         self.indice=str(indice)[2:int(len(indice)-3)]
         indiceGood=self.indice
-        print("indice du cas a modifier  : ", indiceGood)
+       # print("indice du cas a modifier  : ", indiceGood)
         return indiceGood
     
 class Vue():
@@ -123,7 +139,7 @@ class Vue():
         self.mettreAJourListes()
 
     def select(self):
-        print(self.controleur.serveur.selectionSQL("casUsages","id"))
+        print(self.controleur.serveur.selectionSQL("Humains","id_CasUsage"))
         
     def indiceCasModifier(self, nomCas):
         #print(nomCas,"indicecas2")
@@ -144,8 +160,7 @@ class Vue():
             nomCasSelectionGood=nomCasSelection
         print("nom cas a modifier : ",nomCasSelectionGood, "    : ", nomCasSelection)
         self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
-        humain=self.controleur.humainCasModifier(nomCasSelectionGood)
-        
+        #humain=self.controleur.chercherMachine(nomCasSelectionGood)
         self.menuModifier()
 
     def remplirListeCas(self):
@@ -190,9 +205,11 @@ class Vue():
         self.labelCasUsage.insert(END, str (cas))
         
         usager=self.controleur.chercherUtilisateur(self.indiceCasModifier,)#
+        usager=str(usager)[3:int(len(usager)-4)]
         self.labelActionUsager.insert(END, str(usager))
 
-        machine=self.controleur.chercherMachine(self.indiceCasModifier,),
+        machine=self.controleur.chercherMachine(self.indiceCasModifier,)
+        machine=str(machine)[3:int(len(machine)-4)]
         self.labelActionMachine.insert(END,str(machine))
         
         self.canevaMod.create_window(400,200,window=self.labelActionUsager,width=150,height=250)

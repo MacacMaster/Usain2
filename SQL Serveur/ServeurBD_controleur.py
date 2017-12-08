@@ -102,7 +102,7 @@ class ControleurServeurBD():
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (id,))
         laselection=c.fetchall()
-        print(laselection)
+       # print(laselection)
         conn.close()
         return laselection
     
