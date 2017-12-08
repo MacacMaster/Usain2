@@ -34,7 +34,6 @@ class SQL():
         pass
     
     def modifierFonction(self,valeurModifiee,champModifier,id):
-       print ('PlanifGlobales',valeurModifiee,champModifier,'id',id)
        self.Saas.updateSQL2('PlanifGlobales',valeurModifiee,champModifier,'id',id)
        # UPDATE employees SET lastname = 'Smith' WHERE employeeid = 3;
        pass
