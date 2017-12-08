@@ -204,7 +204,7 @@ class ControleurServeurBD():
                     
                 if mdpExiste:
                     print("Réussite de l'authentification")
-                    return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3]]
+                    return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3], str(idUsager)[1:len(idUsager)-3]]
                 
                 else:
                     print("Echec de l'authentification")

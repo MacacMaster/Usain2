@@ -24,8 +24,9 @@ from subprocess import Popen
 import os
 
 class Client(object):
-    def __init__(self,nom, id):
+    def __init__(self,nom, idOrga, id):
         self.nom=nom #nom usager
+        self.idOrga = idOrga
         self.id = id #id orga
         self.cadreCourant=0
         self.cadreEnAttenteMax=0
@@ -47,13 +48,13 @@ class ModeleService(object):
         self.outilsdisponibles={"meta_sql": "meta_sql"}
         self.clients={}
 
-    def creerclient(self,nom, id):
-        if nom in self.clients.keys(): # on assure un nom unique
+    def creerclient(self,nom, idOrga, id):
+        if id in self.clients.keys(): # on assure un nom unique
             return [0,"Simulation deja en cours"]
         # tout va bien on cree le client et lui retourne la seed pour le random
-        c=Client(nom, id)
-        self.clients[nom]=c
-        tabProjet = self.controleur.rechercheProjetsDispo(id)
+        c=Client(nom, idOrga, id)
+        self.clients[id]=c
+        tabProjet = self.controleur.rechercheProjetsDispo(idOrga)
         for i in tabProjet:
             self.projetsdisponibles[i] = i
         for i in self.projetsdisponibles:
@@ -93,7 +94,7 @@ class ControleurServeur():
             return 0
         else:
             print("Recherche du client terminé. Il s'agit de", clientTempo[0], "qui appartient a l'organisation numero ", clientTempo[1])
-            client = self.modele.creerclient(clientTempo[0], clientTempo[1])
+            client = self.modele.creerclient(clientTempo[0], clientTempo[1], clientTempo[2])
             return [client, clientTempo[1]]
         
         
