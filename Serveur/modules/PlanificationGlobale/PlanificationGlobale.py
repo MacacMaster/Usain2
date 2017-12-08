@@ -44,7 +44,6 @@ class Controleur():
         self.serveur=self.connectionServeurSaas()
         self.modele=Modele(self)
         self.sql=SQL(self)
-        self.vue=Vue(self)
 
 
         self.writeLog("Ouverture du Module")
@@ -52,6 +51,7 @@ class Controleur():
         
         #[r0=[c1,c2,c3...],R1...]
         self.listeFonctions=self.sql.selDonnees("*")
+        print("dans le controleur: " + str(self.listeFonctions))
         #Calcule automatiquement      
         self.id = len(self.listeFonctions)
 
@@ -64,6 +64,7 @@ class Controleur():
         self.sql.creerFonction("Sprint4","FonctionNom","priorite","debut","fin")
         
         self.sql.modifierFonction('pololo','id_Sprint','5')
+        self.vue=Vue(self)
         self.vue.root.mainloop()
         
     def fermerProgramme(self):
@@ -88,7 +89,9 @@ class Controleur():
         print("Connection au serveur Saas...")
         return ServerProxy(self.adresseServeur)
     
-        
+    def updateListe(self):
+        self.listeFonctions=self.sql.selDonnees("*")
+    
 if __name__ == '__main__':
     #parent = serveur Saas
     c=Controleur()

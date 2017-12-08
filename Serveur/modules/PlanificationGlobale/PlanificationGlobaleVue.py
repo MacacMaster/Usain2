@@ -25,6 +25,7 @@ class Vue():
         self.framePrincipal()
         self.frameCommandes()
         self.frameAjoutModif()
+        self.afficherListes()
         
     def barreTaches(self):
         #menu deroulante
@@ -209,14 +210,27 @@ class Vue():
         self.topConfirm.destroy()
         
     
-    def afficherListes(fonctions, priorites, sprints, pourcents, responsables):
+    def afficherListes(self):
         
-        listFonct.delete(0,END)
-        listPriorite.delete(0,END)
-        listSprint.delete(0,END)
-        listPourcentage.delete(0,END)
-        listResponsable.delete(0,END)
+        self.listFonct.delete(0,END)
+        self.listPriorite.delete(0,END)
+        self.listSprint.delete(0,END)
+        self.listPourcentage.delete(0,END)
+        self.listResponsable.delete(0,END)
         
+        self.parent.updateListe()
+        
+        
+        for liste in self.parent.listeFonctions:
+                self.listFonct.insert(END, liste[4])
+                self.listPriorite.insert(END, liste[5])
+                self.listSprint.insert(END, liste[2])
+                self.listDebut.insert(END, liste[6])
+                self.listFin.insert(END, liste[7])
+                self.listResponsable.insert(END, liste[3])
+        
+        
+        """
         for item in fonctions:
             self.listFonct.insert(END, item)
             
@@ -230,15 +244,17 @@ class Vue():
             self.listPourcentage.insert(END, item)
             
         for item in responsables:
-            self.listResponsable.insert(END, item)
+            self.listResponsable.insert(END, item)"""
             
     
     
     def ajoutFonction(self):
         #sprint,nomfonction,priorite,debut,fin
         self.parent.creerFonction(self.tfSprint.get(), self.tfFonctionnalite.get(), self.tfPriorite.get(), self.tfDebut.get(), self.tfFin.get())
+        print(self.tfSprint.get() + self.tfFonctionnalite.get() + self.tfPriorite.get() + self.tfDebut.get() + self.tfFin.get())
         self.effacerChamps()
-        self.modifierFonction()
+        self.afficherListes()
+
         
         
     def suppressionFonction(self):
@@ -254,4 +270,5 @@ class Vue():
         self.parent.sql.modifierFonction(self.tfPriorite.get(),"priorite", id)
         self.parent.sql.modifierFonction(self.tfDebut.get(),"date_debut", id)
         self.parent.sql.modifierFonction(self.tfFin.get(),"date_fin", id)
+    
     
