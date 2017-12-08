@@ -407,7 +407,12 @@ class Vue():
         
         self.menuGauche.pack(side=LEFT) 
         self.menuDroite.pack(side=LEFT)
-        self.loaderNomClasses()  
+        self.loaderNomClasses() 
+        
+        #empecher la modification et la suppression
+        self.btnSuppression.config(state=DISABLED)
+        self.btnModification.config(state=DISABLED)
+        
         
        
         
@@ -420,12 +425,16 @@ class Vue():
         print(saisie)
         
     def supprimer(self):
-        if self.focused_box == self.listeCollaborationAjout:
-            index = self.listeCollaborationAjout.curselection()[0]
-            self.listeCollaborationAjout.delete(index)
-        elif self.focused_box == self.listeResponsabilitesAjout:
-            index = self.listeResponsabilitesAjout.curselection()[0]
-            self.listeResponsabilitesAjout.delete(index)
+        try:
+            if self.focused_box == self.listeCollaborationAjout:
+                index = self.listeCollaborationAjout.curselection()[0]
+                self.listeCollaborationAjout.delete(index)
+            elif self.focused_box == self.listeResponsabilitesAjout:
+                index = self.listeResponsabilitesAjout.curselection()[0]
+                self.listeResponsabilitesAjout.delete(index)
+        except IndexError:#si rien n'est sélectionné
+            pass
+            
             
     def saisirResponsabilite(self,event):
         saisie = self.entryResponsabilite.get()
@@ -537,6 +546,14 @@ class Modele():
         return selected
        
     def insertionConfirmer(self, classe):
+        if(self.parent.serveur.verificationExiste("nom", "Classes", "id_projet", self.parent.idProjet, classe.nom)==False):
+            messagebox.showerror("Nom de classe existant","Le nom de la classe existe deja")
+            return
+        else:
+            pass
+            
+        
+        
         #insérer la classe 
         #valeurs = (self.parent.idProjet, classe.proprietaire,classe.nom)
         #chaine = "'1','1','555'"
