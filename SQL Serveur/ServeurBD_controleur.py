@@ -36,9 +36,13 @@ class ControleurServeurBD():
         c = conn.cursor()
         #self.id+=1
         c.execute('''INSERT into '''+nomTable+''' VALUES ('''+'NULL'+', '+valeurs+''' )''')
+        c.execute('''SELECT last_insert_rowid()''')
+        id = c.fetchone()[0]
         conn.commit()
         conn.close()
-        return self.id
+        #pour retourner le id de la dernière ligne insérée
+    
+        return id
     
     #M-A id est un argument Facultatif FUCKIT
     #def insDonneesPlanif(self,id,idprojet,idsprint,idresponsable,priorite,debut,fin):
@@ -101,6 +105,18 @@ class ControleurServeurBD():
         print(laselection)
         conn.close()
         return laselection
+    
+    def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
+        conn = sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute(''' SELECT ''' + champVerifier + ''' FROM ''' + tableVerifier + ''' WHERE ''' + quoi + '''=?''' , (egaleQuoi,))
+        laSelection = c.fetchall()
+        conn.close()
+        for s in laSelection:
+            s=str(s)[2:int(len(s)-4)]
+            if s == valeur:
+                return False
+        return True
     
     #
     '''    
@@ -204,7 +220,7 @@ class ControleurServeurBD():
                     
                 if mdpExiste:
                     print("Réussite de l'authentification")
-                    return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3]]
+                    return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3], str(idUsager)[1:len(idUsager)-3]]
                 
                 else:
                     print("Echec de l'authentification")

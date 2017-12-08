@@ -1,235 +1,50 @@
 from tkinter import *
-from xmlrpc.client import ServerProxy
+from PIL import Image, ImageTk
 import sqlite3
-
-class Formes():
-    def __init__(self, x1,y1,x2,y2, pNom, pText = "i"):
-        #self.modele=pModele
-        self.nom = pNom
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 =x2
-        self.y2 =y2
-        self.text = pText
+from xmlrpc.client import ServerProxy
+import sys
 
 class Controleur():
     def __init__(self):
-        self.modele = Modele(self)
+        self.serveur = None
+        self.idMaquette = None
         self.idProjet = int(sys.argv[4])
         self.saasIP = sys.argv[1]
         self.connexionSaas()
-        self.chargerFormes()
-        self.vue = Vue(self)
-        self.unReprend=False
-        self.vue.root.mainloop()
-        print("controleur")
-    
-    def connexionSaas(self):
-        ad="http://"+self.saasIP+":9999"
-        print("Connection au serveur Saas en cours...")
-        self.serveur=ServerProxy(ad,allow_none = 1)
-    
-    
-    def chargerFormes(self):
-        print("Je cherche des formes")
-        for i in self.serveur.selectionSQL3("Formes","x1, y1, x2, y2, texte, nom","id_Projet",self.idProjet):
-            print(i)
-            nom = i[5]
-            print(nom)
-            forme = Formes(i[0],i[1],i[2],i[3],i[4],nom)
-            self.modele.formesTempo.append(forme)
-        
-    
-    def commit(self):
-        for i in self.modele.formes:
-            self.serveur.insertionSQL("Formes", "'"+str(self.idProjet)+"', '"+str(i.x1)+"', '"+str(i.y1)+"', '"+str(i.x2)+"', '"+str(i.y2)+"', '"+i.text+"', '"+i.nom+"'")
-
-        
-        for i in self.modele.formes:
-            self.modele.formes.remove(i)
-            
-        for i in self.modele.formes:
-            print(i)
-    
-class Vue():
-    def __init__(self, pControleur):
-        self.controleur = pControleur
-        self.largeur = 800
-        self.hauteur = 600
-        self.root = Tk()
-        self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
-        self.fenetre.pack()
-        self.dejaOuvert=False
-        self.indiceCasModifier=0
-        self.menuInitial()
-        self.x1=0
-        self.y1=0
-        self.x2=0
-        self.y2=0
-        self.cercle=False;
-        self.rect=False;
-        self.choix = ""
-        self.formeTemp = 0
-        self.afficherCaneva()
-        
-    def afficherCaneva(self):
-        #self.caneva.delete(ALL)
-        for i in self.controleur.modele.formesTempo:
-            if (i.nom == "Rectangle"):
-                print("Dessine")
-                self.caneva.create_rectangle(i.x1,i.y1,i.x2,i.y2)
-                #self.caneva.create_rectangle(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
-            
-            elif (i.nom  == "Cercle"):
-                self.caneva.create_oval(i.x1,i.y1,i.x2,i.y2)
-                #self.caneva.create_oval(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
-            
-            elif (i.nom  == "Fleche"):
-                #self.caneva.create_line()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
-                self.caneva.create_line(i.x1,i.y1,i.x2,i.y2, arrow="last")
-        
-            elif (i.nom  == "Texte"):
-                print("ecriture clone")
-                entry = Entry(self.caneva,bd=0,font=("Purisa",15))       
-                entry.insert(0,i.text)
-                entry.place(x= i.x1, y= i.y1)
-                #self.caneva.create_text()()()(i.x1,i.y1,i.x1+i.taille,i.y1+i.taille, fill="black")
-        #self.root.after(10, self.afficherCaneva)
-        
-    def menuInitial(self):
-        self.caneva = Canvas(self.fenetre, width = self.largeur-200, height=self.hauteur, bg="white")
-        self.caneva.pack(side=LEFT)
-        self.cadreBtn = Canvas(self.fenetre, width = 200, height=self.hauteur, bg="white")
-        self.cadreBtn.pack(side=LEFT)
-        
-        self.btnRectangle=Button(self.cadreBtn,text="Rectangle",width=30,command=self.creeRectangle)
-        self.cadreBtn.create_window(100,100,window=self.btnRectangle,width=150,height=30)
-    
-        self.btnCercle=Button(self.cadreBtn,text="Cercle",width=30,command=self.creeCercle)
-        self.cadreBtn.create_window(100,250,window=self.btnCercle,width=150,height=30)
-        
-        self.bntTexte=Button(self.cadreBtn,text="Texte",width=30, command=self.creeTexte)
-        self.cadreBtn.create_window(100,200,window=self.bntTexte,width=150,height=30)
-        
-        self.bntFleche=Button(self.cadreBtn,text="Fleche",width=30, command = self.creeFleche)
-        self.cadreBtn.create_window(100,300,window=self.bntFleche,width=150,height=30)
-
-        self.btnRectangle=Button(self.cadreBtn,text="Commit",width=30, command = self.commit)
-        self.cadreBtn.create_window(100,500,window=self.btnRectangle,width=150,height=30)
-    
-        self.btnSuppr=Button(self.cadreBtn,text="Supprimer",width=30)
-        
-        self.cadreBtn.create_window(100,550,window=self.btnSuppr,width=150,height=30)
-        
-        self.caneva.bind('<B1-Motion>', self.bouge)
-        self.caneva.pack(padx =5, pady =5)
-        
-        self.caneva.bind('<B1-Motion>', self.bouge)
-        self.caneva.pack(padx =5, pady =5)
-        
-        self.caneva.bind('<Button-1>', self.clic)
-        self.caneva.pack(padx =5, pady =5)
-       
-        self.caneva.bind('<ButtonRelease-1>', self.release)
-        self.caneva.pack(padx =5, pady =5)
-        
-        #formes temporaires
-        self.caneva.create_rectangle(0,0,0,0,tag="tempoRectangle")
-        self.caneva.create_oval(0,0,0,0,tag="tempoCercle")
-        self.caneva.create_line(0,0, 0,0, tags=("tempoFleche"), arrow="last")
-        self.entryTemp = Entry(self.caneva,bd=0,font=("Purisa",15))
-    
-        #les bindings pour faire fonctionner le entryTemp
-        self.entryTemp.bind('<Return>',lambda d: self.deselectionner())
-        #self.caneva.tag_bind("editable","<Return>", self.deselectionner)
-    
-    def deselectionner(self):
-        self.caneva.focus_force()
-        #self.caneva.delete("highlight")
-        #self.caneva.select_clear()
-        if (self.choix == "ModeEcriture"):
-            forme = Formes(self.x1,self.y1,None,None,"Texte", self.entryTemp.get()) #la position de la forme n'a que une pair de x et de y
-            self.controleur.modele.formesTempo.append(forme)
-            self.afficherCaneva()   
-            #effacer le contenu de l'entry temporaire
-            self.entryTemp.delete(0,END)
-    
-    def bouge(self,event):
-        self.x2 = event.x
-        self.y2 = event.y
-        #print(self.x2,self.y2)
-        self.dessinerTempo()
-    
-    def clic(self,event):
-        if (self.choix != "ModeEcriture"):
-            self.x1 = event.x
-            self.y1 = event.y
-        if (self.choix == "Texte"):
-            #entry = Entry(self.caneva,bd=0,font=("Purisa",15))
-            self.entryTemp.place(x= event.x, y= event.y)
-            self.entryTemp.focus_force() #forcer le focus, l'usager va ecrire quelque chose dedans
-            
-            print("en train d'ecrire")
-            self.choix = "ModeEcriture" #l'utilisateur doit rechoisir une autre option
-        #print(self.x,self.y)
-
-    def release(self,event):
-        forme = None
-        if self.choix != "Texte":
-            forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
-            print(forme.nom)
-            forme = Formes(self.x1,self.y1,event.x,event.y,self.choix)
-            self.controleur.modele.formesTempo.append(forme)
-            self.controleur.modele.formes.append(forme)
-            self.afficherCaneva()
-            
-    def commit(self):
-        self.controleur.commit()
-            
-    
-    def creeTexte(self):
-        self.choix = "Texte"
-    
-    def creeFleche(self):
-        self.choix = "Fleche"
-    
-    def creeCercle(self):
-        self.choix = "Cercle"
-   
-    def creeRectangle(self):
-        self.choix = "Rectangle"
-        print("Rectangle")
-                    
-    def detruitTempo(self):
-       pass
-
-        
-    def dessinerTempo(self):
-        if(self.choix == "Cercle"):
-            #self.caneva.create_oval(self.x1,self.y1,self.x1+self.x1,self.y1+self.y1)  
-            self.caneva.coords("tempoCercle",self.x1,self.y1,self.x2,self.y2)      
-        #self.formeTemp = self.caneva.create_rectangle(self.x,self.y,self.x2,self.y2, tag="tempo")
-        elif (self.choix == "Rectangle"):
-            self.caneva.coords("tempoRectangle",self.x1,self.y1,self.x2,self.y2)
-        elif (self.choix == "Fleche"):
-            self.caneva.coords("tempoFleche",self.x1,self.y1,self.x2,self.y2)
-    def callback(event):
-        print ("clicked at", event.x, event.y)
-        
-        
-        
-class Modele():
-    def __init__(self, pControleur):
-        self.controleur = pControleur
-        self.formesTempo = [ ]
-        self.formes = [ ]    
-    
-'''    
-class Controleur():
-    def __init__(self):
         self.modele = Modele(self)
         self.vue = Vue(self)
+        self.chargerMaquette()
         self.vue.root.mainloop()
+
+    def chargerMaquette(self):
+        for i in self.serveur.selectionSQL3("Maquettes","nom","id_Projet", self.idProjet):
+            self.vue.listeMaquettes.insert(END,i[0])
+        
+    def connexionSaas(self):
+        ad="http://"+self.saasIP+":9999"
+        self.serveur=ServerProxy(ad,allow_none = 1)
+        
+    def commitNouvelleMaquette(self, nomMaquette):
+        self.serveur.insertionSQL("Maquettes", "'"+str(self.idProjet)+"', '"+nomMaquette+"'")
+        self.vue.entreNouvMaquette.delete(0,END)
+        self.vue.listeMaquettes.insert(END,nomMaquette)
+        
+    def chargerFormesMaquette(self, nomMaquette):
+        self.modele.viderListes()
+        self.vue.nettoyerCanevasDessin()
+        self.idMaquette = self.serveur.selectionSQL3("Maquettes","id","nom", nomMaquette)
+        self.idMaquette = str(self.idMaquette)[2:len(self.idMaquette)-3]
+        for i in self.serveur.selectionSQL3("Formes","id, x1, y1, x2, y2, texte, nom","id_Maquette", self.idMaquette):
+            forme = Forme(i[1], i[2], i[3], i[4], i[6], i[5])
+            self.modele.formesTemporaire.append(forme)
+        self.modele.miseAJourNbFormes()
+
+    def commitNouvellesFormes(self):
+        for i in self.modele.formes:
+            self.serveur.insertionSQL("Formes", "'"+str(self.idMaquette)+"', '"+str(i.x1)+"', '"+str(i.y1)+"', '"+str(i.x2)+"', '"+str(i.y2)+"', '"+i.text+"', '"+i.nom+"'")
+        self.modele.miseAJourNbFormes()
+        
+    
 
 class Vue():
     def __init__(self, pControleur):
@@ -237,41 +52,202 @@ class Vue():
         self.largeur = 800
         self.hauteur = 600
         self.root = Tk()
-        self.cadreMaquette = Frame(self.root, width = self.largeur, height = self.hauteur)
-        self.cadreMaquette.pack()
-        self.canevas = Canvas(self.cadreMaquette, width = self.largeur, height = self.hauteur)
-        self.canevas.pack(side = LEFT)
-        self.cadreOutil= Frame(self.cadreMaquette, width = self.largeur - 600, height = self.hauteur, bg = "grey")
-        self.cadreOutil.pack(side = LEFT)
-
+        self.creerFenetre()
+        self.bindTouche()
+        self.afficherFormes()
         
-    def afficherCaneva(self):
-        self.canevas.delete(ALL)
-        for i in self.controleur.modele.formes:
-            if (self.controleur.modele.formes.nom == "Rectangle"):
-                self.canevas.create_rectangle(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
-            if (self.controleur.modele.formes.nom == "Cercle"):
-                self.canevas.create_oval()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
-            if (self.controleur.modele.formes.nom == "Fleche"):
-                self.canevas.create_line()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
-            if (self.controleur.modele.formes.nom == "Texte"):
-                self.canevas.create_text()()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+    def nettoyerCanevasDessin(self):
+        self.canvasDessin.destroy()
+        self.canvasDessin = Canvas(self.zoneDessin, width = self.largeur+17, height = self.hauteur -80, borderwidth=1, relief="solid", bg="white")
+        self.canvasDessin.pack()
+        self.bindTouche()
+        
+    def creerFenetre(self):
+        self.imgRectangle = PhotoImage(file="Maquette/rectangle.gif")
+        self.imgRetour = PhotoImage(file="Maquette/retour.gif")
+        self.imgOvale = PhotoImage(file="Maquette/cercle.gif")
+        self.imgFleche = PhotoImage(file="Maquette/fleche.gif")
+        self.imgSauvegarde = PhotoImage(file="Maquette/save.gif")
+        self.imgNouvMaquette = PhotoImage(file="Maquette/crayon.gif")
+        
+        self.cadreMaquette = Frame(self.root, width = self.largeur, height = self.hauteur)
+        self.menuTop = Frame(self.cadreMaquette, width = self.largeur, height = self.hauteur-520)
+        self.zoneDessin = Frame(self.cadreMaquette, width = self.largeur, height = self.hauteur-80)
+        
+        self.optionGauche = Canvas(self.menuTop, width = self.largeur/3, height = self.hauteur -520, borderwidth=2, relief="ridge")
+        self.optionMilieu = Canvas(self.menuTop, width = self.largeur/3, height = self.hauteur -520, borderwidth=2, relief="ridge")
+        self.optionDroite = Canvas(self.menuTop, width = self.largeur/3, height = self.hauteur -520, borderwidth=2, relief="ridge")
+        self.canvasDessin = Canvas(self.zoneDessin, width = self.largeur+17, height = self.hauteur -80, borderwidth=1, relief="solid", bg="white")
+        
+        self.labelMaquette = Label(self.optionGauche, text="Maquette en cours d'utilisation")
+        self.listeMaquettes = Listbox(self.optionGauche)
+        self.labelOutils = Label(self.optionMilieu, text="Outils")
+        self.boutonChargerMaquette = Button(self.optionGauche,image=self.imgNouvMaquette,width=30, command = lambda: self.selectionOutils("ChargerMaquette"))
+        self.boutonRectangle = Button(self.optionMilieu,image=self.imgRectangle,width=30, command= lambda: self.selectionOutils("Rectangle"))
+        self.boutonOvale = Button(self.optionMilieu,image=self.imgOvale,width=30, command = lambda: self.selectionOutils("Ovale"))
+        self.boutonFleche = Button(self.optionMilieu,image=self.imgFleche,width=30, command = lambda: self.selectionOutils("Fleche"))
+        self.boutonTexte = Button(self.optionMilieu,text="A",width=30, font=('Arial', 22), command = lambda: self.selectionOutils("Texte"))
+        self.boutonSauvegarde = Button(self.optionMilieu,image=self.imgSauvegarde,width=30, command = lambda: self.selectionOutils("CommitChangement"))
+        self.boutonAnnuleForme = Button(self.optionMilieu,image=self.imgRetour,width=30, command = self.annulerForme)
+        self.labelNouvMaquette = Label(self.optionDroite, text="Nouvelle maquette")
+        self.entreNouvMaquette = Entry(self.optionDroite)
+        self.boutonNouvMaquette = Button(self.optionDroite,text="OK",width=30, command = lambda: self.selectionOutils("CommitNouvMaquette"))
+        
+        self.optionGauche.create_window(115,60, window=self.listeMaquettes,width=190,height=50)
+        self.optionGauche.create_window(135,20, window=self.labelMaquette,width=240,height=30)
+        self.optionGauche.create_window(245,60, window=self.boutonChargerMaquette,width=40,height=30)
+        self.optionMilieu.create_window(245,60, window=self.boutonSauvegarde,width=40,height=30)
+        self.optionMilieu.create_window(120,60, window=self.boutonFleche,width=40,height=30)
+        self.optionMilieu.create_window(165,60, window=self.boutonTexte,width=40,height=30)
+        self.optionMilieu.create_window(205,60, window=self.boutonAnnuleForme,width=40,height=30)
+        self.optionMilieu.create_window(75,60, window=self.boutonOvale,width=40,height=30)
+        self.optionMilieu.create_window(30,60, window=self.boutonRectangle,width=40,height=30)
+        self.optionMilieu.create_window(135,20, window=self.labelOutils,width=240,height=30)
+        self.optionDroite.create_window(115,60, window=self.entreNouvMaquette,width=190,height=30)
+        self.optionDroite.create_window(135,20, window=self.labelNouvMaquette,width=240,height=30)
+        self.optionDroite.create_window(245,60, window=self.boutonNouvMaquette,width=40,height=30)
+        
+        self.menuTop.pack()
+        self.zoneDessin.pack()
+        self.optionGauche.pack(side=LEFT)
+        self.optionMilieu.pack(side=LEFT)
+        self.optionDroite.pack(side=LEFT)
+        self.cadreMaquette.pack()
+        self.canvasDessin.pack()
+
+    def bindTouche(self):
+        self.canvasDessin.bind('<B1-Motion>', self.deplacementSouris)
+        self.canvasDessin.bind('<Button-1>', self.clicSouris)
+        self.canvasDessin.bind('<ButtonRelease-1>', self.relacheSouris)
+        
+    def afficherFormes(self):
+        self.canvasDessin.delete("ALL")
+        for i in self.controleur.modele.formesTemporaire:
+            if (i.nom == "Rectangle"):
+                self.canvasDessin.create_rectangle(i.x1,i.y1,i.x2, i.y2)
+                print("je dessine un rectangle")
+            elif (i.nom == "Ovale"):
+                self.canvasDessin.create_oval(i.x1,i.y1,i.x2, i.y2)
+            elif (i.nom == "Fleche"):
+                self.canvasDessin.create_line(i.x1,i.y1,i.x2, i.y2)
+                print("je dessine une fleche")
+            elif (i.nom  == "Texte"):
+                self.canvasDessin.create_text(i.x1, i.y1, text=i.text,font=("Purisa",12))
+        self.root.after(250, self.afficherFormes)
+        
+    def annulerForme(self):
+        if len(self.controleur.modele.formesTemporaire) > self.controleur.modele.nbFormesCharger:
+            self.controleur.modele.formesTemporaire.pop()
+            self.controleur.modele.formes.pop()
+            self.nettoyerCanevasDessin()
+        
+    def deselectionner(self, event):
+        self.canvasDessin.focus_force()
+        if (self.controleur.modele.choixForme == "Texte"):
+            textTemporaire = Forme(self.controleur.modele.posForme[0],
+                                    self.controleur.modele.posForme[1],
+                                    0,
+                                    0,
+                                    "Texte",
+                                    self.entryTemp.get())
+            self.controleur.modele.formesTemporaire.append(textTemporaire)
+            self.controleur.modele.formes.append(textTemporaire)
+            self.entryTemp.destroy()
+    
+    def deplacementSouris(self,event):
+        self.controleur.modele.posForme[2] = event.x
+        self.controleur.modele.posForme[3] = event.y
+        self.dessinerFormeTemporaire()
+        
+    def clicSouris(self,event):
+        self.controleur.modele.posForme[0] = event.x
+        self.controleur.modele.posForme[1] = event.y
+        
+    def relacheSouris(self, event):
+        if self.controleur.modele.choixForme == "Texte":
+            self.entryTemp = Entry(self.canvasDessin, bd = 0, font=("Purisa",12))
+            self.entryTemp.bind('<Return>',self.deselectionner)
+            self.entryTemp.place(x= event.x, y= event.y)
+            self.entryTemp.focus_force()
+        else:
+            formeTemporaire = Forme(self.controleur.modele.posForme[0],
+                                                self.controleur.modele.posForme[1],
+                                                self.controleur.modele.posForme[2],
+                                                self.controleur.modele.posForme[3],
+                                                self.controleur.modele.choixForme,
+                                                "i")
+            self.controleur.modele.formesTemporaire.append(formeTemporaire)
+            self.controleur.modele.formes.append(formeTemporaire)
+    
+    def dessinerFormeTemporaire(self):
+        self.canvasDessin.delete("FormeNonFini")
+        if(self.controleur.modele.choixForme == "Rectangle"):
+            self.canvasDessin.create_rectangle(self.controleur.modele.posForme[0],
+                                               self.controleur.modele.posForme[1],
+                                               self.controleur.modele.posForme[2],
+                                               self.controleur.modele.posForme[3],
+                                               tags="FormeNonFini")
+        elif(self.controleur.modele.choixForme == "Ovale"):
+            self.canvasDessin.create_oval(self.controleur.modele.posForme[0],
+                                               self.controleur.modele.posForme[1],
+                                               self.controleur.modele.posForme[2],
+                                               self.controleur.modele.posForme[3],
+                                               tags="FormeNonFini")
+        elif(self.controleur.modele.choixForme == "Fleche"):
+            self.canvasDessin.create_line(self.controleur.modele.posForme[0],
+                                               self.controleur.modele.posForme[1],
+                                               self.controleur.modele.posForme[2],
+                                               self.controleur.modele.posForme[3],
+                                               tags="FormeNonFini")
+        elif(self.controleur.modele.choixForme == "Texte"):
+            self.text_id = self.canvasDessin.create_text(self.controleur.modele.posForme[0],self.controleur.modele.posForme[1], anchor="nw", text="")
+            self.canvasDessin.itemconfig(self.text_id, text="")
+        
+    def selectionOutils(self, nomBouton):
+        if (nomBouton == "Rectangle"):
+            self.controleur.modele.choixForme = "Rectangle"
+        elif (nomBouton == "Ovale"):
+            self.controleur.modele.choixForme = "Ovale"
+        elif (nomBouton == "Fleche"):
+            self.controleur.modele.choixForme = "Fleche"
+        elif (nomBouton == "Texte"):
+            self.controleur.modele.choixForme = "Texte"
+        elif (nomBouton == "CommitChangement"):
+            self.controleur.commitNouvellesFormes()
+        elif (nomBouton == "CommitNouvMaquette"):
+            self.controleur.commitNouvelleMaquette(self.entreNouvMaquette.get())
+        elif (nomBouton == "ChargerMaquette"):
+            self.controleur.chargerFormesMaquette(self.listeMaquettes.selection_get())
+                
                 
 class Modele():
     def __init__(self, pControleur):
         self.controleur = pControleur
+        self.posForme = [ 0, 0, 0, 0 ]
         self.formes = [ ]
+        self.formesTemporaire = [ ]
+        self.choixForme = None
+        self.choixText = None
+        self.nbFormesCharger = None
+        
+    def viderListes(self):
+        self.formes[:] = [ ]
+        self.formesTemporaire[:] = [ ]
+        
+    def miseAJourNbFormes(self):
+        self.nbFormesCharger = len(self.formesTemporaire)
+        
         
 
-class Formes():
-    def __init__(self, pModele, pNom):
-        self.modele=pModele
+class Forme():
+    def __init__(self, pX1, pY1, pX2, pY2, pNom, pText):
+        self.x1 = pX1
+        self.y1 = pY1
+        self.x2 = pX2
+        self.y2 = pY2
         self.nom = pNom
-        self.x1
-        self.y1
-        self.x2
-        self.y2
-        self.text
-'''                        
+        self.text = pText
+
+
 if __name__ == '__main__':
     c = Controleur()

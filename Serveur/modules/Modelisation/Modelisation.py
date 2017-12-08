@@ -46,7 +46,10 @@ class Controleur():
         nomTable = self.serveur.selectionSQL3("Tables", "nom" ,  "nom", id)
         nomTableGood=str(nomTable)[2:int(len(nomTable)-3)]
         return nomTableGood
-
+    
+    def verificationExiste(self,champAVerifier, tableAVerifier, where, condition,valeur):
+        return self.serveur.verificationExiste(champAVerifier, tableAVerifier, where, condition,valeur)
+        
 
 class Modele():
     def __init__(self, pControleur):
@@ -285,7 +288,7 @@ class Vue():
         else:
            nomChampGood=nom
            etatGood=etat
-           
+        print("NOM DU CHAMMMPPPPP A CHANGER ETAT : ", nomChampGood)
         idChamp=self.controleur.modele.idDuChamp(nomChampGood)
         self.controleur.changeEtat(etatGood, idChamp, self.listBoxEtatChampsTable, idTable)
         self.canevaAffichageChamps.forget()
@@ -380,11 +383,15 @@ class Vue():
             if("FK" in self.controleur.modele.contrainte):
                 position=self.listBoxChampsFK.curselection()[0]
                 nomChamp=self.listBoxChampsFK.get(position, position)
-                nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
+                if(position!=0):
+                    nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
+                else:
+                    nomChampGood=nomChamp
+                #nomChamp=self.listBoxChampsFK.get(position, position)
+                #nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
                 self.controleur.modele.contrainte+="("+nomChampGood+")"
             nom=self.entryNomChamps.get()
             type=self.entryType.get()
-            print("la caliss de contrainte : ",self.controleur.modele.contrainte )
             self.controleur.ajouterChamp(nom, self.controleur.modele.contrainte,type)
             self.canevaAjouterChamps.forget()
             self.controleur.modele.contrainte=""
@@ -402,12 +409,11 @@ class Vue():
     def ajoutTableBD(self):
         nom=self.entryNomTable.get()
         if(nom==""):
-             messagebox.showerror(
-            "Nom de table manquant a l'appel",
-            "Veuillez entrer un nom de table")
+            messagebox.showerror("Nom de table manquant a l'appel","Veuillez entrer un nom de table")
+        elif(self.controleur.verificationExiste("nom", "Tables", "id_Projet", self.controleur.idProjet, nom)==False):
+            messagebox.showerror("Table existante","Le nom de la table existe deja")
         else:
             self.controleur.ajoutTableBD(nom)
-    
     
 if __name__ == '__main__':
     c = Controleur()
