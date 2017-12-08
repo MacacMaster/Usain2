@@ -6,17 +6,15 @@ from xmlrpc.client import ServerProxy
 class Controleur():
     def __init__(self):
         self.saasIP=sys.argv[1]
+        self.utilisateur=sys.argv[2]
+        self.idProjet=sys.argv[4]
+        self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
         self.serveur = self.connectionServeur()
         self.vue = Vue(self)
         self.idScena=0
-       
         self.unReprend=False
-        self.id=1
-       
-        self.utilisateur=sys.argv[2]
-        self.idProjet=sys.argv[4]
-        self.clientIP=sys.argv[5]
+        
         self.remplirListeCas()
         self.vue.root.mainloop()
         print("controleur")
@@ -27,10 +25,24 @@ class Controleur():
         return serveur
     
     def remplirListeCas(self):
-        return self.serveur.selectionSQL("CasUsages","description")
+        nomTable = "CasUsages"
+        champs = "description"
+        where = ["id_Projet"]
+        valeur = [self.idProjet]
+
+        requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        return requete
+
         
     def remplirListeEtat(self):
-        return self.serveur.selectionSQL("CasUsages","etat")
+        nomTable = "CasUsages"
+        champs = "etat"
+        where = ["id_Projet"]
+        valeur = [self.idProjet]
+
+        requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        return requete
+        #return self.serveur.selectionSQL("CasUsages","etat")
            
     def envoyerCas(self,cas,usager,machine):
         self.serveur.insertionSQL("CasUsages","'"+str(self.idProjet)+"','"+cas+"','Termine'")
@@ -42,6 +54,7 @@ class Controleur():
         self.vue.mettreAJourListes()
    
     def chercherBdcas(self,indice):
+   
         return self.serveur.selectionSQL3("CasUsages","description","id",indice)
        
     def chercherUtilisateur(self,indice):
@@ -59,7 +72,7 @@ class Controleur():
     
     def chercherMachine(self,indice):
         print("Indice machines cas",self.vue.indiceCasModifier)
-        
+    
         nomTable = "Machines"
         champs = "etat"
         where = ["id_CasUsage"]
