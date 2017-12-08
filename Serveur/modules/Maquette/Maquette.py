@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import sqlite3
 from xmlrpc.client import ServerProxy
@@ -25,9 +28,15 @@ class Controleur():
         self.serveur=ServerProxy(ad,allow_none = 1)
         
     def commitNouvelleMaquette(self, nomMaquette):
-        self.serveur.insertionSQL("Maquettes", "'"+str(self.idProjet)+"', '"+nomMaquette+"'")
-        self.vue.entreNouvMaquette.delete(0,END)
-        self.vue.listeMaquettes.insert(END,nomMaquette)
+        if nomMaquette == "":
+            self.vue.afficherMessageErreur("Vous devez entrer un nom de maquette valide.")
+        else:
+            if self.serveur.verificationExiste("nom","Maquettes","id_Projet", self.idProjet, nomMaquette):
+                self.serveur.insertionSQL("Maquettes", "'"+str(self.idProjet)+"', '"+nomMaquette+"'")
+                self.vue.entreNouvMaquette.delete(0,END)
+                self.vue.listeMaquettes.insert(END,nomMaquette)
+            else:
+                self.vue.afficherMessageErreur("Ce nom de maquette existe déjà.")
         
     def chargerFormesMaquette(self, nomMaquette):
         self.modele.viderListes()
@@ -45,7 +54,6 @@ class Controleur():
         self.modele.miseAJourNbFormes()
         
     
-
 class Vue():
     def __init__(self, pControleur):
         self.controleur = pControleur
@@ -119,6 +127,9 @@ class Vue():
         self.canvasDessin.bind('<B1-Motion>', self.deplacementSouris)
         self.canvasDessin.bind('<Button-1>', self.clicSouris)
         self.canvasDessin.bind('<ButtonRelease-1>', self.relacheSouris)
+        
+    def afficherMessageErreur(self, messageErreur):
+        messagebox.showwarning('Erreur', messageErreur)
         
     def afficherFormes(self):
         self.canvasDessin.delete("ALL")
