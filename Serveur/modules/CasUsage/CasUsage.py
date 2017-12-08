@@ -71,9 +71,10 @@ class Controleur():
    
     
     def modifierCas(self,cas,usager,machine):
-        self.serveur.updateSQL("CasUsages",cas,"description","id","id_projet",self.vue.indiceCasModifier+1,self.idProjet)
-        self.serveur.updateSQL("Humains",usager,"etat","id","id_CasUsage",self.idScena,self.vue.indiceCasModifier+1)
-        self.serveur.updateSQL("Machines",machine,"etat","id","id_CasUsage",self.idMach,self.vue.indiceCasModifier+1)
+        print(type(cas))
+        self.serveur.updateSQL2("casUsages",cas,"description","id",self.vue.indiceCasModifier)
+        self.serveur.updateSQL2("Humains",usager,"etat","id_CasUsage",self.vue.indiceCasModifier)
+        self.serveur.updateSQL2("Machines",machine,"etat","id_CasUsage",self.vue.indiceCasModifier)
    
 
     def indiceCasModifier(self, nomCas):
