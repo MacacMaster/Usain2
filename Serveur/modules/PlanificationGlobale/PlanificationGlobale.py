@@ -51,7 +51,7 @@ class Controleur():
 
         
         #[r0=[c1,c2,c3...],R1...]
-        self.listeFonctions=self.sql.selDonnees("*") 
+        self.listeFonctions=self.sql.selDonnees("*")
         #Calcule automatiquement      
         self.id = len(self.listeFonctions)+1
 

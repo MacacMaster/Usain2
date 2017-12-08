@@ -122,7 +122,7 @@ class Vue():
         
         self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink", command=self.ajoutFonction)
         self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
-        self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink",)
+        self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink", command=self.modifierFonction)
         self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
         self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink", command=self.fenetreConfirmation)
         self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
@@ -236,6 +236,22 @@ class Vue():
     
     def ajoutFonction(self):
         #sprint,nomfonction,priorite,debut,fin
-        print("entre dans la methode ajoutFonction de la vue ")
-        self.parent.sql.creerFonction(self.tfSprint.get(), self.tfFonctionnalite.get(), self.tfPriorite.get(), self.tfDebut.get(), self.tfFin.get())
+        self.parent.creerFonction(self.tfSprint.get(), self.tfFonctionnalite.get(), self.tfPriorite.get(), self.tfDebut.get(), self.tfFin.get())
+        self.effacerChamps()
+        self.modifierFonction()
+        
+        
+    def suppressionFonction(self):
+        self.parent.supressionFonction()
+    
+    
+    def modifierFonction(self):
+        #valeurModifiee,champModifier,id
+        id=self.listFonct.curselection()
+        self.parent.sql.modifierFonction(self.tfSprint.get(),"id_Sprint", id)
+        self.parent.sql.modifierFonction(self.tfResponsable.get(),"id_Reponsable", id)
+        self.parent.sql.modifierFonction(self.tfFonctionnalite.get(),"nom_fonction", id)
+        self.parent.sql.modifierFonction(self.tfPriorite.get(),"priorite", id)
+        self.parent.sql.modifierFonction(self.tfDebut.get(),"date_debut", id)
+        self.parent.sql.modifierFonction(self.tfFin.get(),"date_fin", id)
     
