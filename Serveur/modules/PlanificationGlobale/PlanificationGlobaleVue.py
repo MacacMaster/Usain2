@@ -120,7 +120,7 @@ class Vue():
         self.canCommandes=Canvas(self.frameCommandes, width=1000, height=70, bg="light grey", )
         self.canCommandes.pack()
         
-        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink")
+        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink", command=self.ajoutFonction)
         self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
         self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink",)
         self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
@@ -234,5 +234,8 @@ class Vue():
             
     
     
-    
+    def ajoutFonction(self):
+        #sprint,nomfonction,priorite,debut,fin
+        print("entre dans la methode ajoutFonction de la vue ")
+        self.parent.sql.creerFonction(self.tfSprint.get(), self.tfFonctionnalite.get(), self.tfPriorite.get(), self.tfDebut.get(), self.tfFin.get())
     
