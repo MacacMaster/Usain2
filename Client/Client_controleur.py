@@ -40,6 +40,7 @@ class Controleur():
     def chargerProjet(self, nomprojet):
         idProjet = self.serveur.chargerProjet(nomprojet, self.idOrga)
         self.idProjet = idProjet
+        self.log.writeLog("Projet ID: "+str(idProjet),"PE0")
         #print("id du projet coté client controleur", self.idProjet)
         return idProjet
     
@@ -51,7 +52,7 @@ class Controleur():
 
     def fermerApplication(self):
     
-        #self.log.writeLog("Fermeture du Client")
+        self.log.writeLog("Fermeture du Client","L03")
         if self.serveur:
             self.serveur.fermeture(self.utilisateur)
         self.vue.root.destroy()
@@ -63,7 +64,8 @@ class Controleur():
             ad="http://"+self.saasIP+":9999"
             #print("Connection au serveur Saas en cours...")
             self.serveur=ServerProxy(ad,allow_none = 1)
-            #
+            #Needs those Var for LOGS
+            self.log.setLog( pIdentifiantNomOrga, pIdentifiantNomUsager, )
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
             print("Connection au serveur Saas réussi")
             
@@ -71,9 +73,9 @@ class Controleur():
                 self.log.writeLog("Login Fail")
                 self.vue.logInClientFail()
             else:
-                self.log.writeLog("Login Successful")
                 self.utilisateur=pIdentifiantNomUsager
                 self.organisation=pIdentifiantNomOrga
+                self.log.writeLog("Login Successful","L00")
                 self.idOrga = reponseServeur[1]
                 self.vue.chargerCentral(reponseServeur[0][1],reponseServeur[0][2],reponseServeur[0][3],reponseServeur[0][4])
         else:
@@ -81,6 +83,7 @@ class Controleur():
         self.serveur.selectionSQL("Projets","id")
         
     def creerProjet(self,nom):
+        
             self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
             
     def requeteModule(self,mod):

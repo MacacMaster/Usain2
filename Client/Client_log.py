@@ -39,15 +39,15 @@ class Log():
         #=======================================================================
     
     #Assigner les valeurs qui ne changeront pas directement dans la classe
-    def setLog(self,organisation="Organisation",user="User",db="1.1.1.1"):
+    def setLog(self,organisation="Organisation",user="User"):
         self.organisation=organisation
         self.user=user
-        self.dbip=db
+
     
     #La fonction d'écriture du log
-    def writeLog(self,action="Actionman",module="Client"):
+    def writeLog(self,action="Actionman",errorid="L01",module="Client"):
         #print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
-        if (self.parent.serveur.writeLog(self.getTime(),self.organisation,self.user,self.clientip,self.dbip,module,action)):
+        if (self.parent.serveur.writeLog(self.getTime(),self.organisation,self.user,self.clientip,self.parent.saasIP,module,action,errorid)):
             return True
         else:
             return False

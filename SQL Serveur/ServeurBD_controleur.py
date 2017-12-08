@@ -6,8 +6,6 @@ import socket
 import sqlite3
 from IdMaker import *
 
-
-
 class ControleurServeurBD():
     def __init__(self):
         self.database = sqlite3.connect('SprintMasterData.db')
@@ -16,16 +14,13 @@ class ControleurServeurBD():
         
     #test pour envoyer une commande fait a la main -M-A
     #https://stackoverflow.com/questions/21142531/sqlite3-operationalerror-no-such-column
-    
 #     def insCustom(self,commande,values):
 #         conn= sqlite3.connect('SprintMasterData.db')
 #         c = conn.cursor()
 #         params = (userName, password, confirmPassword, firstName, lastName,
 #           companyName, email, phoneNumber, addressLine1, addressLine2, 
 #           addressLine3, zipCode, province, country, regDate)
-# 
-#         c.execute("INSERT INTO"+ People+"VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
-#         
+#         c.execute("INSERT INTO"+ People+"VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params) 
 #         self.id+=1
 #         c.execute(commande, (self.id, values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],))
 #         conn.commit()
@@ -41,7 +36,6 @@ class ControleurServeurBD():
         conn.commit()
         conn.close()
         #pour retourner le id de la dernière ligne insérée
-    
         return id
     
     #M-A id est un argument Facultatif FUCKIT
@@ -170,8 +164,7 @@ class ControleurServeurBD():
         #c.execute('''DELETE FROM ''' + nomTable + where)
         c.execute('''DELETE FROM ''' +nomTable + ''' where ''' +where + '''=?''', (condition,))
         conn.commit()
-        conn.close()
-        
+        conn.close()   
     
     def chargerProjet(self, nomprojet, idorga):
         nomProjetBD = ''+nomprojet+''

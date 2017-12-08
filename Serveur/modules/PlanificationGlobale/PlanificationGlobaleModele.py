@@ -27,7 +27,9 @@ class SQL():
           
     def selDonnees(self,champ): #WORKS returns [[row]]
         #(self,nomTable,champs,where,indice)   
+        self.writeLog("SELECT - Field:"+str(champ),"S66")
         return self.Saas.selectionSQL3('PlanifGlobales',champ,'id_Projet',self.parent.idProjet)
+        
         
     def afficherFonctions(self):
         #self.parent.serveur.
@@ -35,8 +37,12 @@ class SQL():
     
     def modifierFonction(self,valeurModifiee,champModifier,id):
        self.Saas.updateSQL2('PlanifGlobales',valeurModifiee,champModifier,'id',id)
+       self.writeLog("UPDATE - Field:"+str(champModifier)+" - ID:"+str(id),"S65")
        # UPDATE employees SET lastname = 'Smith' WHERE employeeid = 3;
        pass
+    
+    def writeLog(self,action):
+        self.parent.writeLog(action)
     
     #(Numéro Sprint,Nom de la fonction, priorité(basse=3,moyenne=2,haute=1)
     def creerFonction(self,sprint,nomfonction,priorite,debut,fin):
@@ -49,9 +55,10 @@ class SQL():
             priorite="Haute"    
 
         #id,idprojet,idsprint,idresponsable,priorite,debut,fin
-        self.parent.id+=1
         params = (self.parent.id,self.parent.idProjet,sprint,self.parent.utilisateur,nomfonction,priorite,debut,fin)
+        self.parent.id+=1
         self.Saas.insDonneesPlanif('''PlanifGlobales''',params)
+        self.writeLog("INSERT - Name:"+str(nomfonction)+" - ID:"+str(self.parent.id),"S64")
         #fonction d'ecriture dans la table planification    
         pass
     

@@ -76,6 +76,7 @@ class Vue():
     
     def chooseProjectFail(self):
         messagebox.showwarning('Projet inconnu', 'Merci de s�l�ctionner un projet existant.')
+        self.parent.log.writeLog("Projet Inconnu","PE1")
     
     def creerCadreCentral(self):
         self.cadreCentral=Frame(self.cadreApplication)

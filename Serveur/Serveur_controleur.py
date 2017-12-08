@@ -80,9 +80,7 @@ class ControleurServeur():
         self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1)
         print("Connexion au serveur BD réussie")
 
-       
-       
-        
+   
         #variables id
         self.nomUsager = pIdentifiantNomUsager
         identifiantNomUsager = pIdentifiantNomUsager
@@ -183,8 +181,7 @@ class ControleurServeur():
     
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)
-    
-    
+  
     def updateSQL(self,nomTable,champs,valeur):
         self.serveurBD.updateDonnes(nomTable,champs,valeur)
         return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
@@ -193,8 +190,7 @@ class ControleurServeur():
         self.serveurBD.updateDonnees2(nomTable,champ,description,where,indice1)
     
     def insCustom(self,commande,values):
-        self.serveurBD.insCustom(self,commande,values)    
-        
+        self.serveurBD.insCustom(self,commande,values)      
         
     def delete(self, nomTable, where, condition):
         self.serveurBD.delete(nomTable, where, condition)
@@ -203,15 +199,13 @@ class ControleurServeur():
         return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
     
     #Fonction d'écriture du log        
-    def writeLog(self,date,org,user,ip,db,module,action):
+    def writeLog(self,date,org,user,ip,db,module,action,errorid):
         logLocation='Logs.sqlite'
-        print ("Log Open")
         logdb = sqlite3.connect(logLocation)
         curseur = logdb.cursor()
-        curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,))
+        curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,errorid,))
         logdb.commit()
         logdb.close()
-        print ("Log Close")
         return True 
     
     
