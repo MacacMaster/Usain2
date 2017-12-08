@@ -102,6 +102,18 @@ class ControleurServeurBD():
         conn.close()
         return laselection
     
+    def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
+        conn = sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute(''' SELECT ''' + champVerifier + ''' FROM ''' + tableVerifier + ''' WHERE ''' + quoi + '''=?''' , (egaleQuoi,))
+        laSelection = c.fetchall()
+        conn.close()
+        for s in laSelection:
+            s=str(s)[2:int(len(s)-4)]
+            if s == valeur:
+                return False
+        return True
+    
     #
     '''    
             Comment utiliser cette fonction?
