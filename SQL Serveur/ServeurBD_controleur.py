@@ -50,7 +50,7 @@ class ControleurServeurBD():
         conn.commit()
         conn.close()
         return self.id
-    
+        
     def selDonnees(self,nomTable,champs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
@@ -61,7 +61,6 @@ class ControleurServeurBD():
         donnees = c.fetchall()
         conn.close()
         return donnees
-
         
     def updateDonnees(self,nomTable,champ,description,where,where2,indice1,indice2):
         conn= sqlite3.connect('SprintMasterData.db')
@@ -76,6 +75,7 @@ class ControleurServeurBD():
         c.execute('''UPDATE '''+ nomTable+ ''' SET '''+ description +''' =? WHERE '''+ where+''' =?''', (champ,indice1))
         conn.commit()
         conn.close()
+        return True
     
     def selDonneesComplexe1(self,nomTable,champs):
         conn= sqlite3.connect('SprintMasterData.db')
