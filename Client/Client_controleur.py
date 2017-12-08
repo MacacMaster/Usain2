@@ -55,12 +55,7 @@ class Controleur():
         if self.serveur:
             self.serveur.fermeture(self.utilisateur)
         self.vue.root.destroy()
-        
-        
-        
-        
-        
-        
+
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Vérification des informations avant l'envoi au serveur
         if (pIdentifiantNomOrga !="" and pIdentifiantNomUsager !="" and pIdentifiantMotDePasse !="" ):

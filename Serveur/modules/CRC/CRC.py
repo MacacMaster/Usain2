@@ -166,9 +166,14 @@ class Vue():
     
     def supprimerClasse(self):
         id = self.classeChoisi[0]
-        chaine = "WHERE id = " + str(id)
-        self.parent.serveur.delete("Classes","id", str(id)) 
+        self.parent.modele.supprimerClasse(id)
+        #chaine = "WHERE id = " + str(id)
+        #self.parent.serveur.delete("Classes","id", str(id)) 
         self.loaderNomClasses() 
+        self.listeResponsabilites.delete(0, END) #effacer la liste
+        self.listeCollaboration.delete(0, END) #effacer la liste
+        self.lblNomClasse.config(text = "Nom de classe")
+        self.lblProprietaire.config(text = "proprietaire")
     
     def creerMenuDroite(self):
         self.menuDroite = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -232,7 +237,11 @@ class Vue():
         
         #activer ou désactiver l'état du entry
         if bouton == 1:
-            self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state = DISABLED)
+            self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state = NORMAL)
+            
+            
+            
+            
         elif bouton == 2:
             self.entryNomClasse = Entry(frame1, text="", width=25, textvariable=self.nomClasse, state =  NORMAL)
         self.entryNomClasse.pack(side=LEFT)
@@ -328,6 +337,8 @@ class Vue():
         scrollbar.config(command=self.listeResponsabilitesAjout.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
         
+
+        
         #scrollbar droite
         frame5 = Frame(frameDeuxBox)
         frame5.pack(fill=X, pady=5, side=LEFT)
@@ -346,7 +357,7 @@ class Vue():
         frame7 = Frame(self.menuAjout)
         frame7.pack(fill=X, pady=5)
         
-        boutonConfirmer = Button(frame7, text="Confirmer", command = self.confirmer)
+        boutonConfirmer = Button(frame7, text="Confirmer", command=lambda: self.confirmer(bouton) )
         boutonConfirmer.pack(side = LEFT)
         
         boutonSupprimer = Button(frame7, text="Supprimer", command = self.supprimer)
@@ -356,7 +367,26 @@ class Vue():
         boutonCanceler.pack(side = LEFT)  
         
                
-  
+          # ajouter la liste des responsabilités de la classe choisie
+        if bouton == 1:
+            #index = self.listeClasses.curselection()[0]
+       
+            #self.classes est un tableau qui contient toutes les informations sur les classes...
+            #alors que self.listeClasses ne contient que les noms des classes...
+            
+            #self.classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
+          
+            #trouver les collaborateurs de la classe
+            collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(str(self.classeChoisi[0]))
+            for element in collaborateursDeLaClasse:
+                self.listeCollaborationAjout.insert(END,element[0])
+                
+            #trouver les responsabilites de la classe
+            #loader les responsabilités
+            responsabilites = self.parent.modele.responsabilitiesDeLaClasse(str(self.classeChoisi[0]))
+         
+            for element in responsabilites:
+                self.listeResponsabilitesAjout.insert(END,element[0])
             
             
     def canceler(self):
@@ -417,7 +447,7 @@ class Vue():
         self.btnSuppression.config(state=DISABLED)
         self.btnModification.config(state=DISABLED)
         
-    def confirmer(self):
+    def confirmer(self,bouton):
         saisieNomClasse = self.entryNomClasse.get()
         saisieProprietaire = self.entryProprietaire.get()
         
@@ -442,6 +472,8 @@ class Vue():
             classe = Classe(saisieProprietaire, saisieNomClasse, self.listeResponsabilitesAjout, self.listeCollaborationAjout)
             self.parent.modele.insertionConfirmer(classe)
             
+            if (bouton == 1): #si on est en mode modification
+                self.supprimerClasse()  #enlever la classe modifiée pour l'écraser avec la nouvelle classe
             #self.parent.modele.insertionConfirmer(classe)
             self.canceler() #retour à au menu de base CRC  
             
@@ -543,6 +575,17 @@ class Modele():
         
         return listeEnString
     '''
+    
+    def supprimerClasse(self,id_classe):
+        #chaine = "WHERE id = " + str(id_classe)
+        self.parent.serveur.delete("Classes","id", str(id_classe)) 
+        self.supprimerAttributs("Responsabilites",str(id_classe))
+        self.supprimerAttributs("Collaborations",str(id_classe))
+       
+
+    def supprimerAttributs(self,type,id_classe):
+        #chaine = "WHERE id_classe = " + str(id_classe)
+        self.parent.serveur.delete(type,"id_classe", str(id_classe)) 
             
 class Controleur():
     def __init__(self):
