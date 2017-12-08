@@ -2,6 +2,7 @@ from tkinter import *
 from logging.config import listen
 from xmlrpc.client import ServerProxy
 
+
 class Controleur():
     def __init__(self):
         self.saasIP=sys.argv[1]
@@ -21,12 +22,14 @@ class Controleur():
         print("controleur")
    
     def connectionServeur(self):
-        print("Connection au serveur BD...")
+    
         serveur=ServerProxy(self.adresseServeur)
         return serveur
     
     def remplirListeCas(self):
         return self.serveur.selectionSQL("CasUsages","description")
+        
+     
     
     def remplirListeEtat(self):
         return self.serveur.selectionSQL("CasUsages","etat")
@@ -42,13 +45,13 @@ class Controleur():
         return self.serveur.selectionSQL3("CasUsages","description","id",indice)
        
     def chercherUtilisateur(self,indice):
-        print("Indice humain cas"            ,self.vue.indiceCasModifier)
+       # print("Indice humain cas"            ,self.vue.indiceCasModifier)
         utilisateur=self.serveur.selectionSQL3("Humains","etat","id_CasUsage",self.vue.indiceCasModifier)
-        print("humains                  ",utilisateur)
+       # print("humains                  ",utilisateur)
         return utilisateur
     
     def chercherMachine(self,indice):
-       machine=self.serveur.selectionSQL2("Machines","etat","id","id_CasUsage",self.idScena,indice)
+       machine=self.serveur.selectionSQL3("Machines","etat","id","id_CasUsage",indice)
        return machine
     
     def modifierCas(self,cas,usager,machine):
@@ -58,6 +61,7 @@ class Controleur():
    
 
     def indiceCasModifier(self, nomCas):
+        print("NOM DU CAS A MODIFIER CONTROLEUR",nomCas)
         indice=self.serveur.selectionSQL3("CasUsages","id", "description", nomCas)
         self.indice=str(indice)[2:int(len(indice)-3)]
         indiceGood=self.indice
@@ -104,11 +108,11 @@ class Vue():
         self.btnEnvoyerUsager=Button(self.caneva,text="Envoyer",width=20,command=self.envoyerTexte)
         self.caneva.create_window(400,200,window=self.btnEnvoyerUsager,width=150,height=20)
     
-        #self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
-        #self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
-        
-        self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.select)
+        self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
         self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
+        
+        #self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.select)
+        #self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
 
         self.listeetat=Listbox(self.caneva,bg="lightblue",borderwidth=0,relief=FLAT,width=12,height=12)
         self.caneva.create_window(670,350,window=self.listeetat)
@@ -119,27 +123,29 @@ class Vue():
         self.mettreAJourListes()
 
     def select(self):
-        print(self.controleur.serveur.selectionSQL("Humains","id"))
+        print(self.controleur.serveur.selectionSQL("casUsages","id"))
         
     def indiceCasModifier(self, nomCas):
-        print(nomCas,"indicecas2")
+        #print(nomCas,"indicecas2")
         self.controleur.indiceCasModifier(nomCas)
-        #self.menuModifier()
+        self.menuModifier()
          
     def indiceDeLaBD(self):
         #self.indiceCasModifier=self.listecas.curselection()[0]
        # print("indice a modifier : ",self.indiceCasModifier)
        # self.menuModifier()
         position=self.listecas.curselection()[0] # indice du cas selectionné
-        print(position)
+        print("position ", position)
         nomCasSelection=self.listecas.get(position, position)
+       #print("NOM DE CAS",nomCasSelection)
         if(position!=0):
-            nomCasSelectionGood=str(nomCasSelection)[4:int(len(nomCasSelection)-6)]
+           nomCasSelectionGood=str(nomCasSelection)[2:int(len(nomCasSelection)-4)]
         else: 
-            nomCasSelectionGood=str(nomCasSelection)[2:int(len(nomCasSelection)-2)]
+            nomCasSelectionGood=nomCasSelection
         print("nom cas a modifier : ",nomCasSelectionGood, "    : ", nomCasSelection)
         self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
-        #humain=self.controleur.humainCasModifier(indice)
+        humain=self.controleur.humainCasModifier(nomCasSelectionGood)
+        
         self.menuModifier()
 
     def remplirListeCas(self):
@@ -151,18 +157,16 @@ class Vue():
     def remplirListBoxCas(self):
         self.listecas.delete(0, END)
         laselection=self.controleur.remplirListeCas()
-        
+       
         for i in laselection:
-            temp=str(i)[3:int(len(i)-5)]
-            self.listeetat.insert(END,temp)
-            #print("CAS",i)
-            self.listecas.insert(END,i)
+            temp=str(i)[2:int(len(i)-3)]
+            self.listecas.insert(END,temp)
         self.listeCas.clear()
             
     def remplirListBoxEtat(self):
         self.listeetat.delete(0, END)
         for i in self.listeEtat:
-            temp=str(i)
+            temp=str(i)[2:int(len(i)-3)]
             self.listeetat.insert(END,temp)
         self.listeEtat.clear()
         
@@ -182,6 +186,7 @@ class Vue():
         self.canevaMod.create_window(650,200,window=self.labelActionMachine,width=150,height=250)
         
         cas=self.controleur.chercherBdcas(self.indiceCasModifier,);
+        cas=str(cas)[3:int(len(cas)-4)]
         self.labelCasUsage.insert(END, str (cas))
         
         usager=self.controleur.chercherUtilisateur(self.indiceCasModifier,)#
