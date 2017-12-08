@@ -1,6 +1,7 @@
 from tkinter import *
 from logging.config import listen
 from xmlrpc.client import ServerProxy
+from tkinter import messagebox
 
 class Controleur():
     def __init__(self):
@@ -206,8 +207,11 @@ class Vue():
         self.lblNomTable.config(foreground='lightblue')
         self.canevaNouvelleTable.create_window(largeur/2,60,window=self.lblNomTable)
         
-        self.lblNom=Label(text="Nom de la table : ", bg="lightblue")
+        self.lblNom=Label(text="Nom de la table : *", bg="lightblue")
         self.canevaNouvelleTable.create_window(100,130,window=self.lblNom)
+        
+        self.lblObligatoire=Label(text="* : Obligatoire", bg="steelblue")
+        self.canevaNouvelleTable.create_window(95,270,window=self.lblObligatoire)
         
         self.entryNomTable=Entry(bg="white")
         self.canevaNouvelleTable.create_window(340,130,window=self.entryNomTable,width=300,height=25)
@@ -301,10 +305,10 @@ class Vue():
         self.lblChamp.config(foreground='lightblue')
         self.canevaAjouterChamps.create_window(largeur/2,60,window=self.lblChamp)
         
-        self.lblNom=Label(text="Nom : ",bg="lightblue")
+        self.lblNom=Label(text="Nom : *",bg="lightblue")
         self.canevaAjouterChamps.create_window(100,115,window=self.lblNom)
         
-        self.lblType=Label(text="Type : ",bg="lightblue")
+        self.lblType=Label(text="Type : *",bg="lightblue")
         self.canevaAjouterChamps.create_window(100,185,window=self.lblType)
         
         self.entryNomChamps=Entry(bg="white")
@@ -339,7 +343,10 @@ class Vue():
         self.canevaAjouterChamps.create_window(390,370,window=self.btnChoisirChamp,width=150,height=20)
         
         self.btnAjouterChamps=Button(self.canevaAjouterChamps,text="Ajouter un champs",width=20,command=self.ajouterChamps)
-        self.canevaAjouterChamps.create_window(260,550,window=self.btnAjouterChamps,width=150,height=20)
+        self.canevaAjouterChamps.create_window(260,525,window=self.btnAjouterChamps,width=150,height=20)
+        
+        self.lblObligatoire=Label(text="* : Obligatoire",bg="steelblue")
+        self.canevaAjouterChamps.create_window(100,560,window=self.lblObligatoire)
         
     def contraintePK(self):
         self.controleur.modele.contrainte = "PK"
@@ -365,18 +372,23 @@ class Vue():
         self.controleur.modele.remplirListBoxFKTable(self.listBoxTableFK)
      
     def ajouterChamps(self):
-        if("FK" in self.controleur.modele.contrainte):
-            position=self.listBoxChampsFK.curselection()[0]
-            nomChamp=self.listBoxChampsFK.get(position, position)
-            nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
-            self.controleur.modele.contrainte+="("+nomChampGood+")"
-        nom=self.entryNomChamps.get()
-        type=self.entryType.get()
-        print("la caliss de contrainte : ",self.controleur.modele.contrainte )
-        self.controleur.ajouterChamp(nom, self.controleur.modele.contrainte,type)
-        self.canevaAjouterChamps.forget()
-        self.controleur.modele.contrainte=""
-        self.menuAffichageChamps(self.controleur.modele.nomTable)
+        if(self.entryType.get()=="" or self.entryNomChamps.get()==""):
+            messagebox.showerror(
+            "Donnée(s) manquante(s)",
+            "Veuillez entrer un nom et un type")
+        else:    
+            if("FK" in self.controleur.modele.contrainte):
+                position=self.listBoxChampsFK.curselection()[0]
+                nomChamp=self.listBoxChampsFK.get(position, position)
+                nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
+                self.controleur.modele.contrainte+="("+nomChampGood+")"
+            nom=self.entryNomChamps.get()
+            type=self.entryType.get()
+            print("la caliss de contrainte : ",self.controleur.modele.contrainte )
+            self.controleur.ajouterChamp(nom, self.controleur.modele.contrainte,type)
+            self.canevaAjouterChamps.forget()
+            self.controleur.modele.contrainte=""
+            self.menuAffichageChamps(self.controleur.modele.nomTable)
        
     def annulerNouvelleTable(self):
        
@@ -389,7 +401,12 @@ class Vue():
         
     def ajoutTableBD(self):
         nom=self.entryNomTable.get()
-        self.controleur.ajoutTableBD(nom)
+        if(nom==""):
+             messagebox.showerror(
+            "Nom de table manquant a l'appel",
+            "Veuillez entrer un nom de table")
+        else:
+            self.controleur.ajoutTableBD(nom)
     
     
 if __name__ == '__main__':
