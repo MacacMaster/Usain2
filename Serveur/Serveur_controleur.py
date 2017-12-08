@@ -63,8 +63,7 @@ class ModeleService(object):
                 c.nom,
                 list(self.modulesdisponibles.keys()),
                 list(self.outilsdisponibles.keys()),
-                list(self.projetsdisponibles.keys())
-                ]
+                list(self.projetsdisponibles.keys())]
         
 class ControleurServeur():
     def __init__(self):
@@ -198,6 +197,9 @@ class ControleurServeur():
         
     def delete(self, nomTable, where, condition):
         self.serveurBD.delete(nomTable, where, condition)
+        
+    def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
+        return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
