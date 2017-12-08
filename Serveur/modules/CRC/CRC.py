@@ -77,11 +77,12 @@ class Vue():
        
         #obtenir l'index correspondant a la classe selectionnee dans la liste de classes
         index = self.listeClasses.curselection()[0]
+       
         #self.classes est un tableau qui contient toutes les informations sur les classes...
         #alors que self.listeClasses ne contient que les noms des classes...
         
         self.classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
-
+      
         #trouver les collaborateurs de la classe
         collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(index)
         #for element in collaborateursDeLaClasse:
@@ -90,6 +91,7 @@ class Vue():
         
         #loader les responsabilités
         responsabilites = self.parent.modele.responsabilitiesDeLaClasse(str(self.classeChoisi[0]))
+     
         for element in responsabilites:
             self.listeResponsabilites.insert(END,element[0])
         #for element in range(5):
@@ -523,7 +525,7 @@ class Modele():
         #parcorir tous les éléments de la listbox responsabilités  
           
         for i in range (classe.responsabilites.size()):
-            nom = classe.responsabilites.get(i)   
+            nom = classe.responsabilites.get(i)  
             chaine = "'" + str(idClasse) + "','" +str(nom) + "'"
             self.parent.serveur.insertionSQL("Responsabilites",chaine)
         

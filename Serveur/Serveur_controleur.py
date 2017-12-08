@@ -198,6 +198,9 @@ class ControleurServeur():
         
     def delete(self, nomTable, where, condition):
         self.serveurBD.delete(nomTable, where, condition)
+        
+    def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
+        return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
     
     #Fonction d'écriture du log        
     def writeLog(self,date,org,user,ip,db,module,action):
