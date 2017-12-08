@@ -26,14 +26,18 @@ class SQL():
         self.Saas=parent.serveur
           
     def selDonnees(self,champ): #WORKS returns [[row]]
-        #(self,nomTable,champs,where,indice)
-        
+        #(self,nomTable,champs,where,indice)   
         return self.Saas.selectionSQL3('PlanifGlobales',champ,'id_Projet',self.parent.idProjet)
         
         
     def afficherFonctions(self):
         #self.parent.serveur.
         pass
+    
+    def modifierFonction(self,valeurModifiee,champModifier,id):
+       return self.Saas.updateSQL2(self,'PlanifGlobales',valeurModifiee,champModifier,'id',id)
+       # UPDATE employees SET lastname = 'Smith' WHERE employeeid = 3;
+       pass
     
     #(Numéro Sprint,Nom de la fonction, priorité(basse=3,moyenne=2,haute=1)
     def creerFonction(self,sprint,nomfonction,priorite,debut,fin):
@@ -47,17 +51,14 @@ class SQL():
 
         #id,idprojet,idsprint,idresponsable,priorite,debut,fin
         params = (self.parent.id,self.parent.idProjet,sprint,self.parent.utilisateur,nomfonction,priorite,debut,fin)
+        self.parent.id+=1
         self.Saas.insDonneesPlanif('''PlanifGlobales''',params)
         #fonction d'ecriture dans la table planification
         
         pass
     
     #"INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,)
-
-    def insCustom(self,sprint,nom,priorite,debut,fin):
-        self.Saas.insCustom("INSERT INTO PlanifGlobales VALUES (?,?,?,?,?,?,?,?)",[self.parent.idProjet,sprint,nom,self.parent.utilisateur,priorite,debut,fin])
-    
-    
+  
     def supressionFonction(self):
         pass
     
