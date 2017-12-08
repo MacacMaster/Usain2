@@ -215,6 +215,9 @@ class ControleurServeur():
         print ("Log Close")
         return True 
     
+    def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
+        return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
+    
     
 print("Création du serveur...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)
