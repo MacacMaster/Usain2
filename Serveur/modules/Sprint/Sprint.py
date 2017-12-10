@@ -46,12 +46,12 @@ class Controleur():
         #version debug
         self.saasIP=socket.gethostbyname(socket.gethostname())
         self.adresseServeur="http://"+self.saasIP+":9999"
-        self.idProjet= 1
+        self.idProjet= str(1)
+        self.id_Organisation = str(1)
         self.serveur = self.connectionServeur()
         self.modele=Modele(self,self.serveur)
         self.vue=Vue(self)
         self.vue.root.mainloop()
-        
         
     def fermerProgramme(self):
         self.writeLog("Fermeture du Module","M63")
@@ -64,6 +64,12 @@ class Controleur():
     
     def retournerLesTaches(self,id_sprint,id_utilisateur):
         return self.modele.retournerLesTaches(id_sprint,id_utilisateur)
+    
+    def retournerLesSprints(self):
+        return self.modele.retournerLesSprints(self.idProjet)
+    
+    def retournerLesUtilisateurs(self):
+        return self.modele.retournerLesUtilisateurs(self.id_Organisation)
         
 if __name__ == '__main__':
     #parent = serveur Saas

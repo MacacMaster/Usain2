@@ -53,7 +53,7 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS PlanifGlobales
              (id INTEGER PRIMARY KEY, id_Projet integer, id_Sprint, id_Reponsable, nom_fonction text,priorite text, date_debut text, date_fin text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Sprints
-             (id INTEGER PRIMARY KEY, date_debut text, date_fin text, nom text)''')
+             (id INTEGER PRIMARY KEY, id_Projet integer, date_debut text, date_fin text, nom text)''')
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Formes
              (id INTEGER PRIMARY KEY, id_Maquette integer, x1 integer, y1 integer, x2 integer, y2 integer, texte text, nom text)''')

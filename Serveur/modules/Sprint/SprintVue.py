@@ -12,6 +12,11 @@ class Vue():
         self.list = []
         self.colonnes = 0
         self.rangees = 0
+        self.choixSprint = None
+        self.choixUtilisateur = None
+        
+        #self.choixSprint = "Sprint 1"
+        #self.choixUtilisateur = "t"
         
         self.parent=parent
         self.creerFenetreSprints()
@@ -22,7 +27,6 @@ class Vue():
         self.root = Tk()
         w, h = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
         self.root.geometry("%dx%d+0+0" % (w, h))
-        
         
         caneva = Canvas(self.root, borderwidth=0, background="#ffffff")
         
@@ -35,13 +39,10 @@ class Vue():
         caneva.pack(side="left", fill="both", expand=True)
         caneva.create_window((4,4), window=frame, anchor="nw")
         
-        
         conteneur= Frame(self.root)
         conteneur.pack()
         
         frame.bind("<Configure>", lambda event, canvas=caneva: self.onFrameConfigure(caneva))
-        
-        
         self.populer(frame)
         
         mainloop()  
@@ -65,7 +66,6 @@ class Vue():
         Label(frame, text="Temps").grid(row=row+2, column=column+2)
         
     def changer(self,row):
-        print(row)
         label = self.list[row][0]
         bouton = self.list[row][1]
         semaine = self.list[row][2]
@@ -81,6 +81,14 @@ class Vue():
         else:
             self.changerEtat(NORMAL,semaine)
             label.config(bg="ivory3")
+    
+    def setSprint(self,var):
+        self.choixSprint = var
+        print("sprint :", var)
+        
+    def setUtilisateur(self,var):
+        self.choixUtilisateur = var
+        print("sprint :", var)
         
     def changerEtat(self,etat,semaine):  
         for jours in semaine:
@@ -88,7 +96,13 @@ class Vue():
                 element.config(state=etat)
         
     
+    
+    
     def populer(self,frame):
+        self.retournerLesSprints()
+        self.lesSprints = None
+        self.lesUtilisateurs = None
+        self.dicoSprints = None
         #Label(frame, text="allo").grid(row=0, column=self.nbColonnes())
         #premiere rangee
         row = self.nbRangees()
@@ -96,34 +110,34 @@ class Vue():
         Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=row, column=4)
 
         #dropdown menu 1
-        OPTIONS = [
-            "Usager 1",
-            "Usager 2",
-            "Usager 3"
-        ]
-
+        OPTIONS = []
+        OPTIONS.append("Utilisateur")
+        self.lesUtilisateurs = self.retournerLesUtilisateurs()
+        for utilisateur in self.lesUtilisateurs:
+            OPTIONS.append(utilisateur[1])
  
         variable = StringVar(frame)
         variable.set(OPTIONS[0])
-        w = OptionMenu(frame,variable,*OPTIONS)
+        w = OptionMenu(frame,variable,*OPTIONS, command = self.setUtilisateur)
         w.grid(row=row, column=1)
-
+            
 
         #dropdown menu 2
-        OPTIONS = [
-            "Sprint 1",
-            "Sprint 2",
-            "Sprint 3"
-        ]
+        self.lesSprints = self.retournerLesSprints()
+        
+        OPTIONS = []
+        OPTIONS.append("Sprint")
+        for sprint in self.lesSprints:
+            OPTIONS.append(sprint[1])
 
         variable = StringVar(frame)
         variable.set(OPTIONS[0])
-        w = OptionMenu(frame,variable,*OPTIONS)
+        w = OptionMenu(frame,variable,*OPTIONS, command=self.setSprint)
         w.grid(row=row, column=5)
         
         button = Button(frame,text="Confirmer", command = self.updaterVue)
         button.grid(row=row, column=7)
-
+        
         #deuxieme rangee
         row = self.nbRangees()
         Label(frame, text="Les tâches", width=10, borderwidth="5", relief="solid").grid(row=row+2, column=0)
@@ -135,7 +149,12 @@ class Vue():
         #les jours de la semaine
         row = self.nbRangees() +3
 
-        lesTaches = self.retournerLesTaches(1,1)
+
+        id_sprint = self.parcourirListe(self.lesSprints,self.choixSprint)
+        id_utilisateur = self.parcourirListe(self.lesUtilisateurs,self.choixUtilisateur)
+        
+        lesTaches = self.retournerLesTaches(id_sprint,id_utilisateur)
+        print(id_sprint, "  ", id_utilisateur)
         self.taille = len(lesTaches)
         
         row = 4
@@ -196,11 +215,11 @@ class Vue():
         #effacer l'ancienne vue
          for element in self.frame.grid_slaves():
             element.grid_forget()
+         self.list.clear()
          self.rangees = 0
          self.colonnes = 0
          self.populer(self.frame)
-       
-         
+             
     def nbColonnes(self):
         self.colonnes += 1
         return self.colonnes  
@@ -211,6 +230,18 @@ class Vue():
     
     def retournerLesTaches(self,id_sprint,id_utilisateur):
         return self.parent.retournerLesTaches(id_sprint,id_utilisateur)
+    
+    def retournerLesSprints(self):
+        return self.parent.retournerLesSprints()
+    
+    def retournerLesUtilisateurs(self):
+        return self.parent.retournerLesUtilisateurs()
+    
+    def parcourirListe(self,liste, recherche):
+        for element in liste:
+            if (str(element[1]) == str(recherche)):
+                return element[0]
+        return -1 #aucun id n'est négatif 
             
 if __name__ == '__main__':
     v = Vue(None)
