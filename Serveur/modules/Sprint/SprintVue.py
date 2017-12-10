@@ -141,7 +141,7 @@ class Vue():
         row = 4
         for element in lesTaches:
             tache = str(element[0])
-            reussi = str(element[1])
+            reussi = element[1]
             
             
             row += 1 
@@ -158,6 +158,7 @@ class Vue():
             t = tache
             Label(frame, text=t).grid(row=row, column=1)
             crochetFait = IntVar()
+            self.checkParDefaut(crochetFait,reussi)
             cb = Checkbutton(frame, command=lambda row=row-5: self.changer(row), variable=crochetFait)
             cb.grid(row=row,column=2) #i=i permet d'enregistrer la valeur actuelle du i!!! Nice trick! :)
             
@@ -177,6 +178,11 @@ class Vue():
                 listeSemaine.append([fait,prevu,entry])
             
             self.list.append([labelTache,crochetFait,listeSemaine])
+     
+    def checkParDefaut(self, crochet, reussi):
+        if reussi == 1: 
+            crochet.set(1)
+
      
     def remplirFenetreSprints(self):
         pass

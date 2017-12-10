@@ -41,10 +41,7 @@ class Controleur():
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
-        self.vue.root.mainloop()
-        
-        
-        
+        self.vue.root.mainloop()   
         '''
         #version debug
         self.saasIP=socket.gethostbyname(socket.gethostname())
