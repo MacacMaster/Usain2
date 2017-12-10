@@ -126,18 +126,27 @@ class Vue():
 
         #deuxieme rangee
         row = self.nbRangees()
-        Label(frame, text="Les tâches", width=10, borderwidth="5", relief="solid").grid(row=row, column=0)
+        Label(frame, text="Les tâches", width=10, borderwidth="5", relief="solid").grid(row=row+2, column=0)
         t="Description de la tâche"
-        Label(frame, text=t).grid(row=row, column=self.nbColonnes())
-        Label(frame, text="Fait").grid(row=row, column=self.nbColonnes())
+        Label(frame, text=t).grid(row=row+2, column=self.nbColonnes())
+        Label(frame, text="Fait").grid(row=row+2, column=self.nbColonnes())
         for jour in range(5):
             self.laSemaine(frame,jour,row)
         #les jours de la semaine
         row = self.nbRangees() +3
 
-        for row in range(row,self.taille+row):
+        lesTaches = self.retournerLesTaches(1,1)
+        self.taille = len(lesTaches)
+        
+        row = 4
+        for element in lesTaches:
+            tache = str(element[0])
+            reussi = str(element[1])
+            
+            
+            row += 1 
             i = row - 4 
-            index = i - 1
+            index = i
             labelTache = Label(frame, text="Tâche %s" % i, width=10, borderwidth="1", relief="solid")
             labelTache.config(bg="ivory3")
             labelTache.grid(row=row, column=0)
@@ -145,7 +154,8 @@ class Vue():
             #a.config(bg="green")
             #list.append(a)
             
-            t="aller acheter quelque chose au dollarama"
+            #t="aller acheter quelque chose au dollarama"
+            t = tache
             Label(frame, text=t).grid(row=row, column=1)
             crochetFait = IntVar()
             cb = Checkbutton(frame, command=lambda row=row-5: self.changer(row), variable=crochetFait)
@@ -178,9 +188,8 @@ class Vue():
          self.rangees = 0
          self.colonnes = 0
          self.populer(self.frame)
-         
-
        
+         
     def nbColonnes(self):
         self.colonnes += 1
         return self.colonnes  
@@ -188,8 +197,10 @@ class Vue():
     def nbRangees(self):
         self.rangees +=1
         return self.rangees-1
+    
+    def retournerLesTaches(self,id_sprint,id_utilisateur):
+        return self.parent.retournerLesTaches(id_sprint,id_utilisateur)
             
 if __name__ == '__main__':
-    #parent = serveur Saas
     v = Vue(None)
             

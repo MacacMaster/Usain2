@@ -60,6 +60,9 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Formes
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Maquettes
              (id INTEGER PRIMARY KEY, id_Projet integer, nom text)''')
+
+curseur.execute('''CREATE TABLE IF NOT EXISTS Taches
+             (id INTEGER PRIMARY KEY, id_Projet integer, id_utilisateur text , id_sprint integer ,tache text, reussi integer )''')
  
 # Supprimer tout ce qui se trouve dans la bd
 for comptes in curseur.execute('SELECT id FROM Organisations'):

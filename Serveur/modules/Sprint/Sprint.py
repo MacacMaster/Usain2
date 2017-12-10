@@ -29,39 +29,45 @@ from subprocess import Popen
 
 class Controleur():
     def __init__(self):
-        self.saasIP= socket.gethostbyname(socket.gethostname())     #sys.argv[1]
-        self.utilisateur="BOB"          #sys.argv[2]
-        self.organisation="Organe"      #sys.argv[3]
-        self.idProjet="1"             #sys.argv[4]
-        self.clientIP="10.57.47.7"      #sys.argv[5]
-        self.portSaas = "9999"
-        self.adresseServeur="http://"+self.saasIP+self.portSaas
-
         '''
-        self.saasIP=        sys.argv[1]
-        self.utilisateur=   sys.argv[2]
-        self.organisation=  sys.argv[3]
-        self.idProjet=      sys.argv[4]
-        self.clientIP=      sys.argv[5]
-        self.portSaas=":9999"
-        self.adresseServeur="http://"+self.saasIP+self.portSaas
-        '''
+        #vraie version
+        self.saasIP=sys.argv[1]
+        self.utilisateur=sys.argv[2]
+        self.organisation=sys.argv[3]
+        self.idProjet=sys.argv[4]
+        self.clientIP=sys.argv[5]
+        self.adresseServeur="http://"+self.saasIP+":9999"
         
-        self.serveur=self.connectionServeurSaas()
         self.modele=Modele(self)
-
-
-        self.vue=Vue(self)       
+        self.serveur = self.connectionServeur()
+        self.vue=Vue(self)
         self.vue.root.mainloop()
+        
+        
+        
+        '''
+        #version debug
+        self.saasIP=socket.gethostbyname(socket.gethostname())
+        self.adresseServeur="http://"+self.saasIP+":9999"
+        self.idProjet= 1
+        self.serveur = self.connectionServeur()
+        self.modele=Modele(self,self.serveur)
+        self.vue=Vue(self)
+        self.vue.root.mainloop()
+        
         
     def fermerProgramme(self):
         self.writeLog("Fermeture du Module","M63")
         self.vue.root.destroy()
         
-    def connectionServeurSaas(self):
-        print("Connection au serveur Saas...")
-        return ServerProxy(self.adresseServeur)
-
+    def connectionServeur(self):
+        print("Connection au serveur BD...")
+        serveur=ServerProxy(self.adresseServeur)
+        return serveur
+    
+    def retournerLesTaches(self,id_sprint,id_utilisateur):
+        return self.modele.retournerLesTaches(id_sprint,id_utilisateur)
+        
 if __name__ == '__main__':
     #parent = serveur Saas
     c=Controleur()
