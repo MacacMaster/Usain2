@@ -10,9 +10,12 @@ class Vue():
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
         self.taille = 20
         self.list = []
+        self.colonnes = 0
+        self.rangees = 0
         
         self.parent=parent
         self.creerFenetreSprints()
+        
         
       
     def creerFenetreSprints(self):
@@ -22,8 +25,9 @@ class Vue():
         
         
         caneva = Canvas(self.root, borderwidth=0, background="#ffffff")
-        frame = Frame(caneva, background="#ffffff")
         
+        frame = Frame(caneva, background="#ffffff")
+        self.frame=frame
         #mon scrollbar
         scrollbar = Scrollbar(self.root, orient="vertical", command=caneva.yview)
         caneva.configure(yscrollcommand=scrollbar.set)
@@ -52,13 +56,13 @@ class Vue():
        Label(frame,text="la tache").pack(side=LEFT)
        Checkbutton(frame).pack(side=LEFT)
     
-    def laSemaine(self,frame,jour):
+    def laSemaine(self,frame,jour,row):
         column = 3 + jour*3
-        Label(frame, text=self.jours[jour]).grid(row=0, column=column, columnspan=3)
-        Label(frame, text="5 décembre 2015").grid(row=1, column=column, columnspan= 3)
-        Label(frame, text="Prévu").grid(row=2, column=column)
-        Label(frame, text="Fait").grid(row=2, column=column+1)
-        Label(frame, text="Temps").grid(row=2, column=column+2)
+        Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
+        Label(frame, text="5 décembre 2015").grid(row=row+1, column=column, columnspan= 3)
+        Label(frame, text="Prévu").grid(row=row+2, column=column)
+        Label(frame, text="Fait").grid(row=row+2, column=column+1)
+        Label(frame, text="Temps").grid(row=row+2, column=column+2)
         
     def changer(self,row):
         print(row)
@@ -75,7 +79,7 @@ class Vue():
     
             
         else:
-            changerEtat(NORMAL,semaine)
+            self.changerEtat(NORMAL,semaine)
             label.config(bg="ivory3")
         
     def changerEtat(self,etat,semaine):  
@@ -85,17 +89,55 @@ class Vue():
         
     
     def populer(self,frame):
-        Label(frame, text="Les tâches", width=10, borderwidth="5", relief="solid").grid(row=0, column=0)
-        t="Description de la tâche"
-        Label(frame, text=t).grid(row=0, column=1)
-        Label(frame, text="Fait").grid(row=0, column=2)
+        #Label(frame, text="allo").grid(row=0, column=self.nbColonnes())
+        #premiere rangee
+        row = self.nbRangees()
+        Label(frame, text="Utilisateur", width=10, borderwidth="5", relief="solid").grid(row=row, column=0)
+        Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=row, column=4)
+
+        #dropdown menu 1
+        OPTIONS = [
+            "Usager 1",
+            "Usager 2",
+            "Usager 3"
+        ]
+
+ 
+        variable = StringVar(frame)
+        variable.set(OPTIONS[0])
+        w = OptionMenu(frame,variable,*OPTIONS)
+        w.grid(row=row, column=1)
+
+
+        #dropdown menu 2
+        OPTIONS = [
+            "Sprint 1",
+            "Sprint 2",
+            "Sprint 3"
+        ]
+
+        variable = StringVar(frame)
+        variable.set(OPTIONS[0])
+        w = OptionMenu(frame,variable,*OPTIONS)
+        w.grid(row=row, column=5)
         
-        #les jours de la semaine
+        button = Button(frame,text="Confirmer", command = self.updaterVue)
+        button.grid(row=row, column=7)
+
+        #deuxieme rangee
+        row = self.nbRangees()
+        Label(frame, text="Les tâches", width=10, borderwidth="5", relief="solid").grid(row=row, column=0)
+        t="Description de la tâche"
+        Label(frame, text=t).grid(row=row, column=self.nbColonnes())
+        Label(frame, text="Fait").grid(row=row, column=self.nbColonnes())
         for jour in range(5):
-            self.laSemaine(frame,jour)
-        for row in range(5,self.taille+5):
-            i = row - 4
-            index = row-5
+            self.laSemaine(frame,jour,row)
+        #les jours de la semaine
+        row = self.nbRangees() +3
+
+        for row in range(row,self.taille+row):
+            i = row - 4 
+            index = i - 1
             labelTache = Label(frame, text="Tâche %s" % i, width=10, borderwidth="1", relief="solid")
             labelTache.config(bg="ivory3")
             labelTache.grid(row=row, column=0)
@@ -125,7 +167,27 @@ class Vue():
                 listeSemaine.append([fait,prevu,entry])
             
             self.list.append([labelTache,crochetFait,listeSemaine])
-            
+     
+    def remplirFenetreSprints(self):
+        pass
+     
+    def updaterVue(self):
+        #effacer l'ancienne vue
+         for element in self.frame.grid_slaves():
+            element.grid_forget()
+         self.rangees = 0
+         self.colonnes = 0
+         self.populer(self.frame)
+         
+
+       
+    def nbColonnes(self):
+        self.colonnes += 1
+        return self.colonnes  
+    
+    def nbRangees(self):
+        self.rangees +=1
+        return self.rangees-1
             
 if __name__ == '__main__':
     #parent = serveur Saas

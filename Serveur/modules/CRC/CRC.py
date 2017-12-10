@@ -315,6 +315,7 @@ class Vue():
         
         
         
+        
         #bouton pour ajouter un collaborateur
         boutonCollaboration = Button(frame4, text="Ajouter", command = self.saisirCollaboration)
         boutonCollaboration.pack(side = LEFT)   
