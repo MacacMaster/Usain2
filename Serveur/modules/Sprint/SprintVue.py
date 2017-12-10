@@ -146,7 +146,7 @@ class Vue():
             
             row += 1 
             i = row - 4 
-            index = i
+            index = row - 5
             labelTache = Label(frame, text="Tâche %s" % i, width=10, borderwidth="1", relief="solid")
             labelTache.config(bg="ivory3")
             labelTache.grid(row=row, column=0)
@@ -159,7 +159,7 @@ class Vue():
             Label(frame, text=t).grid(row=row, column=1)
             crochetFait = IntVar()
             self.checkParDefaut(crochetFait,reussi)
-            cb = Checkbutton(frame, command=lambda row=row-5: self.changer(row), variable=crochetFait)
+            cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
             cb.grid(row=row,column=2) #i=i permet d'enregistrer la valeur actuelle du i!!! Nice trick! :)
             
             #print(row, "    ", i)
@@ -177,7 +177,12 @@ class Vue():
                 entry.grid(row=row,column=column+2)
                 listeSemaine.append([fait,prevu,entry])
             
+            
             self.list.append([labelTache,crochetFait,listeSemaine])
+            
+            #changer l'etat des boutons au loadage
+            if (reussi):
+                self.changer(index)
      
     def checkParDefaut(self, crochet, reussi):
         if reussi == 1: 
