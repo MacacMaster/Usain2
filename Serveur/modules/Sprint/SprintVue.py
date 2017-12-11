@@ -14,7 +14,8 @@ class Vue():
         self.rangees = 0
         self.choixSprint = None
         self.choixUtilisateur = None
-        
+        self.id_sprint = None
+        self.id_utilisateur = None
         #self.choixSprint = "Sprint 1"
         #self.choixUtilisateur = "t"
         
@@ -66,29 +67,34 @@ class Vue():
         Label(frame, text="Temps").grid(row=row+2, column=column+2)
         
     def changer(self,row):
-        label = self.list[row][0]
-        bouton = self.list[row][1]
-        semaine = self.list[row][2]
-        if bouton.get():
-            label.config(bg="green")
-            #désactiver tous les autres boutons et entrées
-    
-            
-            self.changerEtat(DISABLED,semaine)
-            
-    
-            
-        else:
-            self.changerEtat(NORMAL,semaine)
-            label.config(bg="ivory3")
-    
+        try:
+            label = self.list[row][0]
+            bouton = self.list[row][1]
+            semaine = self.list[row][2]
+            if bouton.get():
+                label.config(bg="green")
+                #désactiver tous les autres boutons et entrées
+        
+                
+                self.changerEtat(DISABLED,semaine)
+                
+        
+                
+            else:
+                self.changerEtat(NORMAL,semaine)
+                label.config(bg="ivory3")
+        except IndexError:
+            pass        
+        
     def setSprint(self,var):
         self.choixSprint = var
-        print("sprint :", var)
+        self.id_sprint = self.parcourirListe(self.lesSprints,self.choixSprint)
+       
         
     def setUtilisateur(self,var):
         self.choixUtilisateur = var
-        print("sprint :", var)
+        self.id_utilisateur = self.parcourirListe(self.lesUtilisateurs,self.choixUtilisateur)
+       
         
     def changerEtat(self,etat,semaine):  
         for jours in semaine:
@@ -111,30 +117,44 @@ class Vue():
 
         #dropdown menu 1
         OPTIONS = []
-        OPTIONS.append("Utilisateur")
         self.lesUtilisateurs = self.retournerLesUtilisateurs()
+        
         for utilisateur in self.lesUtilisateurs:
             OPTIONS.append(utilisateur[1])
  
-        variable = StringVar(frame)
-        variable.set(OPTIONS[0])
-        w = OptionMenu(frame,variable,*OPTIONS, command = self.setUtilisateur)
+        variable = StringVar(frame)   
+        if (self.choixUtilisateur == None):
+            variable.set(OPTIONS[0])
+        else:
+            variable.set(self.choixUtilisateur)
+        
+        w = OptionMenu(frame,variable, *OPTIONS, command = self.setUtilisateur)
         w.grid(row=row, column=1)
             
+        if (self.id_utilisateur == None):   
+            self.setUtilisateur(OPTIONS[0]) 
 
         #dropdown menu 2
         self.lesSprints = self.retournerLesSprints()
         
         OPTIONS = []
-        OPTIONS.append("Sprint")
+        #OPTIONS.append(self.lesSprints[0][1])
         for sprint in self.lesSprints:
             OPTIONS.append(sprint[1])
 
         variable = StringVar(frame)
-        variable.set(OPTIONS[0])
+        
+        if (self.choixSprint == None):
+            variable.set(OPTIONS[0])
+        else:
+            variable.set(self.choixSprint)
+            
         w = OptionMenu(frame,variable,*OPTIONS, command=self.setSprint)
         w.grid(row=row, column=5)
-        
+          
+        if (self.id_sprint == None):          
+            self.setSprint(OPTIONS[0])       
+               
         button = Button(frame,text="Confirmer", command = self.updaterVue)
         button.grid(row=row, column=7)
         
@@ -150,22 +170,29 @@ class Vue():
         row = self.nbRangees() +3
 
 
-        id_sprint = self.parcourirListe(self.lesSprints,self.choixSprint)
-        id_utilisateur = self.parcourirListe(self.lesUtilisateurs,self.choixUtilisateur)
+
         
-        lesTaches = self.retournerLesTaches(id_sprint,id_utilisateur)
-        print(id_sprint, "  ", id_utilisateur)
+        lesTaches = self.retournerLesTaches(self.id_sprint,self.id_utilisateur)
         self.taille = len(lesTaches)
         
-        row = 4
+        
+        #4e rangee
+        row = self.nbRangees()
+        Label(frame, text="Nouvelle tâche", width=10, borderwidth="5").grid(row=row+2, column=0)
+        entry = Entry(frame)
+        entry.bind('<Return>',self.saisirNouvelleTache)
+        entry.grid(row=row+2, column=1)
+        entry.configure({"background": "Yellow"})
+        
+        row = 5
         for element in lesTaches:
             tache = str(element[0])
             reussi = element[1]
             
             
             row += 1 
-            i = row - 4 
-            index = row - 5
+            i = row - 5 
+            index = row - 6
             labelTache = Label(frame, text="Tâche %s" % i, width=10, borderwidth="1", relief="solid")
             labelTache.config(bg="ivory3")
             labelTache.grid(row=row, column=0)
@@ -238,10 +265,27 @@ class Vue():
         return self.parent.retournerLesUtilisateurs()
     
     def parcourirListe(self,liste, recherche):
+        index = -1
         for element in liste:
+            index += 1
             if (str(element[1]) == str(recherche)):
                 return element[0]
         return -1 #aucun id n'est négatif 
+    
+    def saisirNouvelleTache(self,event):
+        saisie = str(event.widget.get())
+        if (saisie != "" and self.choixSprint == "Sprint" or  self.choixUtilisateur == "Utilisateur" or self.choixSprint == None or self.choixUtilisateur == None):    
+                messagebox.showwarning("Attention", "Veuillez choisir un sprint et un utilisateur")                                                 
+                print(saisie)
+        else:
+            self.insererNouvelleTache(self.id_utilisateur,self.id_sprint,saisie,0)  
+            self.updaterVue()  
+        #effacer les choses déjà écrites
+        event.widget.delete(0, END)
+        
+    def insererNouvelleTache(self, id_utilisateur, id_sprint, tache, reussi):
+        return self.parent.insererNouvelleTache(id_utilisateur, id_sprint, tache, reussi)
+        
             
 if __name__ == '__main__':
     v = Vue(None)

@@ -4,6 +4,7 @@
 
 from tkinter import *
 from tkinter.filedialog import *
+from tkinter import messagebox
 
 from datetime import datetime
 from _overlapped import NULL
@@ -70,6 +71,9 @@ class Controleur():
     
     def retournerLesUtilisateurs(self):
         return self.modele.retournerLesUtilisateurs(self.id_Organisation)
+    
+    def insererNouvelleTache(self,id_utilisateur, id_sprint, tache, reussi):
+        return self.modele.insererNouvelleTache(self.idProjet, id_utilisateur, id_sprint, tache, reussi)
         
 if __name__ == '__main__':
     #parent = serveur Saas

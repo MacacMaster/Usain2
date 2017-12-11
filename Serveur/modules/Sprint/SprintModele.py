@@ -46,3 +46,13 @@ class Modele():
         
    
         return requete
+    
+    def insererNouvelleTache(self, id_projet, id_utilisateur, id_sprint, tache, reussi):
+        a1 = id_projet
+        a2 = id_utilisateur
+        a3 = id_sprint
+        a4 = tache
+        a5 = reussi
+        chaine = "'" + str(a1) + "','" +str(a2) + "','"  + str(a3)+ "','" +str(a4) + "','" +str(a5) +  "'"
+        #projet utilisateur sprint tache reussi
+        self.serveur.insertionSQL("Taches", chaine)
