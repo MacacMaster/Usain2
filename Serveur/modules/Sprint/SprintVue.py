@@ -226,7 +226,7 @@ class Vue():
                 entry.grid(row=row,column=column+2)
                 listeSemaine.append([fait,prevu,entry])
           
-            self.list.append([labelTache,crochetFait,listeSemaine])
+            self.list.append([labelTache,crochetFait,listeSemaine,tache])
             
             #changer l'etat des boutons au loadage
             if (reussi):

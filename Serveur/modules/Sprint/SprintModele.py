@@ -63,7 +63,7 @@ class Modele():
                
         for tacheX in list:
             reussi = tacheX[1].get()
-            tache = tacheX[0].cget("text")
+            tache = str(tacheX[3])
             self.insererNouvelleTache(id_projet,id_utilisateur, id_sprint, tache, reussi)
        
        
