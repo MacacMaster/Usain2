@@ -16,7 +16,7 @@ class Modele():
 
     def retournerLesTaches(self,id_sprint,id_utilisateur):
         nomTable = "Taches"
-        champs = "tache, reussi"
+        champs = "tache, reussi, id"
         where = ["id_utilisateur", "id_sprint"]
         valeur = [str(id_utilisateur),str(id_sprint)]
         
@@ -42,9 +42,6 @@ class Modele():
         valeur = [id_Organisation]
         
         requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-
-        
-   
         return requete
     
     def insererNouvelleTache(self, id_projet, id_utilisateur, id_sprint, tache, reussi):
@@ -56,3 +53,19 @@ class Modele():
         chaine = "'" + str(a1) + "','" +str(a2) + "','"  + str(a3)+ "','" +str(a4) + "','" +str(a5) +  "'"
         #projet utilisateur sprint tache reussi
         self.serveur.insertionSQL("Taches", chaine)
+        
+    def enregistrer(self,id_projet,id_utilisateur,id_sprint,list):
+        les_id_taches = self.retournerLesTaches(id_sprint,id_utilisateur)
+        for element in les_id_taches:
+            id_tache = element[2]
+            self.parent.serveur.delete("Taches", "id", str(id_tache))
+            print(id_tache)
+               
+        for tacheX in list:
+            reussi = tacheX[1].get()
+            tache = tacheX[0].cget("text")
+            self.insererNouvelleTache(id_projet,id_utilisateur, id_sprint, tache, reussi)
+       
+       
+       
+       

@@ -74,6 +74,9 @@ class Controleur():
     
     def insererNouvelleTache(self,id_utilisateur, id_sprint, tache, reussi):
         return self.modele.insererNouvelleTache(self.idProjet, id_utilisateur, id_sprint, tache, reussi)
+    
+    def enregistrer(self,list,id_utilisateur,id_sprint):
+        self.modele.enregistrer(self.idProjet,id_utilisateur,id_sprint,list)
         
 if __name__ == '__main__':
     #parent = serveur Saas

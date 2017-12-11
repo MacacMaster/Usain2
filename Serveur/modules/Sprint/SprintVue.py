@@ -142,12 +142,12 @@ class Vue():
         for sprint in self.lesSprints:
             OPTIONS.append(sprint[1])
 
-        variable = StringVar(frame)
-        
+        variable = StringVar(frame)  
         if (self.choixSprint == None):
             variable.set(OPTIONS[0])
         else:
             variable.set(self.choixSprint)
+     
             
         w = OptionMenu(frame,variable,*OPTIONS, command=self.setSprint)
         w.grid(row=row, column=5)
@@ -157,6 +157,9 @@ class Vue():
                
         button = Button(frame,text="Confirmer", command = self.updaterVue)
         button.grid(row=row, column=7)
+        
+        button = Button(frame,text="Enregistrer", command = self.enregistrer)
+        button.grid(row=row, column=9)
         
         #deuxieme rangee
         row = self.nbRangees()
@@ -222,13 +225,15 @@ class Vue():
                 entry = Entry(frame)
                 entry.grid(row=row,column=column+2)
                 listeSemaine.append([fait,prevu,entry])
-            
-            
+          
             self.list.append([labelTache,crochetFait,listeSemaine])
             
             #changer l'etat des boutons au loadage
             if (reussi):
                 self.changer(index)
+    
+    def enregistrer(self):
+        self.parent.enregistrer(self.list, self.id_utilisateur,self.id_sprint)
      
     def checkParDefaut(self, crochet, reussi):
         if reussi == 1: 
