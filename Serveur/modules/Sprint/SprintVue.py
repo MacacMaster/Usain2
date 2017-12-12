@@ -2,7 +2,7 @@
 from tkinter import *
 from tkinter.filedialog import *
 import sqlite3
-from datetime import datetime
+import datetime
 from _overlapped import NULL
 
 class Vue():
@@ -25,7 +25,18 @@ class Vue():
         
     def setDate(self,premier,deuxieme, date):
         print(premier, "  " ,deuxieme, "    " , date.get())
-        self.matriceDates[premier][deuxieme] = date
+        
+        if deuxieme == 1: #si on choisit un mois
+            compteur = 0
+            for mois in self.mois:
+                if (str(mois) == date.get()):
+                    compteur = compteur + 1
+                    self.matriceDates[premier][deuxieme] = compteur
+                    return
+                    break
+        
+        else:
+            self.matriceDates[premier][deuxieme] = int(date.get())
         
       
     def creerFenetreSprints(self):
@@ -118,8 +129,18 @@ class Vue():
             self.creerUneLigneSaisie(self.window,i)
         frameBouton = Frame(self.window)
         frameBouton.pack()
-        bouton = Button(frameBouton,text="Créer le sprint")
+        bouton = Button(frameBouton,text="Créer le sprint", command = self.creerLeSprint)
         bouton.pack()
+        
+    def creerLeSprint(self):
+        #debut = datetime.date(self.matriceDates[0][0],5,1)
+        debut = datetime.date(self.matriceDates[0][0],self.matriceDates[0][1],self.matriceDates[0][2])
+        fin = datetime.date(self.matriceDates[1][0],self.matriceDates[1][1],self.matriceDates[1][2])
+        #date= 8
+        #d = datetime.date(2017,12,date)
+        
+        self.insererNouveauSprint(debut,fin, "Sprint n")
+        print("Création du sprint")    
         
     def creerUneLigneSaisie(self,window, nb):
 
@@ -356,6 +377,9 @@ class Vue():
         
     def insererNouvelleTache(self, id_utilisateur, id_sprint, tache, reussi):
         return self.parent.insererNouvelleTache(id_utilisateur, id_sprint, tache, reussi)
+    
+    def insererNouveauSprint(self,date_debut, date_fin, nom):
+        self.parent.insererNouveauSprint(date_debut, date_fin, nom)
         
             
 if __name__ == '__main__':
