@@ -205,7 +205,7 @@ class Vue():
             print(self.matriceDates[i][0])
     
     def populer(self,frame):
-        
+        self.aucunSprint = False
         self.retournerLesSprints()
         self.lesSprints = None
         self.lesUtilisateurs = None
@@ -247,8 +247,8 @@ class Vue():
         if (self.id_utilisateur == None):   
             self.setUtilisateur(OPTIONS[0]) 
     
-            #dropdown menu 2
-            self.lesSprints = self.retournerLesSprints()   
+        #dropdown menu 2
+        self.lesSprints = self.retournerLesSprints()   
         OPTIONS = []
         #OPTIONS.append(self.lesSprints[0][1])
         for sprint in self.lesSprints:
@@ -259,6 +259,7 @@ class Vue():
             try:
                 variable.set(OPTIONS[0])
             except IndexError:
+                self.aucunSprint = True
                 variable.set("")
         else:
             variable.set(self.choixSprint)
@@ -319,7 +320,10 @@ class Vue():
         #4e rangee
         row = self.nbRangees()
         Label(frame, text="Nouvelle tâche", width=10, borderwidth="5").grid(row=row+2, column=0)
-        entry = Entry(frame)
+        if (self.aucunSprint == True):
+            entry = Entry(frame, state = DISABLED)
+        else:
+            entry = Entry(frame, state = NORMAL)
         entry.bind('<Return>',self.saisirNouvelleTache)
         entry.grid(row=row+2, column=1)
         entry.configure({"background": "Yellow"})
