@@ -192,9 +192,15 @@ class Vue():
         
         self.topConfirm.destroy()
         
+    def infosCRC(self):
+        print("ENTRE DANS infosCRC")
+        kj=self.parent.serveur.selectionSQL3('Classes','id','id_Projet', self.parent.idProjet)
+        print(str(kj))
+        #nomTable,champs, where, idProjet
     
     def afficherListes(self):
         
+         
         self.listFonct.delete(0,END)
         self.listPriorite.delete(0,END)
         self.listSprint.delete(0,END)
@@ -212,6 +218,8 @@ class Vue():
                 self.listFin.insert(END, liste[7])
                 self.listResponsable.insert(END, liste[3])
         
+        if self.listFonct.size()==0:
+            self.infosCRC()
         
         """
         for item in fonctions:
