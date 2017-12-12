@@ -14,9 +14,7 @@ from xmlrpc.client import ServerProxy
 
 from SprintModele  import *
 from SprintVue  import *
-
-#debug
-from subprocess import Popen    
+ 
     
  ##################################################
  #TODO:
@@ -30,29 +28,38 @@ from subprocess import Popen
 
 class Controleur():
     def __init__(self):
-        '''
-        #vraie version
-        self.saasIP=sys.argv[1]
-        self.utilisateur=sys.argv[2]
-        self.organisation=sys.argv[3]
-        self.idProjet=sys.argv[4]
-        self.clientIP=sys.argv[5]
-        self.adresseServeur="http://"+self.saasIP+":9999"
+        try:
+            #vraie version
+            self.saasIP=str(sys.argv[1])
+            self.utilisateur=sys.argv[2]
+            self.id_Organisation=str(sys.argv[3])
+            self.idProjet=str(sys.argv[4])
+     
+            
+            self.clientIP=sys.argv[5]
+            self.adresseServeur="http://"+self.saasIP+":9999"
+    
+            self.serveur = self.connectionServeur()
+            self.modele=Modele(self)
+            self.vue=Vue(self)
+            self.vue.root.mainloop()
+                 
+        except Exception:
+            return
+            #version debug
+            self.saasIP=socket.gethostbyname(socket.gethostname())
+            self.adresseServeur="http://"+self.saasIP+":9999"
+            self.idProjet= str(-1)
+            self.id_Organisation = str(-1)
+             
+             
+            self.serveur = self.connectionServeur()
+            self.modele=Modele(self)
+            self.vue=Vue(self)
+            self.vue.root.mainloop()
         
-        self.modele=Modele(self)
-        self.serveur = self.connectionServeur()
-        self.vue=Vue(self)
-        self.vue.root.mainloop()   
-        '''
-        #version debug
-        self.saasIP=socket.gethostbyname(socket.gethostname())
-        self.adresseServeur="http://"+self.saasIP+":9999"
-        self.idProjet= str(1)
-        self.id_Organisation = str(1)
-        self.serveur = self.connectionServeur()
-        self.modele=Modele(self,self.serveur)
-        self.vue=Vue(self)
-        self.vue.root.mainloop()
+        
+
         
     def fermerProgramme(self):
         self.writeLog("Fermeture du Module","M63")
@@ -80,6 +87,9 @@ class Controleur():
         
     def insererNouveauSprint(self,date_debut, date_fin, nom):
         self.modele.insererNouveauSprint(self.idProjet,date_debut, date_fin, nom)
+        
+    def retournerLeSprint(self,id_sprint):
+        return self.modele.retournerLeSprint(id_sprint)
         
 if __name__ == '__main__':
     #parent = serveur Saas
