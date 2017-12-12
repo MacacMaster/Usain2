@@ -198,13 +198,21 @@ class Vue():
         
     def infosCRC(self):
         print("ENTRE DANS infosCRC")
-        kj=self.parent.serveur.selectionSQL3('Classes','id','id_Projet', self.parent.idProjet)
-        print(str(kj))
-        #nomTable,champs, where, idProjet
-    
+        classes=self.parent.serveur.selectionSQL3('Classes','id','id_Projet', self.parent.idProjet)
+        
+        for uneClasse in classes:
+            classe=str(uneClasse)[1:-1]
+            responsabilite=self.parent.serveur.selectionSQL3('Responsabilites','nom','id_Classe', classe)
+            
+            for uneResp in responsabilite:
+                resp=str(uneResp)[2:-2]
+                self.parent.creerFonction("", resp, "", "", "")
+        
+        self.afficherListes()
+  
+        
     def afficherListes(self):
         
-         
         self.listFonct.delete(0,END)
         self.listPriorite.delete(0,END)
         self.listSprint.delete(0,END)
@@ -246,7 +254,7 @@ class Vue():
     def ajoutFonction(self):
         #sprint,nomfonction,priorite,debut,fin
         self.parent.creerFonction(self.tfSprint.get(), self.tfFonctionnalite.get(), self.tfPriorite.get(), self.tfDebut.get(), self.tfFin.get())
-        print(self.tfSprint.get() + self.tfFonctionnalite.get() + self.tfPriorite.get() + self.tfDebut.get() + self.tfFin.get())
+        
         self.effacerChamps()
         self.afficherListes()
 
