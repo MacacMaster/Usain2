@@ -62,6 +62,7 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute(valeurs)
+        print(c.execute(valeurs))
         conn.commit()
         conn.close()
     

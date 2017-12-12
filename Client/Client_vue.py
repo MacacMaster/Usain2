@@ -111,9 +111,11 @@ class Vue():
             self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
             btnconnecter=Button(self.cadreOutil, text="Choisir un outil",bg="steelblue",command=self.requeteOutil)
             btnCommande=Button(self.cadreOutil, text="Envoyer une requete SQL",bg="steelblue",command=self.commandeAdmin)
+            btnCommandeSaas=Button(self.cadreOutil, text="Envoyer une requete SAAS",bg="steelblue",command=self.commandeAdminSaas)
             self.canevaOutil.create_window(200,100,window=self.listeOutils)
-            self.canevaOutil.create_window(200,200,window=btnconnecter,width=100,height=30)
-            self.canevaOutil.create_window(200,250,window=btnCommande,width=200,height=30)
+            self.canevaOutil.create_window(200,180,window=btnconnecter,width=100,height=30)
+            self.canevaOutil.create_window(200,220,window=btnCommandeSaas,width=200,height=30)
+            self.canevaOutil.create_window(200,260,window=btnCommande,width=200,height=30)
             self.cadreOutil.pack(side=LEFT)
         else:
             self.cadreCentral=Frame(self.cadreApplication)
@@ -136,7 +138,7 @@ class Vue():
         self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="steelblue")
         self.canevaModules.pack()
         self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
-        btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="pink",command=self.requeteModule)
+        btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="lightgrey",command=self.requeteModule)
         self.canevaModules.create_window(200,150,window=self.listeModules)
         self.canevaModules.create_window(200,500,window=btnconnecter,width=100,height=30)
         self.cadreModules.pack(side=LEFT)
@@ -154,13 +156,22 @@ class Vue():
         self.canevaProjet.create_window(largeur+150,450,window=btnNProjet,width=50,height=30) 
         
     def commandeAdmin(self):
-        self.affCommande=Entry(bg="lightblue")
-        self.canevaOutil.create_window(200,350,window=self.affCommande,width=300,height=150)
-        btnNEnvoi=Button(self.cadreOutil, text="Envoyer",bg="steelblue",command=self.envoiSQL)
-        self.canevaOutil.create_window(200,515,window=btnNEnvoi,width=50,height=30) 
+        self.affCommande=Text(bg="lightblue")
+        self.canevaOutil.create_window(200,455,window=self.affCommande,width=300,height=90)
+        btnNEnvoi=Button(self.cadreOutil, text="SQL",bg="steelblue",command=self.envoiSQL)
+        self.canevaOutil.create_window(200,540,window=btnNEnvoi,width=50,height=30) 
+    
+    def commandeAdminSaas(self):
+        self.affCommandeSaas=Text(bg="lightblue")
+        self.canevaOutil.create_window(200,325,window=self.affCommandeSaas,width=300,height=90)
+        btnNEnvoiSaas=Button(self.cadreOutil, text="SAAS",bg="steelblue",command=self.envoiSQLSaas)
+        self.canevaOutil.create_window(200,410,window=btnNEnvoiSaas,width=50,height=30)
     
     def envoiSQL(self):
-        self.controleur.serveur.commandeAdmin(self.affCommande.get()) 
+        self.controleur.serveur.commandeAdmin(self.affCommande.get(0.0, END))
+        
+    def envoiSQLSaas(self):
+        self.controleur.serveur.commandeAdminSaas(self.affCommandeSaas.get(0.0, END)) 
         
     def okProjet(self):
         self.nouveauProjet = self.controleur.creerProjet(self.entrerNomProjet.get())
