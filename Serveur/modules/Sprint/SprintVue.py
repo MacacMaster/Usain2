@@ -2,7 +2,7 @@
 from tkinter import *
 from tkinter.filedialog import *
 import sqlite3
-from datetime import datetime
+import datetime
 from _overlapped import NULL
 
 class Vue():
@@ -23,8 +23,21 @@ class Vue():
         self.parent=parent
         self.creerFenetreSprints()
         
-    def setAnnee(self,var,nb):
-        self.matriceDates[nb][0] = var
+    def setDate(self,premier,deuxieme, date):
+        print(premier, "  " ,deuxieme, "    " , date.get())
+        
+        if deuxieme == 1: #si on choisit un mois
+            compteur = 0
+            for mois in self.mois:
+                if (str(mois) == date.get()):
+                    compteur = compteur + 1
+                    self.matriceDates[premier][deuxieme] = compteur
+                    return
+                    break
+        
+        else:
+            self.matriceDates[premier][deuxieme] = int(date.get())
+        
       
     def creerFenetreSprints(self):
         self.root = Tk()
@@ -116,20 +129,43 @@ class Vue():
             self.creerUneLigneSaisie(self.window,i)
         frameBouton = Frame(self.window)
         frameBouton.pack()
-        bouton = Button(frameBouton,text="Créer le sprint")
+        bouton = Button(frameBouton,text="Créer le sprint", command = self.creerLeSprint)
         bouton.pack()
         
+    def creerLeSprint(self):
+        #debut = datetime.date(self.matriceDates[0][0],5,1)
+        debut = datetime.date(self.matriceDates[0][0],self.matriceDates[0][1],self.matriceDates[0][2])
+        fin = datetime.date(self.matriceDates[1][0],self.matriceDates[1][1],self.matriceDates[1][2])
+        #date= 8
+        #d = datetime.date(2017,12,date)
+        
+        self.insererNouveauSprint(debut,fin, "Sprint n")
+        self.on_closing()
+        
     def creerUneLigneSaisie(self,window, nb):
-        print(nb)
+
+        frameDebut = Frame(self.window)
+        frameDebut.pack()
+
+        #année
+        OPTIONS = []
+        for i in range (2016,2019):
+            OPTIONS.append(i)
+        
+        annee = StringVar(self.window)   
+        annee.set(OPTIONS[0])
+        w = OptionMenu(frameDebut,annee, *OPTIONS, command = lambda y=nb  :self.setDate(nb,0,annee))
+        #cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
+        w.pack(side=LEFT)
+        
         #mois
         OPTIONS = self.mois
         
-        frameDebut = Frame(self.window)
-        frameDebut.pack()
+
         
         mois = StringVar(self.window)   
         mois.set(OPTIONS[0])
-        w = OptionMenu(frameDebut,mois, *OPTIONS)
+        w = OptionMenu(frameDebut,mois, *OPTIONS, command = lambda y=nb  :self.setDate(nb,1,mois))
         w.pack(side=LEFT)
         
         #jours
@@ -139,19 +175,10 @@ class Vue():
         
         jour = StringVar(self.window)   
         jour.set(OPTIONS[0])
-        w = OptionMenu(frameDebut,jour, *OPTIONS)
+        w = OptionMenu(frameDebut,jour, *OPTIONS, command = lambda y=nb  :self.setDate(nb,2,jour))
         w.pack(side=LEFT)
         
-        #année
-        OPTIONS = []
-        for i in range (2016,2019):
-            OPTIONS.append(i)
-        
-        annee = StringVar(self.window)   
-        annee.set(OPTIONS[0])
-        w = OptionMenu(frameDebut,annee, *OPTIONS, command = lambda nb=nb  :self.setAnnee(self.matriceDates[0][nb],nb))
-        #cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
-        w.pack(side=LEFT)
+
 
         self.matriceDates.append([annee.get(),mois.get(),jour.get()])
  
@@ -350,6 +377,9 @@ class Vue():
         
     def insererNouvelleTache(self, id_utilisateur, id_sprint, tache, reussi):
         return self.parent.insererNouvelleTache(id_utilisateur, id_sprint, tache, reussi)
+    
+    def insererNouveauSprint(self,date_debut, date_fin, nom):
+        self.parent.insererNouveauSprint(date_debut, date_fin, nom)
         
             
 if __name__ == '__main__':

@@ -54,6 +54,19 @@ class Modele():
         #projet utilisateur sprint tache reussi
         self.serveur.insertionSQL("Taches", chaine)
         
+    def insererNouveauSprint(self, id_projet,date_debut, date_fin, nom):
+        a1 = id_projet
+        a2 = date_debut
+        a3 = date_fin
+        a4 = "Sprint "
+        
+        numeroNouveauSprint = len(self.retournerLesSprints(id_projet))
+        a4 = a4 + str(numeroNouveauSprint)
+        
+        chaine = "'" + str(a1) + "','" +str(a2) + "','"  + str(a3)+ "','" +str(a4) +  "'"
+        #projet utilisateur sprint tache reussi
+        self.serveur.insertionSQL("Sprints", chaine)
+        
     def enregistrer(self,id_projet,id_utilisateur,id_sprint,list):
         les_id_taches = self.retournerLesTaches(id_sprint,id_utilisateur)
         for element in les_id_taches:
