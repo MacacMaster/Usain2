@@ -111,15 +111,11 @@ class Controleur():
                     fiche.close()
             chaineappli="."+lieuApp+lieuApp+".py"
             #Arguments####################################################################################
-            # self.saasIP=sys.argv[1]
-            # self.utilisateur=sys.argv[2]
+            # self.saasIP=      sys.argv[1]
+            # self.utilisateur= sys.argv[2]
             # self.organisation=sys.argv[3]
-            # self.idProjet=sys.argv[4]
-            # self.clientIP=sys.argv[5]
-            #
-            #
-            #
-            #
+            # self.idProjet=    sys.argv[4]
+            # self.clientIP=    sys.argv[5]
             ############################################################
             #argumentsServeur=[self.saasIP," ",self.utilisateur,self.organisation,self.idProjet]
             

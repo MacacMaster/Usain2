@@ -5,6 +5,10 @@ import sqlite3
 from datetime import datetime
 from _overlapped import NULL
 
+###############################################################
+# Maintainer : C. Szende
+#
+###############################################################
 
 
 class Vue():

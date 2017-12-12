@@ -34,3 +34,11 @@ L_1 = Login Fail
 M_0 = 
 
 S_0 = 
+
+
+
+self.root.protocol("WM_DELETE_WINDOW", self.parent.fermerProgramme)
+
+def fermerProgramme(self):
+    self.writeLog("Fermeture du Module","M_3")
+    self.vue.root.destroy()

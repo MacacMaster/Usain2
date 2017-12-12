@@ -3,7 +3,7 @@
 
 from datetime import datetime
 import sqlite3
-import time
+from datetime import datetime
 sqlite_file = 'example.db'
 
 
@@ -47,12 +47,11 @@ class Log():
     #La fonction d'écriture du log
     def writeLog(self,action="Actionman",errorid="L01",module="Client"):
         #print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
-        if (self.parent.serveur.writeLog(self.getTime(),self.organisation,self.user,self.clientip,self.parent.saasIP,module,action,errorid)):
+        if (self.parent.serveur.writeLog(self.organisation,self.user,self.clientip,self.parent.saasIP,module,action,errorid)):
             return True
         else:
             return False
-        
-    
+
     #===========================================================================
     # def logWrite2(self,module="a.py",action="Action"):
     #     #log in txt file
@@ -60,8 +59,3 @@ class Log():
     #     self.log.write("\n"+time.strftime("%c")+" - "+organisation+" - "+user+" - "+ip+" - "+db+" - "+module+" - "+action)
     #     self.log.close()
     #===========================================================================
-        
-
-    #Retourne le temps du système
-    def getTime(self):
-        return (datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
