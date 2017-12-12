@@ -17,6 +17,7 @@ class Vue():
         self.largeurTotale=800
         self.hauteurSub=500
         self.largeurSub=800
+        self.root.protocol("WM_DELETE_WINDOW", self.parent.fermerProgramme)
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale)
         self.fenetre.pack()
                    

@@ -41,8 +41,8 @@ class SQL():
        # UPDATE employees SET lastname = 'Smith' WHERE employeeid = 3;
        pass
     
-    def writeLog(self,action):
-        self.parent.writeLog(action)
+    def writeLog(self,action,codeid):
+        self.parent.writeLog(action,codeid)
     
     #(Numéro Sprint,Nom de la fonction, priorité(basse=3,moyenne=2,haute=1)
     def creerFonction(self,sprint,nomfonction,priorite,debut,fin):
