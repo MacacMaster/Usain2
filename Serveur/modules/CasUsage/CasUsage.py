@@ -14,10 +14,9 @@ class Controleur():
         self.vue = Vue(self)
         self.idScena=0
         self.unReprend=False
-        
         self.remplirListeCas()
         self.vue.root.mainloop()
-        print("controleur")
+       # print("controleur")
    
     def connectionServeur(self):
     
@@ -48,19 +47,19 @@ class Controleur():
         self.serveur.insertionSQL("CasUsages","'"+str(self.idProjet)+"','"+cas+"','Termine'")
         indiceCas=self.serveur.selectionSQL3("CasUsages","id","description",str(cas))
         indiceCas=str(indiceCas)[2:int(len(indiceCas)-3)]
-        print("indice du cas a envoyer",indiceCas)
+        #print("indice du cas a envoyer",indiceCas)
         self.serveur.insertionSQL("Humains","'"+str(indiceCas)+"','"+usager+"'")
         self.serveur.insertionSQL("Machines","'"+str(indiceCas)+"','"+machine+"'")
         self.vue.mettreAJourListes()
    
     def chercherBdcas(self,indice):
         
-        print("Indice chercherBD",indice)
+       # print("Indice chercherBD",indice)
         return self.serveur.selectionSQL3("CasUsages","description","id",indice)
        
     def chercherUtilisateur(self,indice):
 
-        print("Indice humain cas",self.vue.indiceCasModifier)
+        #print("Indice humain cas",indice)
         nomTable = "Humains"
         champs = "etat"
         where = ["id_CasUsage"]
@@ -68,11 +67,11 @@ class Controleur():
 
         requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
 
-        print("humains ",requete)
+        #print("humains ",requete)
         return requete
     
     def chercherMachine(self,indice):
-        print("Indice machines cas",self.vue.indiceCasModifier)
+        #print("Indice machines cas",indice)
     
         nomTable = "Machines"
         champs = "etat"
@@ -80,10 +79,11 @@ class Controleur():
         valeur = [indice]
 
         requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-        print("humains ",requete)
+        #print("humains ",requete)
         return requete
     
     def changerEtat(self,indice):
+      #  print("indice change etat",indice)
         nomTable = "CasUsages"
         champs = "etat"
         where = ["id","id_Projet"]
@@ -92,20 +92,20 @@ class Controleur():
         Etat = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         
         nomTableGood=str(Etat)[3:int(len(Etat)-4)]
-        print(nomTableGood)
+        #print(nomTableGood)
         
         if(nomTableGood=="NonTermine"): 
-            self.serveur.updateSQL2("CasUsages","Termine","etat","id",self.vue.indiceCasModifier)
+            self.serveur.updateSQL2("CasUsages","Termine","etat","id",indice)
         elif(nomTableGood=="Termine"):
-            self.serveur.updateSQL2("CasUsages","NonTermine","etat","id",self.vue.indiceCasModifier)
+            self.serveur.updateSQL2("CasUsages","NonTermine","etat","id",indice)
         elif(nomTableGood=="Reprendre"):
-            self.serveur.updateSQL2("CasUsages","NonTermine","etat","id",self.vue.indiceCasModifier)
+            self.serveur.updateSQL2("CasUsages","NonTermine","etat","id",indice)
         self.unReprend=False;
         self.vue.caneva.forget()
         self.vue.menuInitial()
     
     def modifierCas(self,cas,usager,machine):
-        print(type(cas))
+       # print(type(cas))
         self.serveur.updateSQL2("casUsages",cas,"description","id",self.vue.indiceCasModifier)
         self.serveur.updateSQL2("Humains",usager,"etat","id_CasUsage",self.vue.indiceCasModifier)
         self.serveur.updateSQL2("Machines",machine,"etat","id_CasUsage",self.vue.indiceCasModifier)
@@ -117,14 +117,19 @@ class Controleur():
         where = ["description"]
         valeur = [nomCas]
 
-        print("NOM DU CAS A MODIFIER CONTROLEUR",nomCas)
+        #print("NOM DU CAS A MODIFIER CONTROLEUR",nomCas)
         indice=self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-        print("indice avant",indice)
+       # print("indice avant",indice)
         self.indice=str(indice)[2:int(len(indice)-3)]
         
         indiceGood=self.indice
-        print("indice du cas a modifier  : ", indiceGood)
+        #print("indice du cas a modifier  : ", indiceGood)
         return indiceGood
+    
+    def changerReprendre(self,indice):
+        self.serveur.updateSQL2("CasUsages","Reprendre","etat","id",indice)
+        self.vue.caneva.forget()
+        self.vue.menuInitial()
     
 class Vue():
     def __init__(self, pControleur):
@@ -146,7 +151,7 @@ class Vue():
         self.remplirListBoxEtat()
         self.remplirListBoxCas()    
     
-    def menuInitial(self):
+    def menuInitial(self,indice=0):
         self.caneva = Canvas(self.fenetre, width = self.largeur, height=self.hauteur, bg="steelblue")
         self.caneva.pack()
         self.labnbe=Label(text="Cas d'usage       ",bg="lightblue")
@@ -175,7 +180,9 @@ class Vue():
         #self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.select)
         #self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
         
-
+        self.bntReprendre=Button(self.caneva,text="Reprendre",width=20,command=self.reprendre)
+        self.caneva.create_window(self.largeur/2,550,window=self.bntReprendre,width=150,height=20)
+        
         self.listeetat=Listbox(self.caneva,bg="lightblue",borderwidth=0,relief=FLAT,width=12,height=12)
         self.caneva.create_window(670,350,window=self.listeetat)
        
@@ -183,12 +190,14 @@ class Vue():
         self.listecas=Listbox(self.caneva,bg="lightblue",borderwidth=0,relief=FLAT,width=90,height=12)
         self.caneva.create_window(350,350,window=self.listecas)
         self.mettreAJourListes()
+        if(self.dejaOuvert==False):
+            self.ouvrirReprendre()
 
     def select(self):
         print(self.controleur.serveur.selectionSQL("Humains","id_CasUsage"))
         
     def indiceCas(self, nomCas):
-        print(nomCas,"indicecas2")
+       # print(nomCas,"indicecas2")
         return self.controleur.indiceCasModifier(nomCas)
    
     def indiceDeLaBD(self):
@@ -198,12 +207,21 @@ class Vue():
             nomCasSelectionGood=str(nomCasSelection)[2:int(len(nomCasSelection)-4)]
         else: 
             nomCasSelectionGood=nomCasSelection
-        print("nom cas a modifier : ",nomCasSelectionGood)
+        #print("nom cas a modifier : ",nomCasSelectionGood)
         indice =self.indiceCas(nomCasSelectionGood)
-        print("Indice ",indice)
-        self.indiceCasModifier=indice
-        self.menuModifier()
-
+       # print("Indice ",indice)
+      
+        self.menuModifier(indice)
+  
+    def trouverCasReprendre(self,position):
+        nomCasSelection=self.listecas.get(position, position)
+        if(position!=0):
+            nomCasSelectionGood=str(nomCasSelection)[2:int(len(nomCasSelection)-4)]
+        else: 
+            nomCasSelectionGood=nomCasSelection
+        
+        indice=self.indiceCas(nomCasSelectionGood)
+        return indice
     def remplirListeCas(self):
         self.listeCas=self.controleur.remplirListeCas()
    
@@ -226,7 +244,7 @@ class Vue():
             self.listeetat.insert(END,temp)
         self.listeEtat.clear()
         
-    def menuModifier(self):
+    def menuModifier(self,indice):
         self.caneva.forget()
         self.canevaMod = Canvas(self.fenetre, width = self.largeur, height=self.hauteur, bg="steelblue")
         self.canevaMod.pack()
@@ -241,16 +259,16 @@ class Vue():
         self.labelActionMachine=Entry(bg="white")
         self.canevaMod.create_window(650,200,window=self.labelActionMachine,width=150,height=250)
         
-        cas=self.controleur.chercherBdcas(self.indiceCasModifier,);
+        cas=self.controleur.chercherBdcas(indice,);
         cas=str(cas)[3:int(len(cas)-4)]
-        print("Cas avant inserer",cas)
+        #print("Cas avant inserer",cas)
         self.labelCasUsage.insert(END, str (cas))
         
-        usager=self.controleur.chercherUtilisateur(self.indiceCasModifier,)#
+        usager=self.controleur.chercherUtilisateur(indice,)#
         usager=str(usager)[3:int(len(usager)-4)]
         self.labelActionUsager.insert(END, str(usager))
 
-        machine=self.controleur.chercherMachine(self.indiceCasModifier,)
+        machine=self.controleur.chercherMachine(indice,)
         machine=str(machine)[3:int(len(machine)-4)]
         self.labelActionMachine.insert(END,str(machine))
         
@@ -267,15 +285,13 @@ class Vue():
         
     def supprimer(self):
         position=self.listeetat.curselection()[0]
-
         nomCas=self.listecas.get(position,position) # indice du cas selectionné
-        print("position ", position)
-        
+       # print("position ", position)
         if(position!=0):
            nomCasSelectionGood=str(nomCas)[2:int(len(nomCas)-4)]
         else: 
             nomCasSelectionGood=nomCas
-        print("nom cas a modifier : ",nomCasSelectionGood, "    : ", nomCas)
+        #print("nom cas a modifier : ",nomCasSelectionGood)
         self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
         self.controleur.changerEtat(self.indiceCasModifier)
     
@@ -300,6 +316,40 @@ class Vue():
 
     def insererCas(self,cas,usager,machine):
         self.controleur.envoyerCas(cas,usager,machine)
+                             
+    def ouvrirReprendre(self):
+        #compteur=0
+        for i in range(1,self.listeetat.size()+1):
+            etat=self.listeetat.get(ACTIVE)
+            self.listeetat.activate(i)
+            etat2= str(etat)
+            print(i)
+            #compteur+=1 
+            if(etat2=="Reprendre"):
+                indice=self.trouverCasReprendre(i-1)
+                print(self.indiceCasModifier)
+                self.dejaOuvert=True
+                self.menuModifier(indice)
+             
+    
+    def unSeulReprendre(self):
+        test=False
+        for i in range(1,self.listeetat.size()+1):
+            etat=self.listeetat.get(ACTIVE)
+            self.listeetat.activate(i)
+            etat2= str(etat)
+            if(etat2=="Reprendre"):
+                test=True
+        return test   
+    
+    def reprendre(self):
+        reprend=self.unSeulReprendre()
+        print("reprendre",reprend)
+        if(reprend==False):  
+            print("AAAAAAAAAAAAAAAAAAAA")
+            position=self.listeetat.curselection()[0] 
+            indice=self.trouverCasReprendre(position)
+            self.controleur.changerReprendre(indice)
     
 if __name__ == '__main__':
     c = Controleur()
