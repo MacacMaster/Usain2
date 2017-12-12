@@ -72,10 +72,13 @@ class Vue():
        Label(frame,text="la tache").pack(side=LEFT)
        Checkbutton(frame).pack(side=LEFT)
     
-    def laSemaine(self,frame,jour,row):
+    def laSemaine(self,frame,jour,row, i):
+        
+        self.datePrevu += datetime.timedelta(days=1)
+        
         column = 3 + jour*3
         Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
-        Label(frame, text="5 décembre 2015").grid(row=row+1, column=column, columnspan= 3)
+        Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
         Label(frame, text="Prévu").grid(row=row+2, column=column)
         Label(frame, text="Fait").grid(row=row+2, column=column+1)
         Label(frame, text="Temps").grid(row=row+2, column=column+2)
@@ -253,8 +256,23 @@ class Vue():
         t="Description de la tâche"
         Label(frame, text=t).grid(row=row+2, column=self.nbColonnes())
         Label(frame, text="Fait").grid(row=row+2, column=self.nbColonnes())
-        for jour in range(5):
-            self.laSemaine(frame,jour,row)
+        i = 0 
+        #self.datePrevu = datetime.date.today()
+        self.leSprint = (self.retournerLeSprint(self.id_sprint))
+        print(self.leSprint)
+        '''
+        try:
+            self.retournerLeSprint(self.id_sprint)
+            print(self.lesSprints[self.id_sprint][2])
+        except IndexError:
+            pass
+        '''
+        self.datePrevu = datetime.datetime.strptime(self.leSprint[0][2], '%Y-%m-%d').date()
+        #print(self.lesSprints[0][2] > self.datePrevu)
+        #self.datePrevu = datetime.date(self.lesSprints[0][2])
+        for jour in range(5):       
+            self.laSemaine(frame,jour,row, i)
+            i = i + i 
         #les jours de la semaine
         row = self.nbRangees() +3
 
@@ -348,6 +366,9 @@ class Vue():
     
     def retournerLesTaches(self,id_sprint,id_utilisateur):
         return self.parent.retournerLesTaches(id_sprint,id_utilisateur)
+    
+    def retournerLeSprint(self,id_sprint):
+        return self.parent.retournerLeSprint(id_sprint)
     
     def retournerLesSprints(self):
         return self.parent.retournerLesSprints()
