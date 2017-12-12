@@ -30,6 +30,7 @@ class Controleur():
         self.utilisateur="None"
         self.organisation=None
         self.idOrga=None
+        self.utilisateurId = None
         #id du projet selectionne
         self.idProjet=None
         self.vue=Vue(self,self.clientIP)
@@ -51,10 +52,9 @@ class Controleur():
         return clientIP
 
     def fermerApplication(self):
-    
         if self.serveur:
             self.log.writeLog("Fermeture du Client","L03")
-            self.serveur.fermeture(self.utilisateur)
+            self.serveur.fermeture(self.utilisateurId)
         self.vue.root.destroy()
 
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
@@ -76,6 +76,7 @@ class Controleur():
                 self.log.writeLog("Tentative de connexions multiple")
                 self.vue.logInClientFail(1)
             else:
+                self.utilisateurId = reponseServeur[0][0]
                 self.utilisateur=pIdentifiantNomUsager
                 self.organisation=pIdentifiantNomOrga
                 self.log.writeLog("Login Successful","L00")
