@@ -15,6 +15,7 @@ Modules:
 4 = Maquette
 5 = Modelisation
 6 = PlanificationGlobale
+7 = Sprint
 
 E = Saas
 F = ServeurBD
