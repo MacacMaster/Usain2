@@ -26,6 +26,13 @@ class ControleurServeurBD():
 #         conn.commit()
 #         conn.close()
         
+    def commandeAdmin(self,valeurs):
+        conn= sqlite3.connect('SprintMasterData.db')
+        c = conn.cursor()
+        c.execute(valeurs)
+        conn.commit()
+        conn.close()
+    
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()

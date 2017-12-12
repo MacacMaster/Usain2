@@ -8,11 +8,6 @@ from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
 
-######################################################
-# TODO 
-# impossible de ouvrir 2 fois. Sinon erreur list out of range# Fermeture du programme, fermeture du proxy
-# 
-######################################################
 
 class Controleur():
     def __init__(self):

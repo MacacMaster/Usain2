@@ -43,9 +43,11 @@ class ModeleService(object):
                                  "Maquette":"Maquette",
                                  "Modelisation":"Modelisation",
                                  "CRC":"CRC",
-                                 "PlanificationGlobale":"PlanificationGlobale"}
+                                 "PlanificationGlobale":"PlanificationGlobale",
+                                 "Sprint":"Sprint"}
 
-        self.outilsdisponibles={"meta_sql": "meta_sql"}
+        self.outilsdisponibles={"meta_sql": "meta_sql",
+                                                    "Facturation": "Facturation"}
         self.clients={}
 
     def creerclient(self,nom, idOrga, id):
@@ -163,6 +165,9 @@ class ControleurServeur():
         contenu=fiche.read()
         fiche.close()
         return xmlrpc.client.Binary(contenu)
+    
+    def commandeAdmin(self,valeurs):
+        return self.serveurBD.commandeAdmin(valeurs)
     
     def insertionSQL(self,nomTable,valeurs):
         return self.serveurBD.insDonnees(nomTable, valeurs)
