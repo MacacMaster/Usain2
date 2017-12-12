@@ -15,8 +15,16 @@ class Controleur():
         self.serveur = self.connectionServeur()
         self.modele= Modele(self)
         self.vue = Vue(self)
+        self.writeLog("Ouverture du Module","M52")
         self.vue.root.mainloop()
         print("controleur")
+
+    def fermerProgramme(self):
+        self.writeLog("Fermeture du Module","M53")
+        self.vue.root.destroy()
+
+    def writeLog(self,action,codeid):
+        self.serveur.writeLog(self.organisation,self.utilisateur,self.clientIP,self.saasIP,"Modelisation",action,codeid) 
 
     def ajoutTableBD(self, nom):
         self.serveur.insertionSQL("Tables",str(self.idProjet)+",'"+nom+"'")
@@ -162,6 +170,7 @@ class Vue():
         self.largeur = 800
         self.hauteur = 600
         self.root = Tk()
+        self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerProgramme)
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.fenetre.pack()
         self.menuInitial()
