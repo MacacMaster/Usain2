@@ -23,8 +23,10 @@ class Vue():
         self.parent=parent
         self.creerFenetreSprints()
         
-    def setAnnee(self,var,nb):
-        self.matriceDates[nb][0] = var
+    def setDate(self,premier,deuxieme, date):
+        print(premier, "  " ,deuxieme, "    " , date.get())
+        self.matriceDates[premier][deuxieme] = date
+        
       
     def creerFenetreSprints(self):
         self.root = Tk()
@@ -120,16 +122,29 @@ class Vue():
         bouton.pack()
         
     def creerUneLigneSaisie(self,window, nb):
-        print(nb)
+
+        frameDebut = Frame(self.window)
+        frameDebut.pack()
+
+        #année
+        OPTIONS = []
+        for i in range (2016,2019):
+            OPTIONS.append(i)
+        
+        annee = StringVar(self.window)   
+        annee.set(OPTIONS[0])
+        w = OptionMenu(frameDebut,annee, *OPTIONS, command = lambda y=nb  :self.setDate(nb,0,annee))
+        #cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
+        w.pack(side=LEFT)
+        
         #mois
         OPTIONS = self.mois
         
-        frameDebut = Frame(self.window)
-        frameDebut.pack()
+
         
         mois = StringVar(self.window)   
         mois.set(OPTIONS[0])
-        w = OptionMenu(frameDebut,mois, *OPTIONS)
+        w = OptionMenu(frameDebut,mois, *OPTIONS, command = lambda y=nb  :self.setDate(nb,1,mois))
         w.pack(side=LEFT)
         
         #jours
@@ -139,19 +154,10 @@ class Vue():
         
         jour = StringVar(self.window)   
         jour.set(OPTIONS[0])
-        w = OptionMenu(frameDebut,jour, *OPTIONS)
+        w = OptionMenu(frameDebut,jour, *OPTIONS, command = lambda y=nb  :self.setDate(nb,2,jour))
         w.pack(side=LEFT)
         
-        #année
-        OPTIONS = []
-        for i in range (2016,2019):
-            OPTIONS.append(i)
-        
-        annee = StringVar(self.window)   
-        annee.set(OPTIONS[0])
-        w = OptionMenu(frameDebut,annee, *OPTIONS, command = lambda nb=nb  :self.setAnnee(self.matriceDates[0][nb],nb))
-        #cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
-        w.pack(side=LEFT)
+
 
         self.matriceDates.append([annee.get(),mois.get(),jour.get()])
  
