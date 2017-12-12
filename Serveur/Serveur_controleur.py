@@ -169,6 +169,14 @@ class ControleurServeur():
     def commandeAdmin(self,valeurs):
         return self.serveurBD.commandeAdmin(valeurs)
     
+    def commandeAdminSaas(self,valeurs):
+        logLocation='Logs.sqlite'
+        logdb = sqlite3.connect(logLocation)
+        curseur = logdb.cursor()
+        curseur.execute(valeurs)
+        logdb.commit()
+        logdb.close()
+        
     def insertionSQL(self,nomTable,valeurs):
         return self.serveurBD.insDonnees(nomTable, valeurs)
     
