@@ -52,8 +52,8 @@ class Controleur():
 
     def fermerApplication(self):
     
-        self.log.writeLog("Fermeture du Client","L03")
         if self.serveur:
+            self.log.writeLog("Fermeture du Client","L03")
             self.serveur.fermeture(self.utilisateur)
         self.vue.root.destroy()
 
