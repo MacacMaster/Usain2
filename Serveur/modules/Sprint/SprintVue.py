@@ -8,6 +8,7 @@ from _overlapped import NULL
 class Vue():
     def __init__(self, parent):
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
+        self.mois = ("Janvier","Février","Mars","Avril","Mai")
         self.taille = 20
         self.list = []
         self.colonnes = 0
@@ -22,7 +23,8 @@ class Vue():
         self.parent=parent
         self.creerFenetreSprints()
         
-        
+    def setAnnee(self,var,nb):
+        self.matriceDates[nb][0] = var
       
     def creerFenetreSprints(self):
         self.root = Tk()
@@ -94,7 +96,6 @@ class Vue():
     def setUtilisateur(self,var):
         self.choixUtilisateur = var
         self.id_utilisateur = self.parcourirListe(self.lesUtilisateurs,self.choixUtilisateur)
-       
         
     def changerEtat(self,etat,semaine):  
         for jours in semaine:
@@ -103,6 +104,64 @@ class Vue():
         
     
     
+    def ajouterUnSprint(self):
+        
+        
+        self.window =  Toplevel(self.root)
+        
+        #frame 1
+        #drop down 1
+        self.matriceDates = []
+        for i in range(2):
+            self.creerUneLigneSaisie(self.window,i)
+        frameBouton = Frame(self.window)
+        frameBouton.pack()
+        bouton = Button(frameBouton,text="Créer le sprint")
+        bouton.pack()
+        
+    def creerUneLigneSaisie(self,window, nb):
+        print(nb)
+        #mois
+        OPTIONS = self.mois
+        
+        frameDebut = Frame(self.window)
+        frameDebut.pack()
+        
+        mois = StringVar(self.window)   
+        mois.set(OPTIONS[0])
+        w = OptionMenu(frameDebut,mois, *OPTIONS)
+        w.pack(side=LEFT)
+        
+        #jours
+        OPTIONS = []
+        for i in range (1,32):
+            OPTIONS.append(i)
+        
+        jour = StringVar(self.window)   
+        jour.set(OPTIONS[0])
+        w = OptionMenu(frameDebut,jour, *OPTIONS)
+        w.pack(side=LEFT)
+        
+        #année
+        OPTIONS = []
+        for i in range (2016,2019):
+            OPTIONS.append(i)
+        
+        annee = StringVar(self.window)   
+        annee.set(OPTIONS[0])
+        w = OptionMenu(frameDebut,annee, *OPTIONS, command = lambda nb=nb  :self.setAnnee(self.matriceDates[0][nb],nb))
+        #cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
+        w.pack(side=LEFT)
+
+        self.matriceDates.append([annee.get(),mois.get(),jour.get()])
+ 
+        self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
+        
+    def on_closing(self):
+        self.updaterVue()
+        self.window.destroy()
+        for i in range(2):
+            print(self.matriceDates[i][0])
     
     def populer(self,frame):
         self.retournerLesSprints()
@@ -112,7 +171,8 @@ class Vue():
         #Label(frame, text="allo").grid(row=0, column=self.nbColonnes())
         #premiere rangee
         row = self.nbRangees()
-        Label(frame, text="Utilisateur", width=10, borderwidth="5", relief="solid").grid(row=row, column=0)
+        Label(frame, text="Utilisateur", width=10, borderwidth="1", relief="solid").grid(row=row, column=0, rowspan = 1)
+        Button(frame, text="+", width=10, borderwidth="5", command = self.ajouterUnSprint).grid(row=row, column=3)
         Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=row, column=4)
 
         #dropdown menu 1

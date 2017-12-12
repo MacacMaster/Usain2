@@ -63,9 +63,9 @@ class Modele():
                
         for tacheX in list:
             reussi = tacheX[1].get()
-            tache = str(tacheX[3])
+            tache = str(tacheX[3])    
             self.insererNouvelleTache(id_projet,id_utilisateur, id_sprint, tache, reussi)
-       
+               
        
        
        
