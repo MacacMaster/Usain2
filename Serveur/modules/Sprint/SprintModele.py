@@ -7,7 +7,8 @@ from Sprint  import *
 #TODO - UPDATE
 
 class Modele():
-    def __init__(self, parent):
+    def __init__(self, parent, serveur):
+        self.serveur =serveur
         self.parent=parent
 
     def getTime(self):

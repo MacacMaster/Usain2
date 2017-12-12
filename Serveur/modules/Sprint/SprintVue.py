@@ -247,8 +247,8 @@ class Vue():
         if (self.id_utilisateur == None):   
             self.setUtilisateur(OPTIONS[0]) 
     
-            #dropdown menu 2
-            self.lesSprints = self.retournerLesSprints()   
+        #dropdown menu 2
+        self.lesSprints = self.retournerLesSprints()   
         OPTIONS = []
         #OPTIONS.append(self.lesSprints[0][1])
         for sprint in self.lesSprints:
