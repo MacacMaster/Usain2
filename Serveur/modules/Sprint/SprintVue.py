@@ -140,7 +140,7 @@ class Vue():
         #d = datetime.date(2017,12,date)
         
         self.insererNouveauSprint(debut,fin, "Sprint n")
-        print("Création du sprint")    
+        self.on_closing()
         
     def creerUneLigneSaisie(self,window, nb):
 

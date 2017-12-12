@@ -58,7 +58,11 @@ class Modele():
         a1 = id_projet
         a2 = date_debut
         a3 = date_fin
-        a4 = nom
+        a4 = "Sprint "
+        
+        numeroNouveauSprint = len(self.retournerLesSprints(id_projet))
+        a4 = a4 + str(numeroNouveauSprint)
+        
         chaine = "'" + str(a1) + "','" +str(a2) + "','"  + str(a3)+ "','" +str(a4) +  "'"
         #projet utilisateur sprint tache reussi
         self.serveur.insertionSQL("Sprints", chaine)
