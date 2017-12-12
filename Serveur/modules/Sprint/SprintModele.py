@@ -7,9 +7,8 @@ from Sprint  import *
 #TODO - UPDATE
 
 class Modele():
-    def __init__(self, parent, serveur):
+    def __init__(self, parent):
         self.parent=parent
-        self.serveur=serveur
 
     def getTime(self):
         return (datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
