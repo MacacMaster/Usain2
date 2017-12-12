@@ -155,15 +155,16 @@ class Vue():
         
     def commandeAdmin(self):
         self.affCommande=Entry(bg="lightblue")
-        self.canevaOutil.create_window(200,400,window=self.affCommande,width=300,height=200)
-        btnNEnvoi=Button(self.cadreProjet, text="Ok",bg="lightgrey",command=self.okProjet)
-        self.canevaOutil.create_window(400,400,window=btnNEnvoi,width=50,height=30)  
+        self.canevaOutil.create_window(200,350,window=self.affCommande,width=300,height=150)
+        btnNEnvoi=Button(self.cadreOutil, text="Envoyer",bg="steelblue",command=self.envoiSQL)
+        self.canevaOutil.create_window(200,515,window=btnNEnvoi,width=50,height=30) 
+    
+    def envoiSQL(self):
+        self.controleur.serveur.commandeAdmin(self.affCommande.get()) 
         
     def okProjet(self):
         self.nouveauProjet = self.controleur.creerProjet(self.entrerNomProjet.get())
         self.listeProjets.insert(END,self.entrerNomProjet.get())
-        
-        
         
         
     def chargerProjet(self):
