@@ -214,7 +214,10 @@ class Vue():
         #premiere rangee
         row = self.nbRangees()
         Label(frame, text="Utilisateur", width=10, borderwidth="1", relief="solid").grid(row=row, column=0, rowspan = 1)
-        Button(frame, text="+", width=10, borderwidth="5", command = self.ajouterUnSprint).grid(row=row, column=3)
+        b  = Button(frame, text="+", width=10, borderwidth="5", command = self.ajouterUnSprint)
+        
+        
+        b.grid(row=row, column=3)
         Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=row, column=4)
         #try:
             #dropdown menu 1
@@ -234,13 +237,11 @@ class Vue():
                 variable.set("")
         else:
             variable.set(self.choixUtilisateur)
-
-        
-        
+      
         try:
             w = OptionMenu(frame,variable, *OPTIONS, command = self.setUtilisateur)
         except TypeError:
-            OPTIONS = [1]
+            #OPTIONS = [1]
             w = OptionMenu(frame,variable, *OPTIONS, command = self.setUtilisateur)
         w.grid(row=row, column=1)
             
@@ -252,6 +253,7 @@ class Vue():
         OPTIONS = []
         #OPTIONS.append(self.lesSprints[0][1])
         for sprint in self.lesSprints:
+            self.aucunSprint = False
             OPTIONS.append(sprint[1])
 
         variable = StringVar(frame)  
@@ -267,8 +269,10 @@ class Vue():
         try:
             w = OptionMenu(frame,variable,*OPTIONS, command=self.setSprint)
         except TypeError:
-            OPTIONS = [1]
+            OPTIONS = [" "]
             w = OptionMenu(frame,variable,*OPTIONS, command=self.setSprint)
+            w.configure(state="disabled")
+            self.aucunSprint = True
        
         w.grid(row=row, column=5)
           
@@ -322,11 +326,19 @@ class Vue():
         Label(frame, text="Nouvelle tâche", width=10, borderwidth="5").grid(row=row+2, column=0)
         if (self.aucunSprint == True):
             entry = Entry(frame, state = DISABLED)
+            b.config(bg = "yellow")
         else:
             entry = Entry(frame, state = NORMAL)
+            b.config(bg = "gainsboro")
         entry.bind('<Return>',self.saisirNouvelleTache)
         entry.grid(row=row+2, column=1)
         entry.configure({"background": "Yellow"})
+        
+        if self.aucunSprint == True:
+            l = Label(frame, text="----------------------------Ajouter un sprint svp!!!----------------------------")
+            l.config(bg = "yellow")
+            l.grid(row=6, column=4, columnspan = 5)
+     
         
         row = 5
         for element in lesTaches:
@@ -372,6 +384,9 @@ class Vue():
             #changer l'etat des boutons au loadage
             if (reussi):
                 self.changer(index)
+                
+          
+
    
     def enregistrer(self):
         self.parent.enregistrer(self.list, self.id_utilisateur,self.id_sprint)
