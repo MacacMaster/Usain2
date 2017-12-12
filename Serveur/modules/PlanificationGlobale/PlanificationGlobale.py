@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 
 
-
 from tkinter import *
 from tkinter.filedialog import *
 
@@ -17,14 +16,10 @@ from PlanificationGlobaleModele  import *
 #debug
 from subprocess import Popen    
     
- ##################################################
- #TODO:
- #
- #Find why writeLog doesn't work
- #Make the SQL shite work!!!
- #
- ################################################# 
-  
+############################################################################
+# Maintainer : M-A Ramsay
+# 
+############################################################################
 
 
 class Controleur():
@@ -58,16 +53,6 @@ class Controleur():
 
         self.vue=Vue(self)
         
-
-        ########
-        # TEST #
-        ########
-        self.sql.creerFonction("Sprint1","FonctionNom","priorite","debut","fin")
-        self.sql.creerFonction("Sprint2","FonctionNom","priorite","debut","fin")
-        self.sql.creerFonction("Sprint3","FonctionNom","priorite","debut","fin")
-        self.sql.creerFonction("Sprint4","FonctionNom","priorite","debut","fin")
-        
-        self.sql.modifierFonction('pololo','id_Sprint','5')
         
         self.vue.root.mainloop()
         
@@ -77,7 +62,7 @@ class Controleur():
         
     def writeLog(self,action,codeid):
          #print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
-        varwhatev=self.serveur.writeLog(self.modele.getTime(),self.organisation,self.utilisateur,self.clientIP,self.saasIP,"PlanificationGlobale",action,codeid)
+        varwhatev=self.serveur.writeLog(self.organisation,self.utilisateur,self.clientIP,self.saasIP,"PlanificationGlobale",action,codeid)
         if (varwhatev):
             return True
         else :

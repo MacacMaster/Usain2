@@ -5,22 +5,32 @@ from xmlrpc.client import ServerProxy
 
 class Controleur():
     def __init__(self):
-        self.saasIP=sys.argv[1]
-        self.utilisateur=sys.argv[2]
-        self.idProjet=sys.argv[4]
-        self.clientIP=sys.argv[5]
-        self.adresseServeur="http://"+self.saasIP+":9999"
+        self.saasIP=        sys.argv[1]
+        self.utilisateur=   sys.argv[2]
+        self.organisation=  sys.argv[3]
+        self.idProjet=      sys.argv[4]
+        self.clientIP=      sys.argv[5]
+        self.portSaas=":9999"
+        self.adresseServeur="http://"+self.saasIP+self.portSaas
         self.serveur = self.connectionServeur()
         self.vue = Vue(self)
         self.idScena=0
         self.unReprend=False
         
         self.remplirListeCas()
+        
+        self.writeLog("Ouverture du Module","M12")
         self.vue.root.mainloop()
         print("controleur")
    
+    def fermerProgramme(self):
+        self.writeLog("Fermeture du Module","M13")
+        self.vue.root.destroy()
+        
+    def writeLog(self,action,codeid):
+        self.serveur.writeLog(self.organisation,self.utilisateur,self.clientIP,self.saasIP,"CasUsage",action,codeid)
+   
     def connectionServeur(self):
-    
         serveur=ServerProxy(self.adresseServeur)
         return serveur
     
@@ -132,6 +142,7 @@ class Vue():
         self.largeur = 800
         self.hauteur = 600
         self.root = Tk()
+        self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerProgramme)
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.fenetre.pack()
         self.listeCas=[]
