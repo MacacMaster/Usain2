@@ -60,9 +60,19 @@ class Vue():
         self.largeur = 800
         self.hauteur = 600
         self.root = Tk()
+        self.root.title("Maquette")
         self.creerFenetre()
+        self.centrerFenetre()
         self.bindTouche()
         self.afficherFormes()
+        
+    def centrerFenetre(self):
+        self.root.update() # Suivant le WM. A faire dans tous les cas donc.
+        fenrw = self.root.winfo_reqwidth()
+        fenrh = self.root.winfo_reqheight()
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        self.root.geometry("%dx%d+%d+%d" % (fenrw, fenrh, (sw-fenrw)/2, (sh-fenrh)/2))
         
     def nettoyerCanevasDessin(self):
         self.canvasDessin.destroy()
@@ -104,12 +114,12 @@ class Vue():
         self.optionGauche.create_window(115,60, window=self.listeMaquettes,width=190,height=50)
         self.optionGauche.create_window(135,20, window=self.labelMaquette,width=240,height=30)
         self.optionGauche.create_window(245,60, window=self.boutonChargerMaquette,width=40,height=30)
-        self.optionMilieu.create_window(245,60, window=self.boutonSauvegarde,width=40,height=30)
-        self.optionMilieu.create_window(120,60, window=self.boutonFleche,width=40,height=30)
-        self.optionMilieu.create_window(165,60, window=self.boutonTexte,width=40,height=30)
-        self.optionMilieu.create_window(205,60, window=self.boutonAnnuleForme,width=40,height=30)
-        self.optionMilieu.create_window(75,60, window=self.boutonOvale,width=40,height=30)
         self.optionMilieu.create_window(30,60, window=self.boutonRectangle,width=40,height=30)
+        self.optionMilieu.create_window(73,60, window=self.boutonOvale,width=40,height=30)
+        self.optionMilieu.create_window(118,60, window=self.boutonFleche,width=40,height=30)
+        self.optionMilieu.create_window(161,60, window=self.boutonTexte,width=40,height=30)
+        self.optionMilieu.create_window(204,60, window=self.boutonAnnuleForme,width=40,height=30)
+        self.optionMilieu.create_window(246,60, window=self.boutonSauvegarde,width=40,height=30)
         self.optionMilieu.create_window(135,20, window=self.labelOutils,width=240,height=30)
         self.optionDroite.create_window(115,60, window=self.entreNouvMaquette,width=190,height=30)
         self.optionDroite.create_window(135,20, window=self.labelNouvMaquette,width=240,height=30)
@@ -143,7 +153,7 @@ class Vue():
                 self.canvasDessin.create_line(i.x1,i.y1,i.x2, i.y2)
                 print("je dessine une fleche")
             elif (i.nom  == "Texte"):
-                self.canvasDessin.create_text(i.x1, i.y1, text=i.text,font=("Purisa",12))
+                self.canvasDessin.create_text(i.x1+10, i.y1+10, text=i.text,font=("Purisa",12))
         self.root.after(250, self.afficherFormes)
         
     def annulerForme(self):
