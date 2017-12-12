@@ -31,7 +31,7 @@ class Controleur():
         self.vue=Vue(self,self.clientIP)
         
         self.vue.root.mainloop()
-        
+
     
     def chargerProjet(self, nomprojet):
         idProjet = self.serveur.chargerProjet(nomprojet, self.idOrga)
