@@ -86,33 +86,49 @@ class Vue():
         self.parent.log.writeLog("Projet Inconnu","PE1")
     
     def creerCadreCentral(self):
-        self.cadreCentral=Frame(self.cadreApplication)
-        self.cadreProjet = Frame(self.cadreCentral)
-        self.canevaProjet=Canvas(self.cadreProjet,width=400,height=600,bg="steelblue")
-        self.canevaProjet.pack()
-        self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
-        btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="pink",command=self.chargerProjet)
-        btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="pink",command=self.creerProjet)
-        self.canevaProjet.create_window(200,100,window=self.listeProjets)
-        
-        self.canevaProjet.create_window(100,20,window=self.labNomOrga,width=100,height=15)
-        self.canevaProjet.create_window(250,20,window=self.labIDOrga,width=100,height=15)
-        self.canevaProjet.create_window(200,450,window=btnconnecter,width=100,height=30)
-        self.canevaProjet.create_window(200,500,window=btnCreerProjet,width=100,height=30)
-        self.cadreProjet.pack(side=LEFT)
-        
-        #----------------------------
-        self.cadreOutil = Frame(self.cadreCentral)
-        self.canevaOutil=Canvas(self.cadreOutil,width=400,height=600,bg="lightgrey")
-        self.canevaOutil.pack()
-        
-        self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
-        btnconnecter=Button(self.cadreOutil, text="Choisir un outil",bg="pink",command=self.requeteOutil)
-        self.canevaOutil.create_window(200,100,window=self.listeOutils)
-        self.canevaOutil.create_window(200,450,window=btnconnecter,width=100,height=30)
         
         if(self.statut == 1):
+            self.cadreCentral=Frame(self.cadreApplication)
+            self.cadreProjet = Frame(self.cadreCentral)
+            self.canevaProjet=Canvas(self.cadreProjet,width=400,height=600,bg="steelblue")
+            self.canevaProjet.pack()
+            self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+            btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="lightgrey",command=self.chargerProjet)
+            btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="lightgrey",command=self.creerProjet)
+            self.canevaProjet.create_window(200,100,window=self.listeProjets)
+        
+            self.canevaProjet.create_window(200,150,window=self.listeProjets)
+            self.canevaProjet.create_window(100,30,window=self.labNomOrga,width=150,height=30)
+            self.canevaProjet.create_window(300,30,window=self.labIDOrga,width=150,height=30)
+            self.canevaProjet.create_window(200,500,window=btnconnecter,width=100,height=30)
+            self.canevaProjet.create_window(200,550,window=btnCreerProjet,width=100,height=30)
+            self.cadreProjet.pack(side=LEFT)
+        
+        #----------------------------
+            self.cadreOutil = Frame(self.cadreCentral)
+            self.canevaOutil=Canvas(self.cadreOutil,width=400,height=600,bg="lightgrey")
+            self.canevaOutil.pack()
+            self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+            btnconnecter=Button(self.cadreOutil, text="Choisir un outil",bg="steelblue",command=self.requeteOutil)
+            btnCommande=Button(self.cadreOutil, text="Envoyer une requete SQL",bg="steelblue",command=self.commandeAdmin)
+            self.canevaOutil.create_window(200,100,window=self.listeOutils)
+            self.canevaOutil.create_window(200,200,window=btnconnecter,width=100,height=30)
+            self.canevaOutil.create_window(200,250,window=btnCommande,width=200,height=30)
             self.cadreOutil.pack(side=LEFT)
+        else:
+            self.cadreCentral=Frame(self.cadreApplication)
+            self.cadreProjet = Frame(self.cadreCentral)
+            self.canevaProjet=Canvas(self.cadreProjet,width=800,height=600,bg="steelblue")
+            self.canevaProjet.pack()
+            self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+            btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="lightgrey",command=self.chargerProjet)
+            btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="lightgrey",command=self.creerProjet)
+            self.canevaProjet.create_window(380,150,window=self.listeProjets)
+            self.canevaProjet.create_window(275,30,window=self.labNomOrga,width=150,height=30)
+            self.canevaProjet.create_window(525,30,window=self.labIDOrga,width=150,height=30)
+            self.canevaProjet.create_window(380,500,window=btnconnecter,width=100,height=30)
+            self.canevaProjet.create_window(380,550,window=btnCreerProjet,width=100,height=30)
+            self.cadreProjet.pack(side=LEFT)
         
     def creerCadreModules(self):
         self.cadreCentral2=Frame(self.cadreApplication)
@@ -121,17 +137,27 @@ class Vue():
         self.canevaModules.pack()
         self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
         btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="pink",command=self.requeteModule)
-        self.canevaModules.create_window(200,100,window=self.listeModules)
-        self.canevaModules.create_window(200,450,window=btnconnecter,width=100,height=30)
+        self.canevaModules.create_window(200,150,window=self.listeModules)
+        self.canevaModules.create_window(200,500,window=btnconnecter,width=100,height=30)
         self.cadreModules.pack(side=LEFT)
     
     def creerProjet(self):
+        if(self.statut == 0):
+            largeur = 380;
+        else:
+            largeur = 180;
         labNomProjet=Label(text="Nom du projet",bg="darkblue",borderwidth=0,relief=RIDGE,fg="white", font=("Helvetica", 12))
-        self.canevaProjet.create_window(200,350,window=labNomProjet,width=150,height=30)
+        self.canevaProjet.create_window(largeur,400,window=labNomProjet,width=150,height=30)
         self.entrerNomProjet=Entry(bg="lightblue")
-        self.canevaProjet.create_window(200,400,window=self.entrerNomProjet,width=150,height=30)
-        btnNProjet=Button(self.cadreProjet, text="Ok",bg="pink",command=self.okProjet)
-        self.canevaProjet.create_window(350,400,window=btnNProjet,width=50,height=30) 
+        self.canevaProjet.create_window(largeur,450,window=self.entrerNomProjet,width=150,height=30)
+        btnNProjet=Button(self.cadreProjet, text="Ok",bg="lightgrey",command=self.okProjet)
+        self.canevaProjet.create_window(largeur+150,450,window=btnNProjet,width=50,height=30) 
+        
+    def commandeAdmin(self):
+        self.affCommande=Entry(bg="lightblue")
+        self.canevaOutil.create_window(200,400,window=self.affCommande,width=300,height=200)
+        btnNEnvoi=Button(self.cadreProjet, text="Ok",bg="lightgrey",command=self.okProjet)
+        self.canevaOutil.create_window(400,400,window=btnNEnvoi,width=50,height=30)  
         
     def okProjet(self):
         self.nouveauProjet = self.controleur.creerProjet(self.entrerNomProjet.get())
@@ -174,6 +200,7 @@ class Vue():
             self.listeProjets.insert(END,i)
         for i in repmodules:
             self.listeModules.insert(END,i)
-        for i in repoutils:
-            self.listeOutils.insert(END,i)
+        if(self.statut ==1):
+            for i in repoutils:
+                self.listeOutils.insert(END,i)
         self.changeCadre(self.cadreCentral)
