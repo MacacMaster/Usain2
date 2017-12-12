@@ -22,6 +22,8 @@ import sqlite3
 from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
+from datetime import datetime
+import time
 
 class Client(object):
     def __init__(self,nom, idOrga, id):
@@ -43,9 +45,11 @@ class ModeleService(object):
                                  "Maquette":"Maquette",
                                  "Modelisation":"Modelisation",
                                  "CRC":"CRC",
-                                 "PlanificationGlobale":"PlanificationGlobale"}
+                                 "PlanificationGlobale":"PlanificationGlobale",
+                                 "Sprint":"Sprint"}
 
-        self.outilsdisponibles={"meta_sql": "meta_sql"}
+        self.outilsdisponibles={"meta_sql": "meta_sql",
+                                                    "Facturation": "Facturation"}
         self.clients={}
 
     def creerclient(self,nom, idOrga, id):
@@ -109,10 +113,10 @@ class ControleurServeur():
         idProjet = self.serveurBD.chargerProjet(nomprojet, idorga)
         return idProjet
         
-    def fermeture(self, nomUtilisateur):
-        print("Ne ferme pas")
-        if nomUtilisateur == self.nomUsager:
-            self.nomUsager=""
+    def fermeture(self, utilisateurId):
+        print("Deconnection en cours")
+        print(utilisateurId)
+        del self.modele.clients[utilisateurId]
         
     def finDuProgramme(self):
         daemon.shutdown()
@@ -164,6 +168,17 @@ class ControleurServeur():
         fiche.close()
         return xmlrpc.client.Binary(contenu)
     
+    def commandeAdmin(self,valeurs):
+        return self.serveurBD.commandeAdmin(valeurs)
+    
+    def commandeAdminSaas(self,valeurs):
+        logLocation='Logs.sqlite'
+        logdb = sqlite3.connect(logLocation)
+        curseur = logdb.cursor()
+        curseur.execute(valeurs)
+        logdb.commit()
+        logdb.close()
+        
     def insertionSQL(self,nomTable,valeurs):
         return self.serveurBD.insDonnees(nomTable, valeurs)
     
@@ -200,19 +215,30 @@ class ControleurServeur():
         self.serveurBD.delete(nomTable, where, condition)
     
     #Fonction d'écriture du log        
-    def writeLog(self,date,org,user,ip,db,module,action,errorid):
+    def writeLog(self,org,user,ip,db,module,action,errorid):
         logLocation='Logs.sqlite'
-        logdb = sqlite3.connect(logLocation)
+        logdb = sqlite3.connect(logLocation,timeout=1)
         curseur = logdb.cursor()
-        curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,errorid,))
-        logdb.commit()
+        locked = True
+        while (locked):
+            try:
+                curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?,?)", (self.getTime(),org,user,ip,db,module,action,errorid,))
+                logdb.commit()
+                locked=False
+            except sqlite3.OperationalError:
+                print("database locked")
+                time.sleep(2)
         logdb.close()
         return True 
+    
+    def getTime(self):
+        return (datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
     
     def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
         return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
     
     def selDonneesWHERE_DATES(self,nomTable,champs,where,valeur):
+        return self.serveurBD.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
         return self.serveurBD.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
     
     

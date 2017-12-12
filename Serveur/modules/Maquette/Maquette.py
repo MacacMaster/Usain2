@@ -7,25 +7,45 @@ import sqlite3
 from xmlrpc.client import ServerProxy
 import sys
 
+# TODO : When maquette name is empty, deal with the exception while trying to save
+#
+#
+
 class Controleur():
     def __init__(self):
-        self.serveur = None
+        self.saasIP=        sys.argv[1]
+        self.utilisateur=   sys.argv[2]
+        self.organisation=  sys.argv[3]
+        self.idProjet=      int(sys.argv[4])
+        self.clientIP=      sys.argv[5]
+        self.portSaas=":9999"
+        self.adresseServeur="http://"+self.saasIP+self.portSaas
+        
+        self.serveur = self.connexionSaas()
         self.idMaquette = None
-        self.idProjet = int(sys.argv[4])
-        self.saasIP = sys.argv[1]
-        self.connexionSaas()
+
+       
         self.modele = Modele(self)
         self.vue = Vue(self)
         self.chargerMaquette()
+        
+        self.writeLog("Ouverture du Module","M42")        
         self.vue.root.mainloop()
 
+        
+    def fermerProgramme(self):
+        self.writeLog("Fermeture du Module","M43")
+        self.vue.root.destroy()
+        
+    def writeLog(self,action,codeid):
+        self.serveur.writeLog(self.organisation,self.utilisateur,self.clientIP,self.saasIP,"Maquette",action,codeid)  
+        
     def chargerMaquette(self):
         for i in self.serveur.selectionSQL3("Maquettes","nom","id_Projet", self.idProjet):
             self.vue.listeMaquettes.insert(END,i[0])
         
     def connexionSaas(self):
-        ad="http://"+self.saasIP+":9999"
-        self.serveur=ServerProxy(ad,allow_none = 1)
+        return ServerProxy(self.adresseServeur,allow_none = 1)
         
     def commitNouvelleMaquette(self, nomMaquette):
         if nomMaquette == "":
@@ -60,9 +80,20 @@ class Vue():
         self.largeur = 800
         self.hauteur = 600
         self.root = Tk()
+        self.root.title("Maquette")
+        self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerProgramme)
         self.creerFenetre()
+        self.centrerFenetre()
         self.bindTouche()
         self.afficherFormes()
+        
+    def centrerFenetre(self):
+        self.root.update() # Suivant le WM. A faire dans tous les cas donc.
+        fenrw = self.root.winfo_reqwidth()
+        fenrh = self.root.winfo_reqheight()
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        self.root.geometry("%dx%d+%d+%d" % (fenrw, fenrh, (sw-fenrw)/2, (sh-fenrh)/2))
         
     def nettoyerCanevasDessin(self):
         self.canvasDessin.destroy()
@@ -104,12 +135,12 @@ class Vue():
         self.optionGauche.create_window(115,60, window=self.listeMaquettes,width=190,height=50)
         self.optionGauche.create_window(135,20, window=self.labelMaquette,width=240,height=30)
         self.optionGauche.create_window(245,60, window=self.boutonChargerMaquette,width=40,height=30)
-        self.optionMilieu.create_window(245,60, window=self.boutonSauvegarde,width=40,height=30)
-        self.optionMilieu.create_window(120,60, window=self.boutonFleche,width=40,height=30)
-        self.optionMilieu.create_window(165,60, window=self.boutonTexte,width=40,height=30)
-        self.optionMilieu.create_window(205,60, window=self.boutonAnnuleForme,width=40,height=30)
-        self.optionMilieu.create_window(75,60, window=self.boutonOvale,width=40,height=30)
         self.optionMilieu.create_window(30,60, window=self.boutonRectangle,width=40,height=30)
+        self.optionMilieu.create_window(73,60, window=self.boutonOvale,width=40,height=30)
+        self.optionMilieu.create_window(118,60, window=self.boutonFleche,width=40,height=30)
+        self.optionMilieu.create_window(161,60, window=self.boutonTexte,width=40,height=30)
+        self.optionMilieu.create_window(204,60, window=self.boutonAnnuleForme,width=40,height=30)
+        self.optionMilieu.create_window(246,60, window=self.boutonSauvegarde,width=40,height=30)
         self.optionMilieu.create_window(135,20, window=self.labelOutils,width=240,height=30)
         self.optionDroite.create_window(115,60, window=self.entreNouvMaquette,width=190,height=30)
         self.optionDroite.create_window(135,20, window=self.labelNouvMaquette,width=240,height=30)
@@ -143,7 +174,7 @@ class Vue():
                 self.canvasDessin.create_line(i.x1,i.y1,i.x2, i.y2)
                 print("je dessine une fleche")
             elif (i.nom  == "Texte"):
-                self.canvasDessin.create_text(i.x1, i.y1, text=i.text,font=("Purisa",12))
+                self.canvasDessin.create_text(i.x1+10, i.y1+10, text=i.text,font=("Purisa",12))
         self.root.after(250, self.afficherFormes)
         
     def annulerForme(self):

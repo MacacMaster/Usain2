@@ -81,6 +81,9 @@ class Controleur():
     def insererNouveauSprint(self,date_debut, date_fin, nom):
         self.modele.insererNouveauSprint(self.idProjet,date_debut, date_fin, nom)
         
+    def retournerLeSprint(self,id_sprint):
+        return self.modele.retournerLeSprint(id_sprint)
+        
 if __name__ == '__main__':
     #parent = serveur Saas
     c=Controleur()

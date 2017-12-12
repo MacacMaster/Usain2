@@ -8,11 +8,6 @@ from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
 
-######################################################
-# TODO 
-# impossible de ouvrir 2 fois. Sinon erreur list out of range# Fermeture du programme, fermeture du proxy
-# 
-######################################################
 
 class Controleur():
     def __init__(self):
@@ -30,12 +25,13 @@ class Controleur():
         self.utilisateur="None"
         self.organisation=None
         self.idOrga=None
+        self.utilisateurId = None
         #id du projet selectionne
         self.idProjet=None
         self.vue=Vue(self,self.clientIP)
         
         self.vue.root.mainloop()
-        
+
     
     def chargerProjet(self, nomprojet):
         idProjet = self.serveur.chargerProjet(nomprojet, self.idOrga)
@@ -51,10 +47,9 @@ class Controleur():
         return clientIP
 
     def fermerApplication(self):
-    
         if self.serveur:
             self.log.writeLog("Fermeture du Client","L03")
-            self.serveur.fermeture(self.utilisateur)
+            self.serveur.fermeture(self.utilisateurId)
         self.vue.root.destroy()
 
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
@@ -76,6 +71,7 @@ class Controleur():
                 self.log.writeLog("Tentative de connexions multiple")
                 self.vue.logInClientFail(1)
             else:
+                self.utilisateurId = reponseServeur[0][0]
                 self.utilisateur=pIdentifiantNomUsager
                 self.organisation=pIdentifiantNomOrga
                 self.log.writeLog("Login Successful","L00")
@@ -111,15 +107,11 @@ class Controleur():
                     fiche.close()
             chaineappli="."+lieuApp+lieuApp+".py"
             #Arguments####################################################################################
-            # self.saasIP=sys.argv[1]
-            # self.utilisateur=sys.argv[2]
+            # self.saasIP=      sys.argv[1]
+            # self.utilisateur= sys.argv[2]
             # self.organisation=sys.argv[3]
-            # self.idProjet=sys.argv[4]
-            # self.clientIP=sys.argv[5]
-            #
-            #
-            #
-            #
+            # self.idProjet=    sys.argv[4]
+            # self.clientIP=    sys.argv[5]
             ############################################################
             #argumentsServeur=[self.saasIP," ",self.utilisateur,self.organisation,self.idProjet]
             

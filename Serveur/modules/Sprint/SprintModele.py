@@ -25,14 +25,26 @@ class Modele():
     
     def retournerLesSprints(self,id_projet):
         nomTable = "Sprints"
-        champs = "id, nom"
+        champs = "id, nom, date_debut,date_fin"
+        #champs = "date_debut,date_fin"
         where = ["id_projet"]
         valeur = [id_projet]
         
-        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-
+        #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        requete = self.parent.serveur.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
+        print(requete)
+        return requete
+    
+    def retournerLeSprint(self,id_sprint):
+        nomTable = "Sprints"
+        champs = "id, nom, date_debut,date_fin"
+        #champs = "date_debut,date_fin"
+        where = ["id"]
+        valeur = [ str(id_sprint)]
         
-  
+        #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        print(requete)
         return requete
     
     def retournerLesUtilisateurs(self,id_Organisation):
@@ -78,9 +90,6 @@ class Modele():
             reussi = tacheX[1].get()
             tache = str(tacheX[3])    
             self.insererNouvelleTache(id_projet,id_utilisateur, id_sprint, tache, reussi)
-               
-               
-   
         
        
        
