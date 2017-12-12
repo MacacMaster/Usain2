@@ -636,10 +636,7 @@ class Controleur():
         self.vue=Vue(self)
         
         self.writeLog("Ouverture du Module","M22")
-        
         self.vue.root.mainloop()
-        
-        
     def connectionServeur(self):
         print("Connection au serveur BD...")
         return ServerProxy(self.adresseServeur)
