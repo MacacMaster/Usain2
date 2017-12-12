@@ -163,6 +163,12 @@ class Modele():
             print(x)
             listBoxChamp.insert(END,str(x)[2:int(len(x)-3)])
             
+    def verificationSelection(self, listbox, message):
+        if(listbox.curselection()):
+            return True
+        else:
+            messagebox.showerror("Erreur de selection",message)
+            
         
         
             
@@ -231,14 +237,17 @@ class Vue():
         self.caneva.create_window(685,550,window=self.btnEntrerTable,width=150,height=20)
         
     def renommerTable(self):
-        position=self.listBoxNomTable.curselection()[0]
-        nomTable=self.listBoxNomTable.get(position, position)
-        if(position!=0):
-            nomTableGood=str(nomTable)[2:int(len(nomTable)-4)]
-        else:
-            nomTableGood=nomTable
-        idTable=self.controleur.modele.idTableAjoutChamps(nomTableGood)
-        self.menuRenommerTable(idTable, nomTableGood)
+        ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxNomTable, "Veuillez selectionner un nom de table")
+        if(ouiOuNon == True):
+            position=self.listBoxNomTable.curselection()[0]
+            nomTable=self.listBoxNomTable.get(position, position)
+            if(position!=0):
+                nomTableGood=str(nomTable)[2:int(len(nomTable)-4)]
+            else:
+                nomTableGood=nomTable
+            idTable=self.controleur.modele.idTableAjoutChamps(nomTableGood)
+            self.menuRenommerTable(idTable, nomTableGood)
+        
         
         
         
@@ -255,7 +264,7 @@ class Vue():
         self.lblNomTable=Label(text="Renommer la table",bg="steelblue")
         self.lblNomTable.config(font=("Tahoma", 24))
         self.lblNomTable.config(foreground='lightblue')
-        self.canevaRenommerTable.create_window(60,60,window=self.lblNomTable)
+        self.canevaRenommerTable.create_window(275,60,window=self.lblNomTable)
         
         self.lblNomAvant=Label(text="Nom de la table : *", bg="lightblue")
         self.canevaRenommerTable.create_window(100,115,window=self.lblNomAvant)
@@ -289,26 +298,30 @@ class Vue():
     
     
     def supprimerTable(self):
-        position=self.listBoxNomTable.curselection()[0]
-        nomTable=self.listBoxNomTable.get(position, position)
-        if(position!=0):
-            nomTableGood=str(nomTable)[2:int(len(nomTable)-4)]
-        else:
-            nomTableGood=nomTable
-        self.controleur.supprimerTable("Tables", "nom", nomTableGood)
+        ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxNomTable, "Veuillez selectionner un nom de table")
+        if(ouiOuNon == True):
+            position=self.listBoxNomTable.curselection()[0]
+            nomTable=self.listBoxNomTable.get(position, position)
+            if(position!=0):
+                nomTableGood=str(nomTable)[2:int(len(nomTable)-4)]
+            else:
+                nomTableGood=nomTable
+            self.controleur.supprimerTable("Tables", "nom", nomTableGood)
     
     def nomTableAjoutChamp(self):
-        position=self.listBoxNomTable.curselection()[0]
-        nomTable=self.listBoxNomTable.get(position, position)
-        if(position!=0):
-            nomTableGood=str(nomTable)[2:int(len(nomTable)-4)]
-        else:
-            nomTableGood=nomTable
-        idTable=self.controleur.modele.idTableAjoutChamps(nomTableGood)
-        self.controleur.modele.idTableSelec=idTable
-        self.controleur.modele.nomTable=nomTableGood
-        self.caneva.forget()
-        self.menuAffichageChamps(nomTableGood)
+        ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxNomTable, "Veuillez selectionner un nom de table")
+        if(ouiOuNon == True):
+            position=self.listBoxNomTable.curselection()[0]
+            nomTable=self.listBoxNomTable.get(position, position)
+            if(position!=0):
+                nomTableGood=str(nomTable)[2:int(len(nomTable)-4)]
+            else:
+                nomTableGood=nomTable
+            idTable=self.controleur.modele.idTableAjoutChamps(nomTableGood)
+            self.controleur.modele.idTableSelec=idTable
+            self.controleur.modele.nomTable=nomTableGood
+            self.caneva.forget()
+            self.menuAffichageChamps(nomTableGood)
         
     def menuAjouterTable(self):
         self.centrerFenetre(2,1.5)
@@ -321,7 +334,7 @@ class Vue():
         self.lblNomTable=Label(text="Ajouter une table",bg="steelblue")
         self.lblNomTable.config(font=("Tahoma", 24))
         self.lblNomTable.config(foreground='lightblue')
-        self.canevaNouvelleTable.create_window(self.largeur/2,60,window=self.lblNomTable)
+        self.canevaNouvelleTable.create_window(275,60,window=self.lblNomTable)
         
         self.lblNom=Label(text="Nom de la table : *", bg="lightblue")
         self.canevaNouvelleTable.create_window(100,130,window=self.lblNom)
@@ -395,33 +408,37 @@ class Vue():
         
     
     def supprimerChamp(self):
-        nomTable=self.lblNomTable.cget("text")
-        position=self.listBoxChampsTable.curselection()[0]
-        nomChamp=self.listBoxChampsTable.get(position, position)
-        if(position!=0):
-            nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
-        else:
-            nomChampGood=nomChamp
-        self.controleur.supprimerChamp("Champs", "nom", nomChampGood, nomTable)
+        ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxChampsTable ,"Veuillez selectionner champ")
+        if(ouiOuNon == True):
+            nomTable=self.lblNomTable.cget("text")
+            position=self.listBoxChampsTable.curselection()[0]
+            nomChamp=self.listBoxChampsTable.get(position, position)
+            if(position!=0):
+                nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
+            else:
+                nomChampGood=nomChamp
+            self.controleur.supprimerChamp("Champs", "nom", nomChampGood, nomTable)
     
     def changeEtat(self):
-        nomTable=self.lblNomTable.cget('text')
-        print("NOMOMOMOM DEEE LLLAAAA TTABEL :  ", nomTable)
-        idTable=self.controleur.modele.idTableAjoutChamps(nomTable)
-        position=self.listBoxEtatChampsTable.curselection()[0]
-        nom=self.listBoxChampsTable.get(position, position)
-        etat=self.listBoxEtatChampsTable.get(position, position)
-        if(position!=0):
-           nomChampGood=str(nom)[2:int(len(nom)-4)]
-           etatGood=str(etat)[2:int(len(etat)-4)]
-        else:
-           nomChampGood=nom
-           etatGood=etat
-        print("NOM DU CHAMMMPPPPP A CHANGER ETAT : ", nomChampGood)
-        idChamp=self.controleur.modele.idDuChamp(nomChampGood)
-        self.controleur.changeEtat(etatGood, idChamp, self.listBoxEtatChampsTable, idTable)
-        self.canevaAffichageChamps.forget()
-        self.menuAffichageChamps(nomTable)
+        ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxEtatChampsTable ,"Veuillez selectionner un etat")
+        if(ouiOuNon == True):
+            nomTable=self.lblNomTable.cget('text')
+            print("NOMOMOMOM DEEE LLLAAAA TTABEL :  ", nomTable)
+            idTable=self.controleur.modele.idTableAjoutChamps(nomTable)
+            position=self.listBoxEtatChampsTable.curselection()[0]
+            nom=self.listBoxChampsTable.get(position, position)
+            etat=self.listBoxEtatChampsTable.get(position, position)
+            if(position!=0):
+               nomChampGood=str(nom)[2:int(len(nom)-4)]
+               etatGood=str(etat)[2:int(len(etat)-4)]
+            else:
+               nomChampGood=nom
+               etatGood=etat
+            print("NOM DU CHAMMMPPPPP A CHANGER ETAT : ", nomChampGood)
+            idChamp=self.controleur.modele.idDuChamp(nomChampGood)
+            self.controleur.changeEtat(etatGood, idChamp, self.listBoxEtatChampsTable, idTable)
+            self.canevaAffichageChamps.forget()
+            self.menuAffichageChamps(nomTable)
         
     def allezMenuAjouterChamps(self):
          self.canevaAffichageChamps.forget()
@@ -438,7 +455,7 @@ class Vue():
         self.lblChamp=Label(text="Ajouter un champ",bg="steelblue")
         self.lblChamp.config(font=("Tahoma", 24))
         self.lblChamp.config(foreground='lightblue')
-        self.canevaAjouterChamps.create_window(self.largeur/2,60,window=self.lblChamp)
+        self.canevaAjouterChamps.create_window(275,60,window=self.lblChamp)
         
         self.lblNom=Label(text="Nom : *",bg="lightblue")
         self.canevaAjouterChamps.create_window(100,115,window=self.lblNom)
