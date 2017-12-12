@@ -7,8 +7,11 @@ from _overlapped import NULL
 
 class Vue():
     def __init__(self, parent):
+        self.parent=parent
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
         self.mois = ("Janvier","Février","Mars","Avril","Mai")
+        self.root = Tk()
+        self.root.protocol("WM_DELETE_WINDOW", self.fermerProgramme)
         self.taille = 20
         self.list = []
         self.colonnes = 0
@@ -17,7 +20,6 @@ class Vue():
         self.choixUtilisateur = None
         self.id_sprint = None
         self.id_utilisateur = None
-        self.parent=parent
         self.creerFenetreSprints()
         try:
             pass
@@ -26,7 +28,9 @@ class Vue():
         #self.choixSprint = "Sprint 1"
         #self.choixUtilisateur = "t"
         
-
+    def fermerProgramme(self):
+        self.parent.writeLog("Fermeture du Module","M73")
+        self.root.destroy()
         
     def setDate(self,premier,deuxieme, date):
         
@@ -45,7 +49,7 @@ class Vue():
       
     def creerFenetreSprints(self):
         
-        self.root = Tk()
+        #self.root = Tk()
         w, h = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
         self.root.geometry("%dx%d+0+0" % (w, h))
         
@@ -243,8 +247,8 @@ class Vue():
         if (self.id_utilisateur == None):   
             self.setUtilisateur(OPTIONS[0]) 
     
-            #dropdown menu 2
-            self.lesSprints = self.retournerLesSprints()   
+        #dropdown menu 2
+        self.lesSprints = self.retournerLesSprints()   
         OPTIONS = []
         #OPTIONS.append(self.lesSprints[0][1])
         for sprint in self.lesSprints:
