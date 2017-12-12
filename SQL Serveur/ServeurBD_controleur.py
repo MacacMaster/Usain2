@@ -25,6 +25,38 @@ class ControleurServeurBD():
 #         c.execute(commande, (self.id, values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],))
 #         conn.commit()
 #         conn.close()
+
+                
+    def selDonneesWHERE_DATES(self,nomTable,champs,where,valeur):
+        conn= sqlite3.connect('SprintMasterData.db',detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
+        c = conn.cursor()
+        
+        #batir la chaine sql
+        sql = """SELECT """ 
+        sql += champs
+        sql += " FROM "
+        sql += nomTable
+        sql += " WHERE "
+        
+        for i in range(len(where)):
+            sql+= where[i] 
+            sql+= "='"
+            sql+= valeur[i] 
+            sql+= "' "
+            if (len(where) == i+1):
+                pass
+            else:
+                sql+= "AND "
+        #pour la date
+        
+        sql += ''' as "[date]"'''
+        #print(sql)
+        c.execute(sql)
+        laselection=c.fetchall()
+        
+        #print(laselection)
+        conn.close()
+        return laselection
         
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')

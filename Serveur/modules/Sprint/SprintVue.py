@@ -24,7 +24,6 @@ class Vue():
         self.creerFenetreSprints()
         
     def setDate(self,premier,deuxieme, date):
-        print(premier, "  " ,deuxieme, "    " , date.get())
         
         if deuxieme == 1: #si on choisit un mois
             compteur = 0

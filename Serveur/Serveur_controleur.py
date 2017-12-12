@@ -212,6 +212,9 @@ class ControleurServeur():
     def verificationExiste(self, champVerifier, tableVerifier, quoi, egaleQuoi, valeur):
         return self.serveurBD.verificationExiste(champVerifier, tableVerifier, quoi, egaleQuoi, valeur)
     
+    def selDonneesWHERE_DATES(self,nomTable,champs,where,valeur):
+        return self.serveurBD.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
+    
     
 print("Création du serveur...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)
