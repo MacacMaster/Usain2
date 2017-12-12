@@ -498,7 +498,7 @@ class Vue():
         self.canevaAjouterChamps.create_window(160,525,window=self.btnAjouterChamps,width=150,height=20)
         
         self.btnRetourChamps=Button(self.canevaAjouterChamps,text="Annuler",width=20,command=self.retourMenuChamps)
-        self.canevaAjouterChamps.create_window(320,525,window=self.btnRetourChamps,width=150,height=20)
+        self.canevaAjouterChamps.create_window(375,525,window=self.btnRetourChamps,width=150,height=20)
         
         self.lblObligatoire=Label(text="* : Obligatoire",bg="steelblue")
         self.canevaAjouterChamps.create_window(100,560,window=self.lblObligatoire)
@@ -510,7 +510,6 @@ class Vue():
         nomTable=self.controleur.nomTableAvecId(idTable)
         self.canevaAjouterChamps.forget()
         self.menuAffichageChamps(self.controleur.modele.nomTable)
-        self.menuAffichageChamps(nomTable)
         
     def contraintePK(self):
         self.controleur.modele.contrainte = "PK"
