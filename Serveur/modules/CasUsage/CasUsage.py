@@ -192,22 +192,6 @@ class Vue():
         return self.controleur.indiceCasModifier(nomCas)
    
     def indiceDeLaBD(self):
-     
-   #position=self.listecas.curselection()[0] # indice du cas selectionné
-        #print("position ", position)
-        #nomCasSelection=self.listecas.get(position, position)
-        
-        #if(position!=0):
-           #nomCasSelectionGood=str(nomCasSelection)[2:int(len(nomCasSelection)-4)]
-        #else: 
-           #nomCasSelectionGood=nomCasSelection
-      # print("nom cas a modifier : ",nomCasSelectionGood)
-       
-      #  self.indiceCasModifier=self.indiceCasModifier(nomCasSelectionGood)
-      #  print(self.indiceCasModifier)
-        #self.controleur.changerEtat(nomCasSelectionGood)
-        #self.menuModifier()'''
-        
         position=self.listecas.curselection()[0] # indice du cas selectionné
         nomCasSelection=self.listecas.get(position, position)
         if(position!=0):
@@ -262,13 +246,13 @@ class Vue():
         print("Cas avant inserer",cas)
         self.labelCasUsage.insert(END, str (cas))
         
-       # usager=self.controleur.chercherUtilisateur(self.indiceCasModifier,)#
-        #usager=str(usager)[3:int(len(usager)-4)]
-      #  self.labelActionUsager.insert(END, str(usager))
+        usager=self.controleur.chercherUtilisateur(self.indiceCasModifier,)#
+        usager=str(usager)[3:int(len(usager)-4)]
+        self.labelActionUsager.insert(END, str(usager))
 
-       # machine=self.controleur.chercherMachine(self.indiceCasModifier,)
-       # machine=str(machine)[3:int(len(machine)-4)]
-        #self.labelActionMachine.insert(END,str(machine))
+        machine=self.controleur.chercherMachine(self.indiceCasModifier,)
+        machine=str(machine)[3:int(len(machine)-4)]
+        self.labelActionMachine.insert(END,str(machine))
         
         self.canevaMod.create_window(400,200,window=self.labelActionUsager,width=150,height=250)
         self.labnbe=Label(text="Action machine",bg="lightblue")
