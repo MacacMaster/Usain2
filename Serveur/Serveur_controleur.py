@@ -214,6 +214,7 @@ class ControleurServeur():
     
     def selDonneesWHERE_DATES(self,nomTable,champs,where,valeur):
         return self.serveurBD.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
+        return self.serveurBD.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
     
     
 print("Création du serveur...")
