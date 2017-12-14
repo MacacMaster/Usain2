@@ -22,7 +22,10 @@ import sqlite3
 from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
-import sysfrom datetime import datetimeimport time
+import sys
+from datetime import datetime
+import time
+
 class Client(object):
     def __init__(self,nom, idOrga, id):
         self.nom=nom #nom usager
