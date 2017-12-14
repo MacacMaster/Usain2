@@ -5,6 +5,10 @@ import sqlite3
 from datetime import datetime
 from _overlapped import NULL
 
+###############################################################
+# Maintainer : C. Szende
+#
+###############################################################
 
 
 class Vue():
@@ -81,24 +85,6 @@ class Vue():
         
         self.listFonct.bind('<<ListboxSelect>>',self.selectFonct)
         
-        
-        
-        
-        #A RETIRER!
-        self.listFonct.insert(END, "Hello")
-        self.listFonct.insert(END, "World")
-        self.listPriorite.insert(END, "Iello")
-        self.listPriorite.insert(END, "Xorld")
-        self.listSprint.insert(END, "Sprint1")
-        self.listSprint.insert(END, "Sprint2")
-        self.listDebut.insert(END, "Debut1")
-        self.listDebut.insert(END, "Debut2")
-        self.listFin.insert(END, "Fin1")
-        self.listFin.insert(END, "Fin2")
-        self.listResponsable.insert(END, "Responsable1")
-        self.listResponsable.insert(END, "Responsable2")
-        
-                
      
     def selectFonct(self, e):
         self.fonctEnCours=self.listFonct.curselection()
@@ -210,9 +196,15 @@ class Vue():
         
         self.topConfirm.destroy()
         
+    def infosCRC(self):
+        print("ENTRE DANS infosCRC")
+        kj=self.parent.serveur.selectionSQL3('Classes','id','id_Projet', self.parent.idProjet)
+        print(str(kj))
+        #nomTable,champs, where, idProjet
     
     def afficherListes(self):
         
+         
         self.listFonct.delete(0,END)
         self.listPriorite.delete(0,END)
         self.listSprint.delete(0,END)
@@ -230,6 +222,8 @@ class Vue():
                 self.listFin.insert(END, liste[7])
                 self.listResponsable.insert(END, liste[3])
         
+        if self.listFonct.size()==0:
+            self.infosCRC()
         
         """
         for item in fonctions:
@@ -260,16 +254,23 @@ class Vue():
         
     def suppressionFonction(self):
         self.parent.supressionFonction()
+        self.effacerChamps()
+        self.afficherListes()
     
     
     def modifierFonction(self):
         #valeurModifiee,champModifier,id
-        id=self.listFonct.curselection()
-        self.parent.sql.modifierFonction(self.tfSprint.get(),"id_Sprint", id)
-        self.parent.sql.modifierFonction(self.tfResponsable.get(),"id_Reponsable", id)
-        self.parent.sql.modifierFonction(self.tfFonctionnalite.get(),"nom_fonction", id)
-        self.parent.sql.modifierFonction(self.tfPriorite.get(),"priorite", id)
-        self.parent.sql.modifierFonction(self.tfDebut.get(),"date_debut", id)
-        self.parent.sql.modifierFonction(self.tfFin.get(),"date_fin", id)
+        #self,nomTable,champ,description,where,indice1
+        id=self.fonctEnCours
+        id=str(id)[1:int(len(id)-3)]
+        print(str(id))
+        self.parent.sql.modifierFonction(self.tfSprint.get(),"id_Sprint", str(id))
+        self.parent.sql.modifierFonction(self.tfResponsable.get(),"id_Reponsable", str(id))
+        self.parent.sql.modifierFonction(self.tfFonctionnalite.get(),"nom_fonction", str(id))
+        self.parent.sql.modifierFonction(self.tfPriorite.get(),"priorite", str(id))
+        self.parent.sql.modifierFonction(self.tfDebut.get(),"date_debut", str(id))
+        self.parent.sql.modifierFonction(self.tfFin.get(),"date_fin", str(id))
+        self.effacerChamps()
+        self.afficherListes()
     
     

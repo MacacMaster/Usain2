@@ -7,25 +7,45 @@ import sqlite3
 from xmlrpc.client import ServerProxy
 import sys
 
+# TODO : When maquette name is empty, deal with the exception while trying to save
+#
+#
+
 class Controleur():
     def __init__(self):
-        self.serveur = None
+        self.saasIP=        sys.argv[1]
+        self.utilisateur=   sys.argv[2]
+        self.organisation=  sys.argv[3]
+        self.idProjet=      int(sys.argv[4])
+        self.clientIP=      sys.argv[5]
+        self.portSaas=":9999"
+        self.adresseServeur="http://"+self.saasIP+self.portSaas
+        
+        self.serveur = self.connexionSaas()
         self.idMaquette = None
-        self.idProjet = int(sys.argv[4])
-        self.saasIP = sys.argv[1]
-        self.connexionSaas()
+
+       
         self.modele = Modele(self)
         self.vue = Vue(self)
         self.chargerMaquette()
+        
+        self.writeLog("Ouverture du Module","2")        
         self.vue.root.mainloop()
 
+        
+    def fermerProgramme(self):
+        self.writeLog("Fermeture du Module","3")
+        self.vue.root.destroy()
+        
+    def writeLog(self,action,codeid):
+        self.serveur.writeLog(self.organisation,self.utilisateur,self.clientIP,self.saasIP,"Maquette",action,codeid)  
+        
     def chargerMaquette(self):
         for i in self.serveur.selectionSQL3("Maquettes","nom","id_Projet", self.idProjet):
             self.vue.listeMaquettes.insert(END,i[0])
         
     def connexionSaas(self):
-        ad="http://"+self.saasIP+":9999"
-        self.serveur=ServerProxy(ad,allow_none = 1)
+        return ServerProxy(self.adresseServeur,allow_none = 1)
         
     def commitNouvelleMaquette(self, nomMaquette):
         if nomMaquette.replace(" ","") == "":
@@ -67,6 +87,7 @@ class Vue():
         self.hauteur = 600
         self.root = Tk()
         self.root.title("Maquette")
+        self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerProgramme)
         self.creerFenetre()
         self.centrerFenetre()
         self.bindTouche()

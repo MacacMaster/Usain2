@@ -4,12 +4,14 @@ import sqlite3
 from time import *
 from PlanificationGlobale  import *
 
-#TODO - UPDATE
+############################################################################
+# Maintainer : M-A Ramsay
+# 
+############################################################################
 
 class Modele():
     def __init__(self, parent):
         self.parent=parent
-        
         pass
         
     def importerDonnees(self,projectName):

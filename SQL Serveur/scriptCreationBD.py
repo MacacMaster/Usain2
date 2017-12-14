@@ -86,19 +86,22 @@ for comptes in curseur.execute('SELECT id FROM Organisations'):
 # Ajouter les nouveaux comptes
 curseur.execute("INSERT INTO Organisations VALUES ('1', 't')")
 curseur.execute("INSERT INTO Organisations VALUES ('2', 'a')")
+curseur.execute("INSERT INTO Organisations VALUES ('3', 'Exemples')")
+curseur.execute("INSERT INTO Organisations VALUES ('4', 'Tentatives')")
 
 curseur.execute("INSERT INTO Usagers VALUES ('1', '1', 't', 't')")
 curseur.execute("INSERT INTO Usagers VALUES ('2', '1', 'a', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('3', '2', 'a', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('4','1', 'admin', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('5','2', 'admin', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('6','3', 'admin', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('7','4', 'admin', 'a')")
 
 
 curseur.execute("INSERT INTO Projets VALUES ('1', '1', 'ProjetTest')")
 curseur.execute("INSERT INTO Projets VALUES ('2', '2', 'Projet1')")
 curseur.execute("INSERT INTO Projets VALUES ('3', '1', 'Projet1')")
 
-curseur.execute("INSERT INTO Tables VALUES ('1', '1', 'Table1')")
-curseur.execute("INSERT INTO Tables VALUES ('2', '1', 'Table2')")
 
 # Voir les objets de la bd
 for comptesOrg in curseur.execute('SELECT * FROM Organisations'):

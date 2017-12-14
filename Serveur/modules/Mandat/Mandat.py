@@ -22,6 +22,7 @@ class Vue():
         self.parent = parent
         self.root = Tk()  # Fenetre
         self.root.title("MANDAT")
+        self.root.protocol("WM_DELETE_WINDOW", self.parent.fermerProgramme)
         self.hauteurTotale = 200
         self.largeurTotale = 200
         self.hauteurMandat = 200
@@ -467,7 +468,7 @@ class Controleur():
     def __init__(self):
         
         # vraie version
-        '''
+        
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
@@ -478,18 +479,19 @@ class Controleur():
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
+        
+        self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
-        '''
         
         # version debug
-        
-        self.saasIP = socket.gethostbyname(socket.gethostname())
-        self.adresseServeur = "http://" + self.saasIP + ":9999"
-        self.idProjet = 1
-        self.serveur = self.connectionServeur()
-        self.modele = Modele(self)
-        self.vue = Vue(self)
-        self.vue.root.mainloop()
+#         
+#         self.saasIP = socket.gethostbyname(socket.gethostname())
+#         self.adresseServeur = "http://" + self.saasIP + ":9999"
+#         self.idProjet = 1
+#         self.serveur = self.connectionServeur()
+#         self.modele = Modele(self)
+#         self.vue = Vue(self)
+#         self.vue.root.mainloop()
         
         
     def connectionServeur(self):
@@ -498,7 +500,12 @@ class Controleur():
         return serveur
         
     
-                
+    def fermerProgramme(self):
+        self.writeLog("Fermeture du Module","3")
+        self.vue.root.destroy()
+        
+    def writeLog(self,action,codeid):
+        self.serveur.writeLog(self.organisation,self.utilisateur,self.clientIP,self.saasIP,"Mandat",action,codeid)            
         
         
 if __name__ == '__main__':

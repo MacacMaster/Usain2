@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 
 
-
 from tkinter import *
 from tkinter.filedialog import *
 
@@ -17,14 +16,10 @@ from PlanificationGlobaleModele  import *
 #debug
 from subprocess import Popen    
     
- ##################################################
- #TODO:
- #
- #Find why writeLog doesn't work
- #Make the SQL shite work!!!
- #
- ################################################# 
-  
+############################################################################
+# Maintainer : M-A Ramsay
+# 
+############################################################################
 
 
 class Controleur():
@@ -46,7 +41,7 @@ class Controleur():
         self.serveur=self.connectionServeurSaas()
         self.modele=Modele(self)
         
-        self.writeLog("Ouverture du Module","M62")
+        self.writeLog("Ouverture du Module","2")
         self.sql=SQL(self)
 
         #[r0=[c1,c2,c3...],R1...]
@@ -58,26 +53,16 @@ class Controleur():
 
         self.vue=Vue(self)
         
-
-        ########
-        # TEST #
-        ########
-        self.sql.creerFonction("Sprint1","FonctionNom","priorite","debut","fin")
-        self.sql.creerFonction("Sprint2","FonctionNom","priorite","debut","fin")
-        self.sql.creerFonction("Sprint3","FonctionNom","priorite","debut","fin")
-        self.sql.creerFonction("Sprint4","FonctionNom","priorite","debut","fin")
-        
-        self.sql.modifierFonction('pololo','id_Sprint','5')
         
         self.vue.root.mainloop()
         
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M63")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
         
     def writeLog(self,action,codeid):
          #print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
-        varwhatev=self.serveur.writeLog(self.modele.getTime(),self.organisation,self.utilisateur,self.clientIP,self.saasIP,"PlanificationGlobale",action,codeid)
+        varwhatev=self.serveur.writeLog(self.organisation,self.utilisateur,self.clientIP,self.saasIP,"PlanificationGlobale",action,codeid)
         if (varwhatev):
             return True
         else :
