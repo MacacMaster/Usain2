@@ -480,7 +480,7 @@ class Controleur():
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
         
-        self.writeLog("Ouverture du Module","M32")
+        self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
         
         # version debug
@@ -501,7 +501,7 @@ class Controleur():
         
     
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M33")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
         
     def writeLog(self,action,codeid):

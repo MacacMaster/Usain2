@@ -29,12 +29,12 @@ class Controleur():
         self.vue = Vue(self)
         self.chargerMaquette()
         
-        self.writeLog("Ouverture du Module","M42")        
+        self.writeLog("Ouverture du Module","2")        
         self.vue.root.mainloop()
 
         
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M43")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
         
     def writeLog(self,action,codeid):

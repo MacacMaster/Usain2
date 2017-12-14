@@ -635,14 +635,14 @@ class Controleur():
         self.modele=Modele(self,self.serveur)
         self.vue=Vue(self)
         
-        self.writeLog("Ouverture du Module","M22")
+        self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
     def connectionServeur(self):
         print("Connection au serveur BD...")
         return ServerProxy(self.adresseServeur)
         
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M23")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
         
          

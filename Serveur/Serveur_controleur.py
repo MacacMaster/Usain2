@@ -231,6 +231,15 @@ class ControleurServeur():
         logdb.close()
         return True 
     
+    def selectBdInterne(self,nomTable,champs,un,deux,indice1,indice2):
+        conn= sqlite3.connect('Logs.sqlite')
+        c = conn.cursor()
+        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+ un +'''=? and '''+deux+''' =?''' , (indice1,indice2))
+        laselection=c.fetchall()
+       # print(laselection)
+        conn.close()
+        return laselection
+    
     def getTime(self):
         return (datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
     

@@ -63,6 +63,7 @@ class Controleur():
             self.log.setLog( pIdentifiantNomOrga, pIdentifiantNomUsager, )
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
             print("Connection au serveur Saas réussi")
+    
             
             if (reponseServeur == 0):
                 self.log.writeLog("Login Fail")
@@ -79,7 +80,7 @@ class Controleur():
                 self.vue.chargerCentral(reponseServeur[0][1],reponseServeur[0][2],reponseServeur[0][3],reponseServeur[0][4])
         else:
             self.vue.logInClientFail(2)
-        self.serveur.selectionSQL("Projets","id")
+
         
     def creerProjet(self,nom):
         
@@ -144,7 +145,7 @@ class Controleur():
                     fiche.write(rep.data)
                     fiche.close()
             chaineappli="."+lieuApp+lieuApp+".py"
-            pid = Popen(["C:\\Python34\\Python.exe", chaineappli],shell=1).pid 
+            pid = Popen(["C:\\Python34\\Python.exe", chaineappli,self.saasIP,self.utilisateur,self.organisation,self.clientIP],shell=1).pid 
         else:
             print("RIEN")
             

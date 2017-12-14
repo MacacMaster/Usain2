@@ -157,9 +157,9 @@ class Vue():
         
     def commandeAdmin(self):
         self.affCommande=Text(bg="lightblue")
-        self.canevaOutil.create_window(200,455,window=self.affCommande,width=300,height=90)
+        self.canevaOutil.create_window(200,475,window=self.affCommande,width=300,height=90)
         btnNEnvoi=Button(self.cadreOutil, text="SQL",bg="steelblue",command=self.envoiSQL)
-        self.canevaOutil.create_window(200,540,window=btnNEnvoi,width=50,height=30) 
+        self.canevaOutil.create_window(200,560,window=btnNEnvoi,width=50,height=30) 
     
     def commandeAdminSaas(self):
         self.affCommandeSaas=Text(bg="lightblue")

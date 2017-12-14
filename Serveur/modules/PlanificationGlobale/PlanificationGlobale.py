@@ -41,7 +41,7 @@ class Controleur():
         self.serveur=self.connectionServeurSaas()
         self.modele=Modele(self)
         
-        self.writeLog("Ouverture du Module","M62")
+        self.writeLog("Ouverture du Module","2")
         self.sql=SQL(self)
 
         #[r0=[c1,c2,c3...],R1...]
@@ -57,7 +57,7 @@ class Controleur():
         self.vue.root.mainloop()
         
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M63")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
         
     def writeLog(self,action,codeid):

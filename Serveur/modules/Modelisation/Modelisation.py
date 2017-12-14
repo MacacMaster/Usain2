@@ -15,12 +15,12 @@ class Controleur():
         self.serveur = self.connectionServeur()
         self.modele= Modele(self)
         self.vue = Vue(self)
-        self.writeLog("Ouverture du Module","M52")
+        self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
         print("controleur")
 
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M53")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
 
     def writeLog(self,action,codeid):

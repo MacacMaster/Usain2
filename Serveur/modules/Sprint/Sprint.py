@@ -45,7 +45,7 @@ class Controleur():
         self.modele=Modele(self)
         self.vue=Vue(self)
         
-        self.writeLog("Ouverture du Module","M72")
+        self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
         '''     
 
