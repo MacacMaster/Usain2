@@ -22,6 +22,7 @@ import sqlite3
 from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
+import sys
 
 class Client(object):
     def __init__(self,nom, idOrga, id):
