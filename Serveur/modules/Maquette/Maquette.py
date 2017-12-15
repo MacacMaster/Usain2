@@ -135,7 +135,7 @@ class Vue():
         self.listeMaquettes = Listbox(self.optionGauche)
         self.labelOutils = Label(self.optionMilieu, text="Outils")
         self.boutonChargerMaquette = Button(self.optionGauche,image=self.imgNouvMaquette,width=30, command = lambda: self.selectionOutils("ChargerMaquette"))
-        self.boutonRenommerMaquette = Button(self.optionGauche,text="Renommer",width=30, command = lambda: self.creerFenetreRenommer(self.listeMaquettes.selection_get()))
+        self.boutonRenommerMaquette = Button(self.optionGauche,text="Renommer",width=30, command = self.creerFenetreRenommer)
         self.boutonRectangle = Button(self.optionMilieu,image=self.imgRectangle,width=30, command= lambda: self.selectionOutils("Rectangle"))
         self.boutonOvale = Button(self.optionMilieu,image=self.imgOvale,width=30, command = lambda: self.selectionOutils("Ovale"))
         self.boutonFleche = Button(self.optionMilieu,image=self.imgFleche,width=30, command = lambda: self.selectionOutils("Fleche"))
@@ -169,20 +169,24 @@ class Vue():
         self.cadreMaquette.pack()
         self.canvasDessin.pack()
 
-    def creerFenetreRenommer(self, ancienNom):
-        self.popup = Toplevel(self.root)
-        self.fenetreRenommage = Frame(self.popup, width = 300, height = 200)
-        self.canvasRenommage = Canvas(self.fenetreRenommage, width = 300, height = 200)
-        
-        self.entreNouvNomMaquette = Entry(self.canvasRenommage)
-        self.labelNomMaquette = Label(self.canvasRenommage, text="Nom de la maquette: ")
-        self.boutonSauvegarde = Button(self.canvasRenommage,text="OK",width=30, command = lambda : self.renommer(self.entreNouvNomMaquette.get(), ancienNom))
-        self.canvasRenommage.create_window(150,30, window=self.labelNomMaquette,width=190,height=30)
-        self.canvasRenommage.create_window(150,80, window=self.entreNouvNomMaquette,width=190,height=30)
-        self.canvasRenommage.create_window(150,150, window=self.boutonSauvegarde,width=190,height=30)
-        self.fenetreRenommage.pack()
-        self.canvasRenommage.pack()
-
+    def creerFenetreRenommer(self):
+        if self.listeMaquettes.curselection():
+            ancienNom = self.listeMaquettes.selection_get()
+            self.popup = Toplevel(self.root)
+            self.fenetreRenommage = Frame(self.popup, width = 300, height = 200)
+            self.canvasRenommage = Canvas(self.fenetreRenommage, width = 300, height = 200)
+            
+            self.entreNouvNomMaquette = Entry(self.canvasRenommage)
+            self.labelNomMaquette = Label(self.canvasRenommage, text="Nom de la maquette: ")
+            self.boutonSauvegarde = Button(self.canvasRenommage,text="OK",width=30, command = lambda : self.renommer(self.entreNouvNomMaquette.get(), ancienNom))
+            self.canvasRenommage.create_window(150,30, window=self.labelNomMaquette,width=190,height=30)
+            self.canvasRenommage.create_window(150,80, window=self.entreNouvNomMaquette,width=190,height=30)
+            self.canvasRenommage.create_window(150,150, window=self.boutonSauvegarde,width=190,height=30)
+            self.fenetreRenommage.pack()
+            self.canvasRenommage.pack()
+        else:
+            self.afficherMessageErreur("Vous devez séléctionner une maquette.")
+            
     def renommer(self, nouveauNom, ancienNom):
         nomDispo = True
         #self.controleur.renommer(nouveauNom, ancienNom)
@@ -302,21 +306,24 @@ class Vue():
             self.canvasDessin.itemconfig(self.text_id, text="")
         
     def selectionOutils(self, nomBouton):
-        if (nomBouton == "Rectangle" and self.controleur.modele.estEditable):
-            self.controleur.modele.choixForme = "Rectangle"
-        elif (nomBouton == "Ovale" and self.controleur.modele.estEditable):
-            self.controleur.modele.choixForme = "Ovale"
-        elif (nomBouton == "Fleche" and self.controleur.modele.estEditable):
-            self.controleur.modele.choixForme = "Fleche"
-        elif (nomBouton == "Texte" and self.controleur.modele.estEditable):
-            self.controleur.modele.choixForme = "Texte"
-        elif (nomBouton == "CommitChangement"):
-            self.controleur.commitNouvellesFormes()
-        elif (nomBouton == "CommitNouvMaquette"):
-            self.controleur.commitNouvelleMaquette(self.entreNouvMaquette.get())
-        elif (nomBouton == "ChargerMaquette"):
-            self.controleur.modele.estEditable = True
-            self.controleur.chargerFormesMaquette(self.listeMaquettes.selection_get())
+        if self.listeMaquettes.curselection():
+            if (nomBouton == "Rectangle" and self.controleur.modele.estEditable):
+                self.controleur.modele.choixForme = "Rectangle"
+            elif (nomBouton == "Ovale" and self.controleur.modele.estEditable):
+                self.controleur.modele.choixForme = "Ovale"
+            elif (nomBouton == "Fleche" and self.controleur.modele.estEditable):
+                self.controleur.modele.choixForme = "Fleche"
+            elif (nomBouton == "Texte" and self.controleur.modele.estEditable):
+                self.controleur.modele.choixForme = "Texte"
+            elif (nomBouton == "CommitChangement"):
+                self.controleur.commitNouvellesFormes()
+            elif (nomBouton == "CommitNouvMaquette"):
+                self.controleur.commitNouvelleMaquette(self.entreNouvMaquette.get())
+            elif (nomBouton == "ChargerMaquette"): 
+                    self.controleur.modele.estEditable = True
+                    self.controleur.chargerFormesMaquette(self.listeMaquettes.selection_get())
+        else:
+            self.afficherMessageErreur("Vous devez séléctionner une maquette")
                 
                 
 class Modele():
