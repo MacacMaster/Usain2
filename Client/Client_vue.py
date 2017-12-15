@@ -14,6 +14,7 @@ class Vue():
         self.labIDOrga = None
         self.labNomOrga = None
         self.root=tix.Tk()
+        self.root.resizable(width=False, height=False)
         self.root.title("SPRINTMASTER")
         self.root.iconbitmap('Icon.ico')
         self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerApplication)
@@ -65,7 +66,7 @@ class Vue():
 
         
         
-        self.canevaLogIn.create_window(largeur/2,100,window=self.panel,width=largeur)
+        self.canevaLogIn.create_window(largeur/2,65,window=self.panel,width=largeur)
         self.canevaLogIn.create_window(largeur/2,250,window=labNomOrga,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,300,window=self.entrerNomOrga,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,350,window=labNomUsager,width=150,height=30)

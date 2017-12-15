@@ -9,8 +9,9 @@ class Vue():
     def __init__(self, parent):
         self.parent=parent
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
-        self.mois = ("Janvier","Février","Mars","Avril","Mai")
+        self.mois = ("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre")
         self.datePrevu = None
+        self.color = "light blue"
         self.changementDeSemaine = False
         self.joursSemaineValides= []
         self.lesCinqJours = []
@@ -59,13 +60,13 @@ class Vue():
 
         
         
-        #self.root = Tk()
+
         w, h = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
         self.root.geometry("%dx%d+0+0" % (w, h))
         
-        caneva = Canvas(self.root, borderwidth=0, background="#ffffff")
+        caneva = Canvas(self.root, borderwidth=0, background=self.color)
         
-        frame = Frame(caneva, background="#ffffff")
+        frame = Frame(caneva, background=self.color)
         self.frame=frame
         #mon scrollbar
         scrollbar = Scrollbar(self.root, orient="vertical", command=caneva.yview)
@@ -91,14 +92,14 @@ class Vue():
        frame.pack(side=BOTTOM)
        #frame.config(bg=couleur)
        Label(frame,text="la tache").pack(side=LEFT)
-       Checkbutton(frame).pack(side=LEFT)
+       Checkbutton(frame,bg= self.color).pack(side=LEFT)
     
     def laSemaine(self,frame,jour,row, i):
         
         self.lesCinqJours.append(self.datePrevu)
  
         column = 3 + jour*3
-        Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
+        Label(frame, text=self.jours[jour], bg = self.color).grid(row=row, column=column, columnspan=3)
         if self.aucunSprint == False:
             try:
                 dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
@@ -108,21 +109,21 @@ class Vue():
             #vérifier que la date à afficher se trouve dans l'interval
             if dateDebut <= self.datePrevu and dateFin >= self.datePrevu:
                 self.joursSemaineValides.append(True)
-                Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
+                Label(frame, text=self.datePrevu,bg= self.color).grid(row=row+1, column=column, columnspan= 3)
             else:
                 self.joursSemaineValides.append(False)
           
-                Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
+                Label(frame, text=self.datePrevu,bg= self.color).grid(row=row+1, column=column, columnspan= 3)
         
-            Label(frame, text="Prévu").grid(row=row+2, column=column)
-            Label(frame, text="Fait").grid(row=row+2, column=column+1)
-            Label(frame, text="Temps").grid(row=row+2, column=column+2)
+            Label(frame, text="Prévu",bg= self.color).grid(row=row+2, column=column)
+            Label(frame, text="Fait",bg= self.color).grid(row=row+2, column=column+1)
+            Label(frame, text="Temps", bg= self.color).grid(row=row+2, column=column+2)
                 
         else:
             Label(frame, text="").grid(row=row+1, column=column, columnspan= 3)
-            Label(frame, text="Prévu").grid(row=row+2, column=column)
-            Label(frame, text="Fait").grid(row=row+2, column=column+1)
-            Label(frame, text="Temps").grid(row=row+2, column=column+2)
+            Label(frame, text="Prévu",bg= self.color).grid(row=row+2, column=column)
+            Label(frame, text="Fait",bg= self.color).grid(row=row+2, column=column+1)
+            Label(frame, text="Temps",bg= self.color).grid(row=row+2, column=column+2)
 
         self.datePrevu += datetime.timedelta(days=1)
     def changer(self,row):
@@ -213,7 +214,7 @@ class Vue():
         annee = StringVar(self.window)   
         annee.set(OPTIONS[0])
         w = OptionMenu(frameDebut,annee, *OPTIONS, command = lambda y=nb  :self.setDate(nb,0,annee))
-        #cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
+
         w.pack(side=LEFT)
         
         #mois
@@ -271,10 +272,10 @@ class Vue():
         self.lesSprints = None
         self.lesUtilisateurs = None
         self.dicoSprints = None
-        #Label(frame, text="allo").grid(row=0, column=self.nbColonnes())
+
         #premiere rangee
         row = self.nbRangees()
-        Label(frame, text="Utilisateur", width=10, borderwidth="1", relief="solid").grid(row=row, column=0, rowspan = 1)
+        Label(frame, text="Utilisateur", width=10, borderwidth="1", relief="solid",bg= self.color).grid(row=row, column=0, rowspan = 1)
         b  = Button(frame, text="+", width=10, borderwidth="5", command = self.ajouterUnSprint)
         
         
@@ -355,8 +356,8 @@ class Vue():
         row = self.nbRangees()
         Label(frame, text="Les tâches", width=10, borderwidth="5", relief="solid").grid(row=row+2, column=0)
         t="Description de la tâche"
-        Label(frame, text=t).grid(row=row+2, column=self.nbColonnes())
-        Label(frame, text="Fait").grid(row=row+2, column=self.nbColonnes())
+        Label(frame, text=t,bg= self.color).grid(row=row+2, column=self.nbColonnes())
+        Label(frame, text="Fait",bg= self.color).grid(row=row+2, column=self.nbColonnes())
         i = 0 
         self.leSprint = (self.retournerLeSprint(self.id_sprint))
        
@@ -392,7 +393,7 @@ class Vue():
         
         #4e rangee
         row = self.nbRangees()
-        Label(frame, text="Nouvelle tâche", width=10, borderwidth="5").grid(row=row+2, column=0)
+        Label(frame, text="Nouvelle tâche", width=10, borderwidth="5",bg= self.color).grid(row=row+2, column=0)
         if (self.aucunSprint == True):
             entry = Entry(frame, state = DISABLED)
             b.config(bg = "yellow")
@@ -428,10 +429,10 @@ class Vue():
             
             #t="aller acheter quelque chose au dollarama"
             t = tache
-            Label(frame, text=t).grid(row=row, column=1)
+            Label(frame, text=t,bg= self.color).grid(row=row, column=1)
             crochetFait = IntVar()
             self.checkParDefaut(crochetFait,reussi)
-            cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait)
+            cb = Checkbutton(frame, command=lambda row=index: self.changer(row), variable=crochetFait,bg= self.color)
             cb.grid(row=row,column=2) #i=i permet d'enregistrer la valeur actuelle du i!!! Nice trick! :)
             
             #print(row, "    ", i)
@@ -463,9 +464,9 @@ class Vue():
                 #jourEntry = IntVar()
                 self.checkParDefaut(jourFait, reqJourFait)
                 self.checkParDefaut(jourPrevu, reqJourPrevu)
-                fait = Checkbutton(frame, state = state, variable=jourFait)
+                fait = Checkbutton(frame, state = state, variable=jourFait,bg= self.color)
                 fait.grid(row=row,column=column)
-                prevu = Checkbutton(frame, state = state, variable = jourPrevu)
+                prevu = Checkbutton(frame, state = state, variable = jourPrevu,bg= self.color)
                 prevu.grid(row=row,column=column+1)
                 entry = Entry(frame,state = state)
                 entry.insert(END,texteDefaut)
