@@ -13,6 +13,7 @@ class Vue():
         self.datePrevu = None
         self.color = "light blue"
         self.changementDeSemaine = False
+        self.ajoutRecent = False
         self.joursSemaineValides= []
         self.lesCinqJours = []
         self.root = Tk()
@@ -196,11 +197,8 @@ class Vue():
         #debut = datetime.date(self.matriceDates[0][0],5,1)
         try:
             debut = datetime.date(self.matriceDates[0][0],self.matriceDates[0][1],self.matriceDates[0][2])
-            fin = datetime.date(self.matriceDates[1][0],self.matriceDates[1][1],self.matriceDates[1][2])
-            #date= 8
-            #d = datetime.date(2017,12,date)
-            
-            self.insererNouveauSprint(debut,fin, "Sprint n")
+            fin = datetime.date(self.matriceDates[1][0],self.matriceDates[1][1],self.matriceDates[1][2])  
+            self.insererNouveauSprint(debut,fin, "Sprint n")      
             self.on_closing()
         except TypeError:
             messagebox.showwarning("Échec", "La date entrée est invalide!")
@@ -398,7 +396,8 @@ class Vue():
         #4e rangee
         row = self.nbRangees()
         Label(frame, text="Nouvelle tâche", width=10, borderwidth="5",bg= self.color).grid(row=row+2, column=0)
-        if (self.aucunSprint == True):
+        if (self.aucunSprint == True or self.ajoutRecent):
+            self.ajoutRecent = False
             entry = Entry(frame, state = DISABLED)
             b.config(bg = "yellow")
         else:
@@ -567,6 +566,7 @@ class Vue():
     
     def insererNouveauSprint(self,date_debut, date_fin, nom):
         self.parent.insererNouveauSprint(date_debut, date_fin, nom)
+        self.ajoutRecent = True
         
             
 if __name__ == '__main__':
