@@ -306,7 +306,9 @@ class Vue():
             self.canvasDessin.itemconfig(self.text_id, text="")
         
     def selectionOutils(self, nomBouton):
-        if self.listeMaquettes.curselection():
+        if (nomBouton == "CommitNouvMaquette"):
+            self.controleur.commitNouvelleMaquette(self.entreNouvMaquette.get())
+        elif self.listeMaquettes.curselection():
             if (nomBouton == "Rectangle" and self.controleur.modele.estEditable):
                 self.controleur.modele.choixForme = "Rectangle"
             elif (nomBouton == "Ovale" and self.controleur.modele.estEditable):
@@ -317,14 +319,12 @@ class Vue():
                 self.controleur.modele.choixForme = "Texte"
             elif (nomBouton == "CommitChangement"):
                 self.controleur.commitNouvellesFormes()
-            elif (nomBouton == "CommitNouvMaquette"):
-                self.controleur.commitNouvelleMaquette(self.entreNouvMaquette.get())
             elif (nomBouton == "ChargerMaquette"): 
                     self.controleur.modele.estEditable = True
                     self.controleur.chargerFormesMaquette(self.listeMaquettes.selection_get())
         else:
             self.afficherMessageErreur("Vous devez séléctionner une maquette")
-                
+            
                 
 class Modele():
     def __init__(self, pControleur):
