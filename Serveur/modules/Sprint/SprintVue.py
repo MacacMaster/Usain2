@@ -10,6 +10,7 @@ class Vue():
         self.parent=parent
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
         self.mois = ("Janvier","Février","Mars","Avril","Mai")
+        self.joursSemaineValides= []
         self.root = Tk()
         self.root.protocol("WM_DELETE_WINDOW", self.fermerProgramme)
         self.taille = 20
@@ -21,6 +22,7 @@ class Vue():
         self.id_sprint = None
         self.id_utilisateur = None
         self.creerFenetreSprints()
+        
         try:
             pass
         except:
@@ -90,7 +92,16 @@ class Vue():
         
         column = 3 + jour*3
         Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
-        Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
+        
+        dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
+        dateFin = self.dateEnFormatUtilisable(self.leSprint[0][3])
+        #vérifier que la date à afficher se trouve dans l'interval
+        if dateDebut <= self.datePrevu and dateFin >= self.datePrevu:
+            self.joursSemaineValides.append(True)
+            Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
+        else:
+            self.joursSemaineValides.append(False)
+            Label(frame, text="").grid(row=row+1, column=column, columnspan= 3)
         Label(frame, text="Prévu").grid(row=row+2, column=column)
         Label(frame, text="Fait").grid(row=row+2, column=column+1)
         Label(frame, text="Temps").grid(row=row+2, column=column+2)
@@ -125,9 +136,13 @@ class Vue():
         self.id_utilisateur = self.parcourirListe(self.lesUtilisateurs,self.choixUtilisateur)
         
     def changerEtat(self,etat,semaine):  
+        #changer l'état seulement pour les jours de la semaine qui font partie du sprint
+        compteur = 0
         for jours in semaine:
-            for element in jours:
-                element.config(state=etat)
+            if self.joursSemaineValides[compteur]:
+                for element in jours:
+                    element.config(state=etat)
+            compteur = compteur + 1
         
     
     
@@ -294,18 +309,19 @@ class Vue():
         i = 0 
         #self.datePrevu = datetime.date.today()
         self.leSprint = (self.retournerLeSprint(self.id_sprint))
-        print(self.leSprint)
+       
        
 #         try:
 #             self.retournerLeSprint(self.id_sprint)
 #             print(self.lesSprints[self.id_sprint][2])
 #         except IndexError:
 #             pass
+        self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
         
-        try:
-            self.datePrevu = datetime.datetime.strptime(self.leSprint[0][2], '%Y-%m-%d').date()
-        except IndexError:
-            self.datePrevu = datetime.date.today()
+        #try:
+        #    self.datePrevu = datetime.datetime.strptime(self.leSprint[0][2], '%Y-%m-%d').date()
+        #except IndexError:
+        #    self.datePrevu = datetime.date.today()
         #print(self.lesSprints[0][2] > self.datePrevu)
         #self.datePrevu = datetime.date(self.lesSprints[0][2])
         for jour in range(5):       
@@ -342,6 +358,7 @@ class Vue():
         
         row = 5
         for element in lesTaches:
+
             tache = str(element[0])
             reussi = element[1]
             
@@ -370,13 +387,18 @@ class Vue():
             #pour les 5 jours de la semaine
             listeSemaine=[]
             for i in range(5):
+                if (self.joursSemaineValides[i]):
+                    state = NORMAL
+                else:
+                    state = DISABLED
                 column = 3 + i *3
-                fait = Checkbutton(frame)
+                fait = Checkbutton(frame, state = state)
                 fait.grid(row=row,column=column)
-                prevu = Checkbutton(frame)
+                prevu = Checkbutton(frame, state = state)
                 prevu.grid(row=row,column=column+1)
-                entry = Entry(frame)
+                entry = Entry(frame,state = state)
                 entry.grid(row=row,column=column+2)
+                
                 listeSemaine.append([fait,prevu,entry])
           
             self.list.append([labelTache,crochetFait,listeSemaine,tache])
@@ -386,7 +408,12 @@ class Vue():
                 self.changer(index)
                 
           
-
+    def dateEnFormatUtilisable(self,date):
+        try:
+            nouvelleDate = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        except IndexError:
+            nouvelleDate = datetime.date.today()
+        return nouvelleDate
    
     def enregistrer(self):
         self.parent.enregistrer(self.list, self.id_utilisateur,self.id_sprint)
