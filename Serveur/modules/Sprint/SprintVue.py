@@ -433,7 +433,7 @@ class Vue():
         return nouvelleDate
    
     def enregistrer(self):
-        self.parent.enregistrer(self.list, self.id_utilisateur,self.id_sprint)
+        self.parent.enregistrer(self.list, self.id_utilisateur,self.id_sprint, self.joursSemaineValides)
      
     def checkParDefaut(self, crochet, reussi):
         if reussi == 1: 

@@ -91,7 +91,7 @@ class Modele():
         #projet utilisateur sprint tache reussi
         self.serveur.insertionSQL("Sprints", chaine)
         
-    def enregistrer(self,id_projet,id_utilisateur,id_sprint,list):
+    def enregistrer(self,id_projet,id_utilisateur,id_sprint,list,jourSemaineValides):
         les_id_taches = self.retournerLesTaches(id_sprint,id_utilisateur)
         #effacer les tâches      
         for element in les_id_taches:
@@ -117,33 +117,39 @@ class Modele():
             
             
             #supprimer les données pour la semaine
+            compteur = -1
             for jour in semaine:
-                reussi = str(jour[4].get())
-                prevu = str(jour[5].get())
-                entry = str(jour[2].get())
-                date = str(jour[3])
-                idTache = tacheX[4]
-                
-                
-                lesIdAEffacer = self.retournerLesDatesSprintsAEffacer(date,idTache)
-                for id_dateSprint in lesIdAEffacer:
-                    self.parent.serveur.delete("DateDeSprints", "id", str(id_dateSprint[0]))
+                compteur = compteur+1
+                if jourSemaineValides[compteur]:
+                    reussi = str(jour[4].get())
+                    prevu = str(jour[5].get())
+                    entry = str(jour[2].get())
+                    date = str(jour[3])
+                    idTache = tacheX[4]
+                    
+                    
+                    lesIdAEffacer = self.retournerLesDatesSprintsAEffacer(date,idTache)
+                    for id_dateSprint in lesIdAEffacer:
+                        self.parent.serveur.delete("DateDeSprints", "id", str(id_dateSprint[0]))
             
             
             #insertion des jours
+            compteur = -1
             for jour in semaine:
-                reussi = str(jour[4].get())
-                prevu = str(jour[5].get())
-                entry = str(jour[2].get())
-                date = str(jour[3])
-                idTache = tacheX[4]
-                
-                
-                lesIdAEffacer = self.retournerLesDatesSprintsAEffacer(date,idTache)
-                for id_dateSprint in lesIdAEffacer:
-                    print("a supprimer " + str(id_dateSprint[0]))
-                    #self.parent.serveur.delete("DateDeSprints", "id", str(id_dateSprint[0]))
-                chaine = "'" + date + "','" +idTache + "','"  + prevu+ "','" +reussi +  "','" + entry + "'"
-                self.serveur.insertionSQL("DateDeSprints",chaine)
+                compteur = compteur+1
+                if jourSemaineValides[compteur]:
+                    reussi = str(jour[4].get())
+                    prevu = str(jour[5].get())
+                    entry = str(jour[2].get())
+                    date = str(jour[3])
+                    idTache = tacheX[4]
+                    
+                    
+                    lesIdAEffacer = self.retournerLesDatesSprintsAEffacer(date,idTache)
+                    for id_dateSprint in lesIdAEffacer:
+                        print("a supprimer " + str(id_dateSprint[0]))
+                        #self.parent.serveur.delete("DateDeSprints", "id", str(id_dateSprint[0]))
+                    chaine = "'" + date + "','" +idTache + "','"  + prevu+ "','" +reussi +  "','" + entry + "'"
+                    self.serveur.insertionSQL("DateDeSprints",chaine)
        
        
