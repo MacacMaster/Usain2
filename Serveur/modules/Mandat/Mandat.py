@@ -405,7 +405,6 @@ class Modele():
     def insertionSQL(self):  
         pass
         sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id) + "," + str(self.uneExpression.type) + "," + str(self.uneExpression.emplacement) + "," + str(self.uneExpression.contenu) + "," + str(self.uneExpression.nature) + ");"
-        print(sql)
         print("Envoie a la BD")
         
         
@@ -441,8 +440,8 @@ class Modele():
         # valeur = [str(self.parent.idProjet), "Explicite", "Objet"]
         nomTable = "Mandats"
         champs = "contenu"
-        where = ["type", "nature"]
-        valeur = [type, nature]
+        where = ["type", "nature", "id_Projet"]
+        valeur = [type, nature, self.parent.idProjet]
 
         requete = self.parent.serveur.selDonneesWHERE(nomTable, champs, where, valeur)
         return requete
@@ -475,10 +474,8 @@ class Controleur():
     def sauvegarderContenu(self):
         
         self.texteMandat=self.vue.text.get("1.0","end-1c")
-        print("texte: " + self.texteMandat)
         
         if self.texteMandat!="":
-            print("yep")
             self.modele.ajouterNouveauTexte(self.texteMandat);
         
         self.vue.root.destroy()
