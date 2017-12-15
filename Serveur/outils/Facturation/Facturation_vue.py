@@ -100,5 +100,4 @@ class Vue():
         
     def fermerfenetre(self):
         self.root.destroy()
-        print("ONFERME la fenetre")
     

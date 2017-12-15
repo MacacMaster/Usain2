@@ -85,7 +85,6 @@ class Vue():
         identifiantMotDePasse = self.entrerMotDePasse.get()
         if(identifiantNomUsager == "admin"):
             self.statut=1
-        print("Nom de l'organisation entré par l'usager:", identifiantNomOrga,"Nom entré par l'usager ", identifiantNomUsager, "Mot de passe entré par l'usager ", identifiantMotDePasse)
         self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
     
     def logInClientFail(self, code):
@@ -126,7 +125,7 @@ class Vue():
             self.cadreOutil = Frame(self.cadreCentral)
             self.canevaOutil=Canvas(self.cadreOutil,width=400,height=600,bg="lightgrey")
             self.canevaOutil.pack()
-            self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+            self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=7)
             btnconnecter=Button(self.cadreOutil, text="Choisir un outil",bg="steelblue",command=self.requeteOutil)
             btnCommande=Button(self.cadreOutil, text="Envoyer une requete SQL",bg="steelblue",command=self.commandeAdmin)
             btnCommandeSaas=Button(self.cadreOutil, text="Envoyer une requete SAAS",bg="steelblue",command=self.commandeAdminSaas)
@@ -155,7 +154,7 @@ class Vue():
         self.cadreModules=Frame(self.cadreCentral2)
         self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="steelblue")
         self.canevaModules.pack()
-        self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+        self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=7)
         btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="lightgrey",command=self.requeteModule)
         self.canevaModules.create_window(200,150,window=self.listeModules)
         self.canevaModules.create_window(200,500,window=btnconnecter,width=100,height=30)

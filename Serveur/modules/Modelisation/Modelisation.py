@@ -5,7 +5,6 @@ from tkinter import messagebox
 
 class Controleur():
     def __init__(self):
-        print("jentre das qqch")
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
@@ -17,7 +16,6 @@ class Controleur():
         self.vue = Vue(self)
         self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
-        print("controleur")
 
     def fermerProgramme(self):
         self.writeLog("Fermeture du Module","3")
@@ -32,7 +30,6 @@ class Controleur():
         self.vue.menuInitial()
         
     def connectionServeur(self):
-        print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
     
@@ -45,14 +42,10 @@ class Controleur():
            
     
     def changeEtat(self, etat, idChamp, listBox,idTable):
-        print("Entre dans la fonction changeEtat")
-        print("Etat : ", etat, "     idChamp : ", idChamp)
         if(etat=="Bon"):
-            print("l'etat est Bon")
-            self.serveur.updateSQL2("Champs", "Pas bon","etat", "id",idChamp)
+            self.serveur.updateSQL("Champs", "Pas bon","etat", "id", "id_Table",idChamp, idTable)
         elif(etat=="Pas bon"):
-            print("l'etat est Pas bon")
-            self.serveur.updateSQL2("Champs", "Bon","etat", "id",idChamp)
+            self.serveur.updateSQL("Champs", "Bon" , "etat", "id" , "id_Table" , idChamp , idTable)
         self.modele.remplirListBoxEtatChamps(listBox, idTable)
         
     def ajouterChamp(self,nom, contrainte,type):
@@ -86,70 +79,48 @@ class Modele():
         self.contrainte=""
         self.nomTable=None
         self.idTableSelec=None
-        print("modele")
         
         
     def remplirListBoxTable(self, listBox):
-        print("modele remplir list box")
         laselection=self.controleur.serveur.selectionSQL3("Tables", "nom", "id_Projet", self.controleur.idProjet)
         for x in laselection:
             listBox.insert(END,str(x)[2:int(len(x)-3)])
             
     def idTableAjoutChamps(self, nomTable):
-        print("NNNNNOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM TABLE, " , nomTable)
         idTable=self.controleur.serveur.selectionSQL3("Tables", "id",  "nom", nomTable)
         idTableGood=str(idTable)[2:int(len(idTable)-3)]
-        #self.idTable2=idTableGood
         return idTableGood
     
     
-    def idDuChamp(self, nomChamp):
-        print("NOM Du CHAMP      ", nomChamp)
-        idChamp=self.controleur.serveur.selectionSQL3("Champs", "id",  "nom", nomChamp)
-        print("ID DU CHAMPS 1    ", idChamp)
+    def idDuChamp(self, nomChamp, idTable):
+        idChamp=self.controleur.serveur.selectionSQL2("Champs", "id",  "nom","id_Table", nomChamp, idTable)
         idChampGood=str(idChamp)[2:int(len(idChamp)-3)]
-        print("ID DU CHAMPS 2    ", idChampGood)
-        
         self.idChamp=idChampGood
         return idChampGood
     
-   # def idTableEtat(self, etat):
-      #  idTable=self.controleur.serveur.selectionSQL3("Tables", "id",  "etat", etat)
-     #   idTableGood=str(idTable)[2:int(len(idTable)-3)]
-        
-      #  self.idTable=idTableGood
-      #  return idTable
-            
     def remplirListBoxChamps(self, listBox, idTable):
         listBox.delete(0, END)
         laselection=self.controleur.serveur.selectionSQL3("Champs", "nom", "id_Table", idTable )
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
             
     def remplirListBoxContraintesChamps(self, listBox, idTable):
         listBox.delete(0, END)
         laselection=self.controleur.serveur.selectionSQL3("Champs", "contrainte", "id_Table", idTable )
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
         
     def remplirListBoxTypeChamps(self, listBox, idTable):
         laselection=self.controleur.serveur.selectionSQL3("Champs", "type", "id_Table", idTable )
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
             
     def remplirListBoxEtatChamps(self, listBox, idTable):
-        print("Je remplis la liste box des états")
         laselection=self.controleur.serveur.selectionSQL3("Champs", "etat", "id_Table", idTable )
         listBox.delete(0, END)
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
-            
-    #def remplirListBoxFKChamp(self, listBox):
-        #pass
+   
             
     def remplirListBoxFKTable(self,listBoxTable):
         laselection=self.controleur.serveur.selectionSQL3("Tables", "nom", "id_Projet", self.controleur.idProjet)
@@ -160,7 +131,6 @@ class Modele():
             
         laselection=self.controleur.serveur.selectionSQL3("Champs", "nom", "id_Table", self.idTableFK )
         for x in laselection:
-            print(x)
             listBoxChamp.insert(END,str(x)[2:int(len(x)-3)])
             
     def verificationSelection(self, listbox, message):
@@ -181,7 +151,6 @@ class Modele():
 class Vue():
     def __init__(self, pControleur):
         self.controleur = pControleur
-        print("Vue")
         self.largeur = 800
         self.hauteur = 600
         self.root = Tk()
@@ -255,7 +224,6 @@ class Vue():
     def menuRenommerTable(self, idTable, nomTable):
         self.centrerFenetre(2,1.5)
         self.caneva.forget()
-        #largeur=self.largeur/1.5
         
         self.canevaRenommerTable = Canvas(self.fenetre, width = self.largeur , height=self.hauteur, bg="steelblue")
         self.canevaRenommerTable.pack()
@@ -326,7 +294,6 @@ class Vue():
     def menuAjouterTable(self):
         self.centrerFenetre(2,1.5)
         self.caneva.forget()
-        #largeur=self.largeur/1.5
         self.canevaNouvelleTable = Canvas(self.fenetre, width = self.largeur , height=self.hauteur, bg="steelblue")
         self.canevaNouvelleTable.pack()
         self.root.title("Ajouter une table")
@@ -423,7 +390,6 @@ class Vue():
         ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxEtatChampsTable ,"Veuillez selectionner un etat")
         if(ouiOuNon == True):
             nomTable=self.lblNomTable.cget('text')
-            print("NOMOMOMOM DEEE LLLAAAA TTABEL :  ", nomTable)
             idTable=self.controleur.modele.idTableAjoutChamps(nomTable)
             position=self.listBoxEtatChampsTable.curselection()[0]
             nom=self.listBoxChampsTable.get(position, position)
@@ -434,8 +400,7 @@ class Vue():
             else:
                nomChampGood=nom
                etatGood=etat
-            print("NOM DU CHAMMMPPPPP A CHANGER ETAT : ", nomChampGood)
-            idChamp=self.controleur.modele.idDuChamp(nomChampGood)
+            idChamp=self.controleur.modele.idDuChamp(nomChampGood, idTable)
             self.controleur.changeEtat(etatGood, idChamp, self.listBoxEtatChampsTable, idTable)
             self.canevaAffichageChamps.forget()
             self.menuAffichageChamps(nomTable)
@@ -446,7 +411,6 @@ class Vue():
      
     def menuAjouterChamps(self):
         self.centrerFenetre(1,3/2)
-        #largeur=self.largeur*(2/3)
         self.canevaAjouterChamps = Canvas(self.fenetre, width = self.largeur , height=self.hauteur, bg="steelblue")
         self.canevaAjouterChamps.pack()
         
@@ -485,8 +449,6 @@ class Vue():
             
         self.listBoxChampsFK=Listbox(self.canevaAjouterChamps,bg="white",borderwidth=0,relief=FLAT,width=25,height=3)
         self.canevaAjouterChamps.create_window(390,445,window=self.listBoxChampsFK)
-        
-        #self.controleur.modele.remplirListBoxFKChamp(self.listBoxChampsFK)
         
         self.lblChampsFK=Label(text="Champs : ",bg="lightblue")
         self.canevaAjouterChamps.create_window(260,445,window=self.lblChampsFK)
@@ -548,8 +510,6 @@ class Vue():
                     nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
                 else:
                     nomChampGood=nomChamp
-                #nomChamp=self.listBoxChampsFK.get(position, position)
-                #nomChampGood=str(nomChamp)[2:int(len(nomChamp)-4)]
                 self.controleur.modele.contrainte+="("+nomChampGood+")"
             nom=self.entryNomChamps.get()
             type=self.entryType.get()

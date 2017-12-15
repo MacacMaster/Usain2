@@ -36,8 +36,6 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
         self.classes = []
-        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
-     
         
 
         self.creerVueMenu()
@@ -59,11 +57,6 @@ class Vue():
     def creerVueMenu(self):  
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menu.pack(side=LEFT)
-        #self.menu.pack_propagate(0)
-        #self.classes = self.parent.modele.nomsDesClasses()
-        #test
-        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
-
         self.creerMenuGauche()
         self.creerMenuDroite()
         self.loaderNomClasses()
@@ -146,10 +139,6 @@ class Vue():
         scrollbar.pack(side=LEFT,fill="y")
    
         self.listeClasses.config(yscrollcommand=scrollbar.set)
-        
-        #remplir la liste de classes
-        #for classe in self.classes:
-        #    self.listeClasses.insert(END,classe[2]) #insérer le nom de la classe
         self.loaderNomClasses()  
         #for x in range(30):
         #    listeClasses.insert(END, str(x))
@@ -259,9 +248,7 @@ class Vue():
         #self.nomProprietaire =  StringVar( value='wafwafe')
         self.entryProprietaire = Entry(frame2, width=25, textvariable=self.nomProprietaire)
         self.entryProprietaire.pack(side=LEFT)
-        #self.entryProprietaire.delete(0,END)
-        #self.entryProprietaire.insert(END, 'default text')
-        #entryNomClasse.insert(END,"nom de la classe");
+
         
         #zone responsabilités et zone collaboration (labels)
         frame3 = Frame(self.menuAjout)
@@ -283,16 +270,7 @@ class Vue():
         self.entryResponsabilite = Entry(frame4, text="", width=15)
         self.entryResponsabilite.pack(side=LEFT, padx = largeur)
         self.entryResponsabilite.bind('<Return>',self.saisirResponsabilite)
-        
-
-#         self.entryCollaboration = Entry(frame4, text="", width=15)
-#         self.entryCollaboration.pack(side=LEFT, padx = largeur)
-#         self.entryCollaboration.bind('<Return>',self.saisirCollaboration)
-
-        
-        #liste déroulante avec la liste des noms des classes existantes
-        #self.nomClasse.set("allo")
-        
+   
         
         #liste qui contient le nom de toutes les classes
         requete = self.parent.modele.nomsDesClasses()
@@ -370,12 +348,6 @@ class Vue():
                
           # ajouter la liste des responsabilités de la classe choisie
         if bouton == 1:
-            #index = self.listeClasses.curselection()[0]
-       
-            #self.classes est un tableau qui contient toutes les informations sur les classes...
-            #alors que self.listeClasses ne contient que les noms des classes...
-            
-            #self.classeChoisi = self.parent.modele.classes[index] #l'index 0 d'un element est son id
           
             #trouver les collaborateurs de la classe
             collaborateursDeLaClasse = self.parent.modele.collaborateursDeLaClasse(str(self.classeChoisi[0]))
@@ -391,11 +363,6 @@ class Vue():
             
             
     def canceler(self):
-        #vider les listes, car aucune sauvegarde n'a été faite!
-        #self.listeCollaboration = []
-        #self.listeResponsabilites = []
-        #self.collaborateurs = []
-        #self.responsabilites = []  
         self.entryNomClasse.delete(0, END)
         self.entryNomClasse.insert(0, "")
         self.entryProprietaire.delete(0, END)
@@ -498,8 +465,6 @@ class Modele():
         self.serveur = serveur
 
     def responsabilitiesDeLaClasse(self, id_classe):
-        #requete = self.parent.serveur.selectionSQL("Responsabilites", "id, id_Classe, nom")
-        #requete = self.parent.serveur.selection
         nomTable = "Responsabilites"
         champs = "nom"
         where = ["id_classe"]
@@ -536,13 +501,10 @@ class Modele():
  
     def nomsDesClasses(self):
         selected = self.serveur.selectionSQL3("Classes", "*", "id_projet", str(self.parent.idProjet))
-        #selected = self.parent.serveur.selectionSQL3(self,"Classes", "nom", "id_projet", str(self.parent.idProjet))
-        #selected = self.serveur.selectionSQL("Classes", "id, id_projet, proprietaire, nom")
         
         self.classes = []
         
         for element in selected:
-            #if (str(element[1]) == str(self.parent.idProjet)):
             self.classes.append(element)
         return selected
        
@@ -583,15 +545,7 @@ class Modele():
             nom = classe.collaborateurs.get(i)   
             chaine = "'" + str(idClasse) + "','" +str(nom) + "'"
             self.parent.serveur.insertionSQL("Collaborations",chaine)
-        
-#     def creerChaine(liste):
-#         listeEnString = "'"
-#         for i in range(len(liste)):
-#             listeEnString = listeEnString + "aaa"
-#         
-#         
-#         return listeEnString
-
+    
     
     def supprimerClasse(self,id_classe):
         #chaine = "WHERE id = " + str(id_classe)
@@ -628,9 +582,6 @@ class Controleur():
         self.portSaas=":9999"
         self.adresseServeur="http://"+self.saasIP+self.portSaas
         
-#         self.saasIP=socket.gethostbyname(socket.gethostname())
-#         self.adresseServeur="http://"+self.saasIP+":9999"
-#         self.idProjet= 1
         self.serveur = self.connectionServeur()
         self.modele=Modele(self,self.serveur)
         self.vue=Vue(self)
@@ -638,7 +589,6 @@ class Controleur():
         self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
     def connectionServeur(self):
-        print("Connection au serveur BD...")
         return ServerProxy(self.adresseServeur)
         
     def fermerProgramme(self):

@@ -24,12 +24,6 @@ from subprocess import Popen
 
 class Controleur():
     def __init__(self):
-#         self.saasIP= socket.gethostbyname(socket.gethostname())     #sys.argv[1]
-#         self.utilisateur="BOB"          #sys.argv[2]
-#         self.organisation="Organe"      #sys.argv[3]
-#         self.idProjet="111"             #sys.argv[4]
-#         self.clientIP="10.57.47.7"      #sys.argv[5]
-
         self.saasIP=        sys.argv[1]
         self.utilisateur=   sys.argv[2]
         self.organisation=  sys.argv[3]
@@ -46,7 +40,6 @@ class Controleur():
 
         #[r0=[c1,c2,c3...],R1...]
         self.listeFonctions=self.sql.selDonnees("*")
-        print("dans le controleur: " + str(self.listeFonctions))
         #Calcule automatiquement      
         self.id = len(self.listeFonctions)
 
@@ -71,11 +64,10 @@ class Controleur():
     def creerFonction(self,sprint,nom,priorite,debut,fin):
         self.sql.creerFonction(sprint,nom,priorite,debut,fin)
         
-    def suppressionFonction(self):
-        self.sql.suppressionFonction()
+    def suppressionFonction(self, fonct):
+        self.sql.supressionFonction(fonct)
     
     def connectionServeurSaas(self):
-        print("Connection au serveur Saas...")
         return ServerProxy(self.adresseServeur)
     
     def updateListe(self):

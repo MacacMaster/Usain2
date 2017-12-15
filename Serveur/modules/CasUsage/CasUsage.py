@@ -116,7 +116,6 @@ class Controleur():
         valeur = [nomCas]
         indice=self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         indiceGood=str(indice)[2:int(len(indice)-3)]
-        print(indiceGood)
         return indiceGood
     
     def changerReprendre(self,indice):
@@ -162,18 +161,18 @@ class Vue():
         self.labelActionMachine=Entry(bg="white")
         self.caneva.create_window(650,120,window=self.labelActionMachine,width=150,height=100)
 
-        self.btnEnvoyerUsager=Button(self.caneva,text="Envoyer",width=20,command=self.envoyerTexte)
+        self.btnEnvoyerUsager=Button(self.caneva,text="Envoyer",font="Arial 8 ",width=20,command=self.envoyerTexte)
         self.caneva.create_window(400,200,window=self.btnEnvoyerUsager,width=150,height=20)
     
-        self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
-        self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
+        self.btnModifier=Button(self.caneva,text="Modifier",font="Arial 8 ",width=20,command=self.indiceDeLaBD)
+        self.caneva.create_window(150,475,window=self.btnModifier,width=150,height=20)
         
-        self.bntSupprimer=Button(self.caneva,text="Terminé/NonTerminé",width=20,command=self.supprimer)#
-        self.caneva.create_window(100,550,window=self.bntSupprimer,width=150,height=20)
+        self.bntSupprimer=Button(self.caneva,text="Terminé/NonTerminé",width=20,font="Arial 8 ",command=self.supprimer)
+        self.caneva.create_window(675,475,window=self.bntSupprimer,width=110,height=20)
         
        
-        self.bntReprendre=Button(self.caneva,text="Reprendre",width=20,command=self.reprendre)
-        self.caneva.create_window(self.largeur/2,550,window=self.bntReprendre,width=150,height=20)
+        self.bntReprendre=Button(self.caneva,text="Reprendre",width=20,font="Arial 8 ",command=self.reprendre)
+        self.caneva.create_window(675,525,window=self.bntReprendre,width=110,height=20)
         
         self.listeetat=Listbox(self.caneva,bg="lightblue",borderwidth=0,relief=FLAT,width=12,height=12)
         self.caneva.create_window(670,350,window=self.listeetat)
@@ -263,11 +262,11 @@ class Vue():
         self.canevaMod.create_window(400,200,window=self.labelActionUsager,width=150,height=250)
         self.labnbe=Label(text="Action machine",bg="lightblue")
         self.canevaMod.create_window(650,50,window=self.labnbe)
-        self.btnEnvoyerUsager=Button(self.canevaMod,text="Envoyer",width=20,command=self.envoyerTexte)
+        self.btnEnvoyerUsager=Button(self.canevaMod,text="Envoyer",font="Arial 8 ",width=20,command=self.envoyerTexte)
         self.canevaMod.create_window(400,200,window=self.btnEnvoyerUsager,width=150,height=20)
-        self.btnRetour=Button(self.canevaMod,text="Retour",width=20,command=self.menuInitialMod)
+        self.btnRetour=Button(self.canevaMod,text="Retour",font="Arial 8 ",width=20,command=self.menuInitialMod)
         self.canevaMod.create_window(100,550,window=self.btnRetour,width=150,height=20)
-        self.bntModifier=Button(self.canevaMod,text="Modifier",width=20,command=self.modifierTexte)
+        self.bntModifier=Button(self.canevaMod,text="Modifier",font="Arial 8 ",width=20,command=self.modifierTexte)
         self.canevaMod.create_window(150,400,window=self.bntModifier,width=150,height=20)
     
         
@@ -304,7 +303,6 @@ class Vue():
         self.controleur.envoyerCas(cas,usager,machine)
                              
     def ouvrirReprendre(self):
-
         for i in range(1,self.listeetat.size()+1):
             etat=self.listeetat.get(ACTIVE)
             self.listeetat.activate(i)
@@ -325,10 +323,9 @@ class Vue():
                 test=True
         return test   
     
-    def reprendre(self):
+    def reprendre(self):  
         reprend=self.unSeulReprendre()
         if(reprend==False):  
-            print("AAAAAAAAAAAAAAAAAAAA")
             position=self.listeetat.curselection()[0] 
             indice=self.trouverCasReprendre(position)
             self.controleur.changerReprendre(indice)

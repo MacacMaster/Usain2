@@ -11,7 +11,7 @@ def explorateurFichiers(text):
         fichier = open(filename, "r")
     except FileNotFoundError:
         fonctionne = False
-        print("Aucun fichier choisi!")
+        messagebox.showinfo("Erreur","Aucun fichier choisi")
     if fonctionne:  
         content = fichier.read()
         fichier.close()

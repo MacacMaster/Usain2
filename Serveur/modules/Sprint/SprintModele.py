@@ -32,7 +32,7 @@ class Modele():
         
         #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         requete = self.parent.serveur.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
-        print(requete)
+ 
         return requete
     
     def retournerLeSprint(self,id_sprint):
@@ -44,7 +44,19 @@ class Modele():
         
         #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-        print(requete)
+
+        return requete
+    
+    def retournerLesDatesSprintsAEffacer(self,date,id_tache):
+        nomTable = "DateDeSprints"
+        champs = "id"
+        #champs = "date_debut,date_fin"
+        where = ["date","id_tache"]
+        valeur = [ str(date),str(id_tache)]
+        
+        #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+   
         return requete
     
     def retournerLesUtilisateurs(self,id_Organisation):
@@ -52,6 +64,15 @@ class Modele():
         champs = "id, nom"
         where = ["id_Organisation"]
         valeur = [id_Organisation]
+        
+        requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        return requete
+    
+    def retournerUneDateSprint(self,date, id_tache):
+        nomTable = "DateDeSprints"
+        champs = "prevu, reussi, temps"
+        where = ["date", "id_tache"]
+        valeur = [str(date), str(id_tache)]
         
         requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         return requete
@@ -79,18 +100,62 @@ class Modele():
         #projet utilisateur sprint tache reussi
         self.serveur.insertionSQL("Sprints", chaine)
         
-    def enregistrer(self,id_projet,id_utilisateur,id_sprint,list):
+    def enregistrer(self,id_projet,id_utilisateur,id_sprint,list,jourSemaineValides, lesCinqJours):
         les_id_taches = self.retournerLesTaches(id_sprint,id_utilisateur)
+        #effacer les tâches      
         for element in les_id_taches:
             id_tache = element[2]
             self.parent.serveur.delete("Taches", "id", str(id_tache))
-            print(id_tache)
                
+        #recréer les tâches       
         for tacheX in list:
             reussi = tacheX[1].get()
             tache = str(tacheX[3])    
             self.insererNouvelleTache(id_projet,id_utilisateur, id_sprint, tache, reussi)
+            
+            semaine = tacheX[2]
+            
+            
+            
+            
+                
         
-       
+            
+            
+            
+            
+            
+            #supprimer les données pour la semaine
+            compteur = -1
+            for jour in semaine:
+                compteur = compteur+1
+                if jourSemaineValides[compteur]:
+                    reussi = str(jour[4].get())
+                    prevu = str(jour[5].get())
+                    entry = str(jour[2].get())
+                    date = str(lesCinqJours[compteur])
+                    idTache = tacheX[4]
+                    
+                    
+                    lesIdAEffacer = self.retournerLesDatesSprintsAEffacer(date,idTache)
+                    for id_dateSprint in lesIdAEffacer:
+                        self.parent.serveur.delete("DateDeSprints", "id", str(id_dateSprint[0]))
+            
+            
+            #insertion des jours
+            compteur = -1
+            for jour in semaine:
+                compteur = compteur+1
+                if jourSemaineValides[compteur]:
+                    prevu = str(jour[4].get())
+                    reussi = str(jour[5].get())
+                    entry = str(jour[2].get())
+                    date = str(lesCinqJours[compteur])
+                    idTache = tacheX[4]
+                    
+                    
+                    lesIdAEffacer = self.retournerLesDatesSprintsAEffacer(date,idTache)
+                    chaine = "'" + date + "','" +idTache + "','"  + prevu+ "','" +reussi +  "','" + entry + "'"
+                    self.serveur.insertionSQL("DateDeSprints",chaine)
        
        

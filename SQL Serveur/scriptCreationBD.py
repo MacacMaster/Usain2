@@ -63,6 +63,9 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Maquettes
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Taches
              (id INTEGER PRIMARY KEY, id_Projet integer, id_utilisateur text , id_sprint integer ,tache text, reussi integer )''')
+
+curseur.execute('''CREATE TABLE IF NOT EXISTS DateDeSprints
+             (id INTEGER PRIMARY KEY,date text, id_tache , prevu integer, reussi integer,temps text )''')
  
 # Supprimer tout ce qui se trouve dans la bd
 for comptes in curseur.execute('SELECT id FROM Organisations'):
@@ -96,11 +99,13 @@ curseur.execute("INSERT INTO Usagers VALUES ('4','1', 'admin', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('5','2', 'admin', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('6','3', 'admin', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('7','4', 'admin', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('8','3', 'etudiant', 'e')")
 
 
 curseur.execute("INSERT INTO Projets VALUES ('1', '1', 'ProjetTest')")
 curseur.execute("INSERT INTO Projets VALUES ('2', '2', 'Projet1')")
 curseur.execute("INSERT INTO Projets VALUES ('3', '1', 'Projet1')")
+curseur.execute("INSERT INTO Projets VALUES ('4', '3', 'Presentation')")
 
 
 # Voir les objets de la bd

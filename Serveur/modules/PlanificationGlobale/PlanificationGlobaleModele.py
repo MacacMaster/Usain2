@@ -66,8 +66,8 @@ class SQL():
     
     #"INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,)
   
-    def supressionFonction(self):
-        pass
+    def supressionFonction(self, fonct):
+        self.Saas.delete("PlanifGlobales", "nom_fonction", str(fonct));
     
     def previsionHeure(self):
         pass

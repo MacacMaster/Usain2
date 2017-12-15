@@ -22,7 +22,6 @@ class Vue():
         self.parent = parent
         self.root = Tk()  # Fenetre
         self.root.title("MANDAT")
-        self.root.protocol("WM_DELETE_WINDOW", self.parent.fermerProgramme)
         self.hauteurTotale = 200
         self.largeurTotale = 200
         self.hauteurMandat = 200
@@ -31,6 +30,7 @@ class Vue():
         self.fenetre.pack()
         self.text = ""
         self.mot = ""
+    
         
         # listes de types et de natures
         self.types = ["Explicite", "Implicite", "Supplementaire"]
@@ -50,6 +50,7 @@ class Vue():
         self.ecranCommande()
         self.ecranAnalyse()   
         self.barreTaches()
+    
     
     def barreTaches(self):
         # menu deroulant
@@ -158,7 +159,6 @@ class Vue():
         if choix == 1:
             self.parent.modele.uneExpression.nature = "Objet"
             self.labelChoixNature.config(text="Objet")
-            print("Envoie de la nature Objet dans l'expression: " + self.parent.modele.uneExpression.nature)
         elif choix == 2:
             self.labelChoixNature.config(text="Action")
             self.parent.modele.uneExpression.nature = "Action"
@@ -247,8 +247,6 @@ class Vue():
         self.loaderLesListe()
          
     def loaderLesListe(self):
-        # for i in self.parent.modele.selectionLesExpressions():
-        #    self.matrix[0][0].insert(END,i[0])
         for i in range(3):
             for j in range(3):
                     # vider la liste
@@ -286,7 +284,6 @@ class Expression():
     def __init__(self):
         self.id = NULL
         self.contenu = NULL
-        # self.type="Explicite"
         self.type = NULL
         self.nature = NULL
         self.emplacement = NULL
@@ -294,7 +291,6 @@ class Expression():
     def reinitier(self):
         self.id = NULL
         self.contenu = NULL
-        # self.type="Explicite"
         self.type = NULL
         self.nature = NULL
         self.emplacement = NULL
@@ -302,12 +298,7 @@ class Expression():
 class Modele():
     def __init__(self, parent):
         self.parent = parent
-        # Connection à la bd temporaire
-        # database = sqlite3.connect('BDD.sqlite')
-        # Création du curseur de la bd temporaire
-        # self.curseur = database.cursor()
         self.uneExpression = Expression()
-        # self.tupleBD=self.lectureSQL()
         self.listeExpObj = []
         self.listeExpAct = []
         self.listeExpAtt = []
@@ -366,9 +357,7 @@ class Modele():
         self.insererExpression()
         
     def insererExpression(self):  
-        print("en mode verif")
         if(self.parent.serveur.verificationExiste("contenu", "Mandats", "id_projet", self.parent.idProjet, str(self.uneExpression.contenu))==False):
-            print("en mode verif")
             messagebox.showerror("Nom de classe existant","Le nom de la classe existe deja")
             return False
         else:
@@ -400,14 +389,13 @@ class Modele():
             
     def explorateurFichiers(self, text):
         # ouvrir un fichier
-        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
         fonctionne = True
         filename = askopenfilename(title="Ouvrir votre document", filetypes=[('txt files', '.txt')])
         try:
             fichier = open(filename, "r")
         except FileNotFoundError:
             fonctionne = False
-            print("Aucun fichier choisi!")
+            messagebox.showinfo("Erreur","Aucun fichier choisi")
         if fonctionne:  
             content = fichier.read()
             fichier.close()
@@ -416,26 +404,21 @@ class Modele():
     def insertionSQL(self):  
         pass
         sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id) + "," + str(self.uneExpression.type) + "," + str(self.uneExpression.emplacement) + "," + str(self.uneExpression.contenu) + "," + str(self.uneExpression.nature) + ");"
-        print(sql)
-        print("Envoie a la BD")
-        
-        
         self.curseur.execute("INSERT INTO Mots VALUES(?,?,?,?,?)", (self.uneExpression.id, self.uneExpression.type, self.uneExpression.emplacement, self.uneExpression.contenu, self.uneExpression.nature,))
-        print("Envoi avec succes")
         self.database.commit()
         
     
     def loaderTexte(self):
         requete = self.parent.serveur.selectionSQL("Textes", "id_Projet, texte")
-        
+        #requete = self.parent.serveur.selDonneesWHERE("Textes", "texte", "id_Projet", "0")
         try: 
             for element in requete:
                 if str(element[0]) == str(self.parent.idProjet):
-                    texte = element[1]
+                    self.parent.texteMandat = element[1]
                     break
-            return texte
+            return self.parent.texteMandat
         except NameError:
-            print("erreur, rien a loader de la BD")
+            messagebox.showinfo("Erreur","Aucune connexion possible avec cette valeur")
             return "Bienvenue au module Mandat"  # pour le texte par defaut
         
     def selectionLesExpressions(self, type, nature):
@@ -452,11 +435,9 @@ class Modele():
         # valeur = [str(self.parent.idProjet), "Explicite", "Objet"]
         nomTable = "Mandats"
         champs = "contenu"
-        where = ["type", "nature"]
-        valeur = [type, nature]
+        where = ["type", "nature", "id_Projet"]
+        valeur = [type, nature, self.parent.idProjet]
 
-        
-        # requete = self.parent.serveur.selectionSQL3("Mandats", "contenu, type, nature", "id_Projet", str(self.parent.idProjet))
         requete = self.parent.serveur.selDonneesWHERE(nomTable, champs, where, valeur)
         return requete
     
@@ -466,8 +447,7 @@ class Modele():
 
 class Controleur():
     def __init__(self):
-        
-        # vraie version
+    
         
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
@@ -475,27 +455,28 @@ class Controleur():
         self.idProjet=sys.argv[4]
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
+        self.texteMandat = ""
         
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
+        self.vue.root.protocol("WM_DELETE_WINDOW", self.sauvegarderContenu)
         
         self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
         
-        # version debug
-#         
-#         self.saasIP = socket.gethostbyname(socket.gethostname())
-#         self.adresseServeur = "http://" + self.saasIP + ":9999"
-#         self.idProjet = 1
-#         self.serveur = self.connectionServeur()
-#         self.modele = Modele(self)
-#         self.vue = Vue(self)
-#         self.vue.root.mainloop()
+    
+    def sauvegarderContenu(self):
         
+        self.texteMandat=self.vue.text.get("1.0","end-1c")
         
+        if self.texteMandat!="":
+            self.modele.ajouterNouveauTexte(self.texteMandat);
+        
+        self.vue.root.destroy()
+
+
     def connectionServeur(self):
-        print("Connection au serveur BD...")
         serveur = ServerProxy(self.adresseServeur)
         return serveur
         
