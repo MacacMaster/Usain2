@@ -27,6 +27,7 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale)
         self.fenetre.pack()
         
+        
 
         self.barreTaches()
         self.framePrincipal()
@@ -184,7 +185,7 @@ class Vue():
         self.tfResponsable.delete(0,END)
     
     def fenetreConfirmation(self):
-        self.topConfirm=Toplevel(height=200)
+        self.topConfirm=Toplevel(height=120, width=170)
         self.topConfirm.title("Confimation de supression")
         msg = Message(self.topConfirm, text="Voulez-vous vraiment supprimer cette fonctionnalité?")
         msg.pack()
@@ -192,6 +193,14 @@ class Vue():
         btnConfirmation.pack()
         btnAnnuler=Button(self.topConfirm, text="Annuler", command=self.topConfirm.destroy)
         btnAnnuler.pack()
+        
+    def centrerFenetre(self):
+        self.root.update() # Suivant le WM. A faire dans tous les cas donc.
+        fenrw = self.root.winfo_reqwidth()
+        fenrh = self.root.winfo_reqheight()
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        self.root.geometry("%dx%d+%d+%d" % (fenrw, fenrh, (sw-fenrw)/2, (sh-fenrh)/2))
         
     def optionAnnuler(self):
         index=self.listFonct.index(ACTIVE)
