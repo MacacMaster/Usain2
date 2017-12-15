@@ -90,10 +90,11 @@ class ControleurServeurBD():
         conn.close()
         return donnees
         
-    def updateDonnees(self,nomTable,champ,description,where,where2,indice1,indice2):
+    def updateDonnees(self,nomTable,champ,description,where1,where2,indice1,indice2):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        c.execute('''UPDATE '''+ nomTable+ ''' SET '''+ description +''' =? WHERE '''+ where+''' =? and '''+where2 +''' =? ''', (champ,indice1,indice2))
+        print("fonsagfnwoigasoigaosign")
+        c.execute('''UPDATE '''+ nomTable+ ''' SET '''+ description +''' =? WHERE '''+ where1+''' =? and '''+where2 +''' =? ''', (champ,indice1,indice2))
         conn.commit()
         conn.close()
         
