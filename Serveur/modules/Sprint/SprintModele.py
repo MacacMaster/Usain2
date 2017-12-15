@@ -81,16 +81,26 @@ class Modele():
         
     def enregistrer(self,id_projet,id_utilisateur,id_sprint,list):
         les_id_taches = self.retournerLesTaches(id_sprint,id_utilisateur)
+        #effacer les tâches      
         for element in les_id_taches:
             id_tache = element[2]
             self.parent.serveur.delete("Taches", "id", str(id_tache))
-            print(id_tache)
                
+        #recréer les tâches       
         for tacheX in list:
             reussi = tacheX[1].get()
             tache = str(tacheX[3])    
             self.insererNouvelleTache(id_projet,id_utilisateur, id_sprint, tache, reussi)
-        
-       
+            
+            semaine = tacheX[2]
+            #insérer les données pour chaque jour de la semaine
+            for jour in semaine:
+                reussi = str(jour[4].get())
+                prevu = str(jour[5].get())
+                entry = str(jour[2].get())
+                date = str(jour[3])
+                idTache = tacheX[4]
+                chaine = "'" + date + "','" +idTache + "','"  + prevu+ "','" +reussi +  "','" + entry + "'"
+                self.serveur.insertionSQL("DateDeSprints",chaine)
        
        

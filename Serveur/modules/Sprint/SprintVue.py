@@ -92,19 +92,26 @@ class Vue():
         
         column = 3 + jour*3
         Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
+        if self.aucunSprint == False:
+            dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
+            dateFin = self.dateEnFormatUtilisable(self.leSprint[0][3])
+            #vérifier que la date à afficher se trouve dans l'interval
+            if dateDebut <= self.datePrevu and dateFin >= self.datePrevu:
+                self.joursSemaineValides.append(True)
+                Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
+            else:
+                self.joursSemaineValides.append(False)
+                Label(frame, text="").grid(row=row+1, column=column, columnspan= 3)
         
-        dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
-        dateFin = self.dateEnFormatUtilisable(self.leSprint[0][3])
-        #vérifier que la date à afficher se trouve dans l'interval
-        if dateDebut <= self.datePrevu and dateFin >= self.datePrevu:
-            self.joursSemaineValides.append(True)
-            Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
+            Label(frame, text="Prévu").grid(row=row+2, column=column)
+            Label(frame, text="Fait").grid(row=row+2, column=column+1)
+            Label(frame, text="Temps").grid(row=row+2, column=column+2)
+                
         else:
-            self.joursSemaineValides.append(False)
             Label(frame, text="").grid(row=row+1, column=column, columnspan= 3)
-        Label(frame, text="Prévu").grid(row=row+2, column=column)
-        Label(frame, text="Fait").grid(row=row+2, column=column+1)
-        Label(frame, text="Temps").grid(row=row+2, column=column+2)
+            Label(frame, text="Prévu").grid(row=row+2, column=column)
+            Label(frame, text="Fait").grid(row=row+2, column=column+1)
+            Label(frame, text="Temps").grid(row=row+2, column=column+2)
         
     def changer(self,row):
         try:
@@ -141,7 +148,10 @@ class Vue():
         for jours in semaine:
             if self.joursSemaineValides[compteur]:
                 for element in jours:
-                    element.config(state=etat)
+                    try:
+                        element.config(state=etat)
+                    except AttributeError:
+                        pass
             compteur = compteur + 1
         
     
@@ -316,8 +326,12 @@ class Vue():
 #             print(self.lesSprints[self.id_sprint][2])
 #         except IndexError:
 #             pass
-        self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
         
+        if self.aucunSprint == False:
+            self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
+        else:
+            self.datePrevu = datetime.date.today()
+
         #try:
         #    self.datePrevu = datetime.datetime.strptime(self.leSprint[0][2], '%Y-%m-%d').date()
         #except IndexError:
@@ -361,7 +375,7 @@ class Vue():
 
             tache = str(element[0])
             reussi = element[1]
-            
+            id_tache = str(element[2])
             
             row += 1 
             i = row - 5 
@@ -392,16 +406,19 @@ class Vue():
                 else:
                     state = DISABLED
                 column = 3 + i *3
-                fait = Checkbutton(frame, state = state)
+                jourFait = IntVar()
+                jourPrevu = IntVar()
+                #jourEntry = IntVar()
+                fait = Checkbutton(frame, state = state, variable=jourFait)
                 fait.grid(row=row,column=column)
-                prevu = Checkbutton(frame, state = state)
+                prevu = Checkbutton(frame, state = state, variable = jourPrevu)
                 prevu.grid(row=row,column=column+1)
                 entry = Entry(frame,state = state)
                 entry.grid(row=row,column=column+2)
                 
-                listeSemaine.append([fait,prevu,entry])
+                listeSemaine.append([fait,prevu,entry,self.datePrevu, jourFait, jourPrevu])
           
-            self.list.append([labelTache,crochetFait,listeSemaine,tache])
+            self.list.append([labelTache,crochetFait,listeSemaine,tache,id_tache])
             
             #changer l'etat des boutons au loadage
             if (reussi):
