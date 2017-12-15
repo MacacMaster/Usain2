@@ -64,8 +64,8 @@ class Controleur():
     def creerFonction(self,sprint,nom,priorite,debut,fin):
         self.sql.creerFonction(sprint,nom,priorite,debut,fin)
         
-    def suppressionFonction(self):
-        self.sql.suppressionFonction()
+    def suppressionFonction(self, fonct):
+        self.sql.supressionFonction(fonct)
     
     def connectionServeurSaas(self):
         print("Connection au serveur Saas...")

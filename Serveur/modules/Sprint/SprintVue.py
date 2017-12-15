@@ -183,13 +183,18 @@ class Vue():
         
     def creerLeSprint(self):
         #debut = datetime.date(self.matriceDates[0][0],5,1)
-        debut = datetime.date(self.matriceDates[0][0],self.matriceDates[0][1],self.matriceDates[0][2])
-        fin = datetime.date(self.matriceDates[1][0],self.matriceDates[1][1],self.matriceDates[1][2])
-        #date= 8
-        #d = datetime.date(2017,12,date)
-        
-        self.insererNouveauSprint(debut,fin, "Sprint n")
-        self.on_closing()
+        try:
+            debut = datetime.date(self.matriceDates[0][0],self.matriceDates[0][1],self.matriceDates[0][2])
+            fin = datetime.date(self.matriceDates[1][0],self.matriceDates[1][1],self.matriceDates[1][2])
+            #date= 8
+            #d = datetime.date(2017,12,date)
+            
+            self.insererNouveauSprint(debut,fin, "Sprint n")
+            self.on_closing()
+        except TypeError:
+            messagebox.showwarning("Échec", "La date entrée est invalide!")
+            return    
+       
         
     def creerUneLigneSaisie(self,window, nb):
 
@@ -197,8 +202,8 @@ class Vue():
         frameDebut.pack()
 
         #année
-        OPTIONS = []
-        for i in range (2016,2019):
+        OPTIONS = ["Année"]
+        for i in range (2017,2022):
             OPTIONS.append(i)
         
         annee = StringVar(self.window)   
@@ -208,6 +213,7 @@ class Vue():
         w.pack(side=LEFT)
         
         #mois
+        
         OPTIONS = self.mois
         
 
@@ -218,7 +224,7 @@ class Vue():
         w.pack(side=LEFT)
         
         #jours
-        OPTIONS = []
+        OPTIONS = ["Jour"]
         for i in range (1,32):
             OPTIONS.append(i)
         

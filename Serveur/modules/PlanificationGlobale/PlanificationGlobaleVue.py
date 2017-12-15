@@ -211,6 +211,8 @@ class Vue():
         self.listPourcentage.delete(index)
         self.listResponsable.delete(index)
         
+        self.suppressionFonction()
+        
         self.topConfirm.destroy()
         
     def infosCRC(self):
@@ -280,7 +282,7 @@ class Vue():
         
         
     def suppressionFonction(self):
-        self.parent.supressionFonction()
+        self.parent.suppressionFonction(self.tfFonctionnalite.get())
         self.effacerChamps()
         self.afficherListes()
     
