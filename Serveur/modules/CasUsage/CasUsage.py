@@ -131,6 +131,7 @@ class Vue():
         self.root = Tk()
         self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerProgramme)
         self.fenetre = Frame(self.root, width = self.largeur, height = self.hauteur)
+        self.root.title("Maquette")
         self.fenetre.pack()
         self.listeCas=[]
         self.listeEtat=[]
