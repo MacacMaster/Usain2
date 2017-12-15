@@ -21,7 +21,7 @@ class Vue():
         self.cadreApplication.pack()
         self.centrerFenetre()
         self.statut=0
-        
+        self.photo=PhotoImage(file=('Logo.gif'))
         self.creerCadreModules()
         self.creerCadreLogIn(pClientIp)
         self.changeCadre(self.cadreLogIn)
@@ -56,13 +56,11 @@ class Vue():
         
         
         
-        self.photo=PhotoImage(file=('Logo.gif'))
+        
         self.canevaLogIn.create_image(0, 0, image=self.photo, anchor=NW)
         
 
         self.photoLogo=PhotoImage(file='Title2.gif')
-        
-        
         self.panel = Label(image = self.photoLogo)
 
         
@@ -142,6 +140,7 @@ class Vue():
             self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
             btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="lightgrey",command=self.chargerProjet)
             btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="lightgrey",command=self.creerProjet)
+            self.canevaProjet.create_image(0, 0, image=self.photo, anchor=NW)
             self.canevaProjet.create_window(380,150,window=self.listeProjets)
             self.canevaProjet.create_window(275,30,window=self.labNomOrga,width=150,height=30)
             self.canevaProjet.create_window(525,30,window=self.labIDOrga,width=150,height=30)
@@ -154,6 +153,7 @@ class Vue():
         self.cadreModules=Frame(self.cadreCentral2)
         self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="steelblue")
         self.canevaModules.pack()
+        self.canevaModules.create_image(0, 0, image=self.photo, anchor=NW)
         self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=7)
         btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="lightgrey",command=self.requeteModule)
         self.canevaModules.create_window(200,150,window=self.listeModules)
