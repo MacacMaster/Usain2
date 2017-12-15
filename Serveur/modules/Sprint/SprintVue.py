@@ -99,7 +99,13 @@ class Vue():
         self.lesCinqJours.append(self.datePrevu)
  
         column = 3 + jour*3
-        Label(frame, text=self.jours[jour], bg = self.color).grid(row=row, column=column, columnspan=3)
+        taille = 3
+        if column % 2 == 0:
+            couleur = "lightskyblue"
+            Label(frame, text=self.jours[jour], bg = "lightskyblue").grid(row=row, column=column, columnspan=taille)
+        else:
+            couleur = "steelblue"
+            Label(frame, text=self.jours[jour], bg = "steelblue").grid(row=row, column=column, columnspan=taille)
         if self.aucunSprint == False:
             try:
                 dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
@@ -109,11 +115,11 @@ class Vue():
             #vérifier que la date à afficher se trouve dans l'interval
             if dateDebut <= self.datePrevu and dateFin >= self.datePrevu:
                 self.joursSemaineValides.append(True)
-                Label(frame, text=self.datePrevu,bg= self.color).grid(row=row+1, column=column, columnspan= 3)
+                Label(frame, text=self.datePrevu,bg= couleur).grid(row=row+1, column=column, columnspan= 3)
             else:
                 self.joursSemaineValides.append(False)
           
-                Label(frame, text=self.datePrevu,bg= self.color).grid(row=row+1, column=column, columnspan= 3)
+                Label(frame, text=self.datePrevu,bg= couleur).grid(row=row+1, column=column, columnspan= 3)
         
             Label(frame, text="Prévu",bg= self.color).grid(row=row+2, column=column)
             Label(frame, text="Fait",bg= self.color).grid(row=row+2, column=column+1)
