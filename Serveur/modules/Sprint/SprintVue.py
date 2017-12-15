@@ -99,8 +99,11 @@ class Vue():
         column = 3 + jour*3
         Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
         if self.aucunSprint == False:
-            dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
-            dateFin = self.dateEnFormatUtilisable(self.leSprint[0][3])
+            try:
+                dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
+                dateFin = self.dateEnFormatUtilisable(self.leSprint[0][3])
+            except IndexError:
+                dateDebut = dateFin = self.datePrevu
             #vérifier que la date à afficher se trouve dans l'interval
             if dateDebut <= self.datePrevu and dateFin >= self.datePrevu:
                 self.joursSemaineValides.append(True)
@@ -363,8 +366,10 @@ class Vue():
         
         if self.aucunSprint == False:
             if self.datePrevu == None:
-             
-                self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
+                try:
+                    self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
+                except IndexError:
+                    self.datePrevu = datetime.date.today()
         else:
             self.datePrevu = datetime.date.today()
 
