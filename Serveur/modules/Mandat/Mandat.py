@@ -247,8 +247,6 @@ class Vue():
         self.loaderLesListe()
          
     def loaderLesListe(self):
-        # for i in self.parent.modele.selectionLesExpressions():
-        #    self.matrix[0][0].insert(END,i[0])
         for i in range(3):
             for j in range(3):
                     # vider la liste
@@ -286,7 +284,6 @@ class Expression():
     def __init__(self):
         self.id = NULL
         self.contenu = NULL
-        # self.type="Explicite"
         self.type = NULL
         self.nature = NULL
         self.emplacement = NULL
@@ -294,7 +291,6 @@ class Expression():
     def reinitier(self):
         self.id = NULL
         self.contenu = NULL
-        # self.type="Explicite"
         self.type = NULL
         self.nature = NULL
         self.emplacement = NULL
@@ -302,12 +298,7 @@ class Expression():
 class Modele():
     def __init__(self, parent):
         self.parent = parent
-        # Connection à la bd temporaire
-        # database = sqlite3.connect('BDD.sqlite')
-        # Création du curseur de la bd temporaire
-        # self.curseur = database.cursor()
         self.uneExpression = Expression()
-        # self.tupleBD=self.lectureSQL()
         self.listeExpObj = []
         self.listeExpAct = []
         self.listeExpAtt = []
@@ -366,9 +357,7 @@ class Modele():
         self.insererExpression()
         
     def insererExpression(self):  
-        print("en mode verif")
         if(self.parent.serveur.verificationExiste("contenu", "Mandats", "id_projet", self.parent.idProjet, str(self.uneExpression.contenu))==False):
-            print("en mode verif")
             messagebox.showerror("Nom de classe existant","Le nom de la classe existe deja")
             return False
         else:
@@ -400,7 +389,6 @@ class Modele():
             
     def explorateurFichiers(self, text):
         # ouvrir un fichier
-        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
         fonctionne = True
         filename = askopenfilename(title="Ouvrir votre document", filetypes=[('txt files', '.txt')])
         try:
@@ -455,8 +443,6 @@ class Modele():
         where = ["type", "nature"]
         valeur = [type, nature]
 
-        
-        # requete = self.parent.serveur.selectionSQL3("Mandats", "contenu, type, nature", "id_Projet", str(self.parent.idProjet))
         requete = self.parent.serveur.selDonneesWHERE(nomTable, champs, where, valeur)
         return requete
     
@@ -466,8 +452,7 @@ class Modele():
 
 class Controleur():
     def __init__(self):
-        
-        # vraie version
+    
         
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
@@ -483,17 +468,7 @@ class Controleur():
         self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
         
-        # version debug
-#         
-#         self.saasIP = socket.gethostbyname(socket.gethostname())
-#         self.adresseServeur = "http://" + self.saasIP + ":9999"
-#         self.idProjet = 1
-#         self.serveur = self.connectionServeur()
-#         self.modele = Modele(self)
-#         self.vue = Vue(self)
-#         self.vue.root.mainloop()
-        
-        
+
     def connectionServeur(self):
         print("Connection au serveur BD...")
         serveur = ServerProxy(self.adresseServeur)

@@ -67,7 +67,6 @@ class Vue():
         identifiantMotDePasse = self.entrerMotDePasse.get()
         if(identifiantNomUsager == "admin"):
             self.statut=1
-        print("Nom de l'organisation entré par l'usager:", identifiantNomOrga,"Nom entré par l'usager ", identifiantNomUsager, "Mot de passe entré par l'usager ", identifiantMotDePasse)
         self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
     
     def logInClientFail(self, code):

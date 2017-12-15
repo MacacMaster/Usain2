@@ -24,12 +24,6 @@ from subprocess import Popen
 
 class Controleur():
     def __init__(self):
-#         self.saasIP= socket.gethostbyname(socket.gethostname())     #sys.argv[1]
-#         self.utilisateur="BOB"          #sys.argv[2]
-#         self.organisation="Organe"      #sys.argv[3]
-#         self.idProjet="111"             #sys.argv[4]
-#         self.clientIP="10.57.47.7"      #sys.argv[5]
-
         self.saasIP=        sys.argv[1]
         self.utilisateur=   sys.argv[2]
         self.organisation=  sys.argv[3]

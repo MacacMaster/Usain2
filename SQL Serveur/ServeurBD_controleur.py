@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 
 from xmlrpc.server import SimpleXMLRPCServer
- #création de l'objet qui écoute  Q
 import socket
 import sqlite3
 from IdMaker import *
@@ -50,11 +49,8 @@ class ControleurServeurBD():
             else:
                 sql+= "AND "
             
-        #print(sql)
         c.execute(sql)
         laselection=c.fetchall()
-        
-        #print(laselection)
         conn.close()
         return laselection
 
@@ -62,28 +58,24 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         c.execute(valeurs)
-        print(c.execute(valeurs))
         conn.commit()
         conn.close()
     
     def insDonnees(self,nomTable,valeurs):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        #self.id+=1
         c.execute('''INSERT into '''+nomTable+''' VALUES ('''+'NULL'+', '+valeurs+''' )''')
         c.execute('''SELECT last_insert_rowid()''')
         id = c.fetchone()[0]
         conn.commit()
         conn.close()
-        #pour retourner le id de la dernière ligne insérée
         return id
     
-    #M-A id est un argument Facultatif FUCKIT
+    #M-A id est un argument Facultatif 
     #def insDonneesPlanif(self,id,idprojet,idsprint,idresponsable,priorite,debut,fin):
     def insDonneesPlanif(self,tableau,params):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        #self.id+=1
         c.execute('''INSERT into '''+ tableau +''' VALUES (?,?,?,?,?,?,?,?)''',params)
         conn.commit()
         conn.close()
@@ -93,9 +85,7 @@ class ControleurServeurBD():
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
         sql = '''SELECT ''' +champs+ ''' from '''+nomTable
-        #print(sql)
         c.execute(sql)
-      #  print(c.fetchall())              ################################# ERRREUURR FETCH 2x 
         donnees = c.fetchall()
         conn.close()
         return donnees
@@ -136,7 +126,6 @@ class ControleurServeurBD():
         c = conn.cursor()
         c.execute('''SELECT ''' +champs+ ''' from '''+nomTable + ''' where ''' +where + '''=?''', (id,))
         laselection=c.fetchall()
-       # print(laselection)
         conn.close()
         return laselection
     
@@ -152,28 +141,9 @@ class ControleurServeurBD():
                 return False
         return True
     
-    #
-    '''    
-            Comment utiliser cette fonction?
-            1.
-            where et valeur sont deux arguments qui doivent etre deux listes contenant des "string".
-            2.
-            Par exemple...
-            nomTable = "Mandats"
-            champs = "id_projet, contenu"
-            where = ["type","nature","id_projet"]
-            valeur = ["Explicite", "Objet","1"]
-
-            3.Les deux listes doivent etre de taille identique.Par contre, il n'y a pas de limite. 
-        
-    '''
-   
-   ##Pourquoi faire une telle fonction ? Il y a déjà une fonction de sélection complexe
     def selDonneesWHERE(self,nomTable,champs,where,valeur):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        
-        #batir la chaine sql
         sql = """SELECT """ 
         sql += champs
         sql += " FROM "
@@ -189,19 +159,16 @@ class ControleurServeurBD():
                 pass
             else:
                 sql+= "AND "
-            
-        #print(sql)
+
         c.execute(sql)
         laselection=c.fetchall()
         
-        #print(laselection)
         conn.close()
         return laselection
     
     def delete(self, nomTable, where, condition):
         conn= sqlite3.connect('SprintMasterData.db')
         c = conn.cursor()
-        #c.execute('''DELETE FROM ''' + nomTable + where)
         c.execute('''DELETE FROM ''' +nomTable + ''' where ''' +where + '''=?''', (condition,))
         conn.commit()
         conn.close()   
@@ -210,7 +177,6 @@ class ControleurServeurBD():
         nomProjetBD = ''+nomprojet+''
         idOrgaBD = ''+idorga+''
         idProjet = self.curseur.execute("SELECT id FROM Projets WHERE id_Organisation = ? and nom = ? ", (idOrgaBD, nomProjetBD)).fetchone()
-        print("L'id du projet séléctionné est", str(idProjet)[1:len(idProjet)-3])
         return str(idProjet)[1:len(idProjet)-3]
         
     
@@ -222,44 +188,29 @@ class ControleurServeurBD():
         idUsager = None
         
         for orga in self.curseur.execute('SELECT nom FROM Organisations'):
-            #print(str(orga)[2:len(orga)-4])
             if (str(orga)[2:int(len(orga)-4)] == pIdentifiantOrga):
                 nomOrga = (''+pIdentifiantOrga+'',)
                 idOrga = self.curseur.execute("SELECT id FROM Organisations WHERE nom = ?", nomOrga).fetchone()
-                print("id de l'organisation : ", str(idOrga)[1:len(idOrga)-3])
                 nomOrgaExiste = True
                 break
         
         if nomOrgaExiste:
-            print("nomOrga ",nomOrgaExiste)
             sql1="SELECT nom FROM Usagers WHERE id_Organisation = '"+str(idOrga)[1:len(idOrga)-3]+"'"
-            print(sql1)
             for usager in self.curseur.execute(sql1).fetchall():
-            #for usager in self.curseur.execute("SELECT nom FROM Usagers WHERE id_Organisation = ?", idOrga):
-    
-                #print(str(usager)[2:len(usager)-4])
-                print("USER",usager)
                 if (str(usager)[2:int(len(usager)-4)] == pIdentifiantNom):
-                    #nomUsager = (''+pIdentifiantNom+'',)
-                    print("idusager = ", pIdentifiantNom)
                     sqlt = "SELECT id FROM Usagers WHERE nom = '"+pIdentifiantNom+"' and id_Organisation = '"+str(idOrga)[1:len(idOrga)-3]+"'"
-                    print(sqlt)
                     idUsager = self.curseur.execute(sqlt).fetchone()
-                    #idUsager = self.curseur.execute("SELECT id FROM Usagers WHERE nom = ? and id_Organisation = ?", nomUsager, idOrga).fetchone()
-                    print("id de l'usager : ", str(idUsager)[1:len(idUsager)-3])
                     nomUsaExiste = True
                     break
                 
             if nomUsaExiste:
                 
                 for mdp in self.curseur.execute("SELECT motDePasse FROM Usagers WHERE id = ?", idUsager):
-                    print(str(mdp)[2:len(mdp)-4])
                     if (str(mdp)[2:len(mdp)-4] == pIdentifiantMotDePasse):
                         mdpExiste = True
                         break
                     
                 if mdpExiste:
-                    print("Réussite de l'authentification")
                     return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3], str(idUsager)[1:len(idUsager)-3]]
                 
                 else:
@@ -275,19 +226,15 @@ class ControleurServeurBD():
             return 0
         
     def rechercheProjetsDispo(self, id):
-        print("je cherche des projets")
         t = (''+str(id)+'',)
         tabProjet = []
         for projet in self.curseur.execute('SELECT nom FROM Projets WHERE id_Organisation =?', t):
-            print (str(projet)[2:len(projet)-4])
             tabProjet.append(str(projet)[2:len(projet)-4])
         return tabProjet
     
-print("Création du serveur pour la BD jmd ...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998),allow_none = 1)
 objetControleurServeurBD=ControleurServeurBD()
 daemon.register_instance(objetControleurServeurBD)
-print("Création du serveur BD terminé")
 daemon.serve_forever()
 
 
