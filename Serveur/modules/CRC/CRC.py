@@ -63,7 +63,6 @@ class Vue():
         #chercher la liste des classes
 
     def choisirClasse(self,event):
-        print("on choisit la classe")
         #vider la liste
         self.listeResponsabilites.delete(0, END) #effacer la liste
         self.listeCollaboration.delete(0, END) #effacer la liste
@@ -390,7 +389,6 @@ class Vue():
         self.listeCollaborationAjout.insert(END,saisie)
         #vider le Entry après avoir saisi quelque chose
         #self.entryCollaboration.delete(0,END)
-        print(saisie)
         
     def supprimer(self):
         try:
@@ -410,7 +408,6 @@ class Vue():
         self.listeResponsabilitesAjout.insert(END,saisie)
         #vider le Entry après avoir saisi quelque chose
         self.entryResponsabilite.delete(0,END)
-        print(self.entryResponsabilite.get())
     
     def box_focused(self, event):
         self.focused_box = event.widget  
@@ -440,8 +437,7 @@ class Vue():
         
         #affichage d'un message d'erreur
         if (saisieNomClasse == "" or saisieProprietaire == ""):
-            print(saisieNomClasse)
-            print(saisieProprietaire)
+            pass
 
             messagebox.showwarning("Attention", "Saisir les informations manquantes")
         
