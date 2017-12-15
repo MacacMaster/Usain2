@@ -10,6 +10,7 @@ class Vue():
         self.parent=parent
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
         self.mois = ("Janvier","Février","Mars","Avril","Mai")
+        self.datePrevu = None
         self.joursSemaineValides= []
         self.lesCinqJours = []
         self.root = Tk()
@@ -23,6 +24,7 @@ class Vue():
         self.id_sprint = None
         self.id_utilisateur = None
         self.creerFenetreSprints()
+        
         
         
         try:
@@ -230,6 +232,13 @@ class Vue():
         self.window.destroy()
         for i in range(2):
             print(self.matriceDates[i][0])
+    def prochain(self):
+        #passer a la prochaine semaine
+        
+        self.datePrevu = self.lesCinqJours[0]+ datetime.timedelta(days=7)
+        print(self.datePrevu)
+        #self.populer(self.frame)
+        pass
     
     def populer(self,frame):
         self.aucunSprint = False
@@ -246,6 +255,9 @@ class Vue():
         
         b.grid(row=row, column=3)
         Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=row, column=4)
+        
+        #bouton pour passer a la prochaine semaine
+        Button(frame, text="Prochain", bg= "blue", fg = "white", command = self.prochain).grid(row=1, column=18)
         #try:
             #dropdown menu 1
         
@@ -330,7 +342,8 @@ class Vue():
 #             pass
         
         if self.aucunSprint == False:
-            self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
+            if self.datePrevu == None:
+                self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
         else:
             self.datePrevu = datetime.date.today()
 
