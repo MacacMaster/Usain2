@@ -11,6 +11,7 @@ class Vue():
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
         self.mois = ("Janvier","Février","Mars","Avril","Mai")
         self.datePrevu = None
+        self.changementDeSemaine = False
         self.joursSemaineValides= []
         self.lesCinqJours = []
         self.root = Tk()
@@ -249,7 +250,7 @@ class Vue():
     def prochain(self):
         #passer a la prochaine semaine
         self.datePrevu = self.lesCinqJours[0]+ datetime.timedelta(days=7)
-    
+        self.changementDeSemaine = True
         self.updaterVue()
         #self.populer(self.frame)
         pass
@@ -257,7 +258,7 @@ class Vue():
     def precedent(self):
         #passer a la prochaine semaine
         self.datePrevu = self.lesCinqJours[0]- datetime.timedelta(days=7)
-    
+        self.changementDeSemaine = True
         self.updaterVue()
         #self.populer(self.frame)
         pass
@@ -506,8 +507,10 @@ class Vue():
          self.colonnes = 0
          self.lesCinqJours = []
          self.joursSemaineValides= []
-  
-         self.datePrevu = None
+         if self.changementDeSemaine == False:
+            self.datePrevu = None
+         else:
+            self.changementDeSemaine = False
          self.populer(self.frame)
              
     def nbColonnes(self):
