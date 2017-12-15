@@ -24,7 +24,7 @@ class Vue():
         self.id_sprint = None
         self.id_utilisateur = None
         self.creerFenetreSprints()
-        
+
         
         
         try:
@@ -55,6 +55,9 @@ class Vue():
       
     def creerFenetreSprints(self):
         
+
+        
+        
         #self.root = Tk()
         w, h = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
         self.root.geometry("%dx%d+0+0" % (w, h))
@@ -77,7 +80,6 @@ class Vue():
  
         self.populer(frame)
 
-        
         mainloop() 
                    
     def onFrameConfigure(self,caneva):
@@ -170,6 +172,8 @@ class Vue():
         #frame 1
         #drop down 1
         self.matriceDates = []
+        self.matriceDates.append([2016,1,1])
+        self.matriceDates.append([2016,1,1])
         for i in range(2):
             self.creerUneLigneSaisie(self.window,i)
         frameBouton = Frame(self.window)
@@ -491,6 +495,8 @@ class Vue():
          self.colonnes = 0
          self.lesCinqJours = []
          self.joursSemaineValides= []
+  
+         self.datePrevu = None
          self.populer(self.frame)
              
     def nbColonnes(self):
