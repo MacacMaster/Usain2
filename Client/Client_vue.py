@@ -15,6 +15,7 @@ class Vue():
         self.labNomOrga = None
         self.root=tix.Tk()
         self.root.title("SPRINTMASTER")
+        self.root.iconbitmap('Icon.ico')
         self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerApplication)
         self.cadreApplication = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.cadreApplication.pack()
@@ -44,6 +45,7 @@ class Vue():
         hauteur = self.root.winfo_reqheight()
         self.cadreLogIn=Frame(self.cadreApplication)
         self.canevaLogIn=Canvas(self.cadreLogIn,width=largeur,height=hauteur) 
+        
         labNomOrga=Label(text="Nom organisation",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
         labNomUsager=Label(text="Nom usager",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
         labMDP=Label(text="Mot de passe",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
@@ -52,6 +54,20 @@ class Vue():
         self.entrerMotDePasse=Entry(bg="white", show="*")
         btnLogInClient=Button(text="Se connecter", command=self.logInClient)
         
+        
+        
+        self.photo=PhotoImage(file=('Logo.gif'))
+        self.canevaLogIn.create_image(0, 0, image=self.photo, anchor=NW)
+        
+
+        self.photoLogo=PhotoImage(file='Title2.gif')
+        
+        
+        self.panel = Label(image = self.photoLogo)
+
+        
+        
+        self.canevaLogIn.create_window(largeur/2,100,window=self.panel,width=largeur)
         self.canevaLogIn.create_window(largeur/2,250,window=labNomOrga,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,300,window=self.entrerNomOrga,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,350,window=labNomUsager,width=150,height=30)
@@ -60,6 +76,8 @@ class Vue():
         self.canevaLogIn.create_window(largeur/2,500,window=self.entrerMotDePasse,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,550,window=btnLogInClient,width=150,height=30) 
         self.canevaLogIn.pack()
+        
+
         
     def logInClient(self):
         identifiantNomOrga = self.entrerNomOrga.get()
