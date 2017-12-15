@@ -328,7 +328,6 @@ class Vue():
     def reprendre(self):
         reprend=self.unSeulReprendre()
         if(reprend==False):  
-            print("AAAAAAAAAAAAAAAAAAAA")
             position=self.listeetat.curselection()[0] 
             indice=self.trouverCasReprendre(position)
             self.controleur.changerReprendre(indice)
