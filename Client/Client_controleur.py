@@ -83,6 +83,7 @@ class Controleur():
             self.serveur.insertionSQL("Projets","'"+str(self.idOrga)+"','"+nom+"'")
             
     def requeteModule(self,mod):
+        
         rep=self.serveur.requeteModule(mod)
         if rep:
             cwd=os.getcwd()
