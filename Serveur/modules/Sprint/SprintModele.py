@@ -32,7 +32,7 @@ class Modele():
         
         #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         requete = self.parent.serveur.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
-        print(requete)
+ 
         return requete
     
     def retournerLeSprint(self,id_sprint):
@@ -44,7 +44,7 @@ class Modele():
         
         #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-        print(requete)
+
         return requete
     
     def retournerLesDatesSprintsAEffacer(self,date,id_tache):
@@ -56,7 +56,7 @@ class Modele():
         
         #requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         requete = self.parent.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
-        print(requete)
+   
         return requete
     
     def retournerLesUtilisateurs(self,id_Organisation):

@@ -93,7 +93,7 @@ class Vue():
     def laSemaine(self,frame,jour,row, i):
         
         self.lesCinqJours.append(self.datePrevu)
-        
+ 
         column = 3 + jour*3
         Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
         if self.aucunSprint == False:
@@ -105,7 +105,8 @@ class Vue():
                 Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
             else:
                 self.joursSemaineValides.append(False)
-                Label(frame, text="").grid(row=row+1, column=column, columnspan= 3)
+          
+                Label(frame, text=self.datePrevu).grid(row=row+1, column=column, columnspan= 3)
         
             Label(frame, text="Prévu").grid(row=row+2, column=column)
             Label(frame, text="Fait").grid(row=row+2, column=column+1)
@@ -116,6 +117,7 @@ class Vue():
             Label(frame, text="Prévu").grid(row=row+2, column=column)
             Label(frame, text="Fait").grid(row=row+2, column=column+1)
             Label(frame, text="Temps").grid(row=row+2, column=column+2)
+
         self.datePrevu += datetime.timedelta(days=1)
     def changer(self,row):
         try:
@@ -230,13 +232,20 @@ class Vue():
     def on_closing(self):
         self.updaterVue()
         self.window.destroy()
-        for i in range(2):
-            print(self.matriceDates[i][0])
+
     def prochain(self):
         #passer a la prochaine semaine
-        
         self.datePrevu = self.lesCinqJours[0]+ datetime.timedelta(days=7)
-        print(self.datePrevu)
+    
+        self.updaterVue()
+        #self.populer(self.frame)
+        pass
+    
+    def precedent(self):
+        #passer a la prochaine semaine
+        self.datePrevu = self.lesCinqJours[0]- datetime.timedelta(days=7)
+    
+        self.updaterVue()
         #self.populer(self.frame)
         pass
     
@@ -258,6 +267,8 @@ class Vue():
         
         #bouton pour passer a la prochaine semaine
         Button(frame, text="Prochain", bg= "blue", fg = "white", command = self.prochain).grid(row=1, column=18)
+        Button(frame, text="Précédent", bg= "blue", fg = "white", command = self.precedent).grid(row=1, column=3)
+
         #try:
             #dropdown menu 1
         
@@ -331,28 +342,23 @@ class Vue():
         Label(frame, text=t).grid(row=row+2, column=self.nbColonnes())
         Label(frame, text="Fait").grid(row=row+2, column=self.nbColonnes())
         i = 0 
-        #self.datePrevu = datetime.date.today()
         self.leSprint = (self.retournerLeSprint(self.id_sprint))
        
        
 #         try:
 #             self.retournerLeSprint(self.id_sprint)
-#             print(self.lesSprints[self.id_sprint][2])
+#       
 #         except IndexError:
 #             pass
         
         if self.aucunSprint == False:
             if self.datePrevu == None:
+             
                 self.datePrevu = self.dateEnFormatUtilisable(self.leSprint[0][2])
         else:
             self.datePrevu = datetime.date.today()
 
-        #try:
-        #    self.datePrevu = datetime.datetime.strptime(self.leSprint[0][2], '%Y-%m-%d').date()
-        #except IndexError:
-        #    self.datePrevu = datetime.date.today()
-        #print(self.lesSprints[0][2] > self.datePrevu)
-        #self.datePrevu = datetime.date(self.lesSprints[0][2])
+        
         for jour in range(5):       
             self.laSemaine(frame,jour,row, i)
             i = i + i 
@@ -421,6 +427,7 @@ class Vue():
                     reqJourFait = dateSprint[0][0]         
                     reqJourPrevu = dateSprint[0][1]
                     texteDefaut = dateSprint[0][2]
+           
                 except:
                     reqJourFait = 0
                     reqJourPrevu =0    
@@ -428,8 +435,10 @@ class Vue():
                 
                 if (self.joursSemaineValides[i]):
                     state = NORMAL
+                 
                 else:
                     state = DISABLED
+               
                 column = 3 + i *3
                 jourFait = IntVar()
                 jourPrevu = IntVar()
@@ -480,6 +489,7 @@ class Vue():
          self.list.clear()
          self.rangees = 0
          self.colonnes = 0
+         self.lesCinqJours = []
          self.populer(self.frame)
              
     def nbColonnes(self):
@@ -517,7 +527,7 @@ class Vue():
         saisie = str(event.widget.get())
         if (saisie != "" and self.choixSprint == "Sprint" or  self.choixUtilisateur == "Utilisateur" or self.choixSprint == None or self.choixUtilisateur == None):    
                 messagebox.showwarning("Attention", "Veuillez choisir un sprint et un utilisateur")                                                 
-                print(saisie)
+              
         else:
             self.insererNouvelleTache(self.id_utilisateur,self.id_sprint,saisie,0)  
             self.updaterVue()  
