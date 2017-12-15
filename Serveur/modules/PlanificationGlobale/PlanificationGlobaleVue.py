@@ -184,7 +184,6 @@ class Vue():
         btnAnnuler.pack()
         
     def optionAnnuler(self):
-        print("Envoi de la fonction supression du controleur avec listFonct.get(ACTIVE) en parametre")
         index=self.listFonct.index(ACTIVE)
         
         #suppression dans les listbox
@@ -197,7 +196,6 @@ class Vue():
         self.topConfirm.destroy()
         
     def infosCRC(self):
-        print("ENTRE DANS infosCRC")
         kj=self.parent.serveur.selectionSQL3('Classes','id','id_Projet', self.parent.idProjet)
         print(str(kj))
         #nomTable,champs, where, idProjet
