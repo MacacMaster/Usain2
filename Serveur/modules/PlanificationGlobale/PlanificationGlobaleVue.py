@@ -27,6 +27,7 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale)
         self.fenetre.pack()
         
+        
 
         self.barreTaches()
         self.framePrincipal()
@@ -108,14 +109,13 @@ class Vue():
         self.canCommandes=Canvas(self.frameCommandes, width=1000, height=70, bg="light grey", )
         self.canCommandes.pack()
         
-        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink", command=self.ajoutFonction)
+        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="light blue", command=self.ajoutFonction)
         self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
         self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink", command=self.modifierFonction)
         self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
         self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink", command=self.fenetreConfirmation)
         self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
-        self.btnChangerProjet=Button(self.frameCommandes, text="Changer de projet", width=40, bg="light blue")
-        self.canCommandes.create_window(900,35,window=self.btnChangerProjet,width=150,height=35)
+     
     
     
     def frameAjoutModif(self):
@@ -162,9 +162,9 @@ class Vue():
         self.canAjoutModif.create_window(550,180, window=self.tfResponsable, width=700, height=25)
         
         #bouton
-        self.btnEffacer=Button(self.frameAjoutModif, text="Effacer", width=100, bg="pink", command=self.effacerChamps)
+        self.btnEffacer=Button(self.frameAjoutModif, text="Effacer", width=100, bg="light blue", command=self.effacerChamps)
         self.canAjoutModif.create_window(950,60,window=self.btnEffacer,width=60,height=70)
-        self.btnTermine=Button(self.frameAjoutModif, text="Terminer", width=100, bg="pink", command=self.terminerFonct)
+        self.btnTermine=Button(self.frameAjoutModif, text="Terminer", width=100, bg="light blue", command=self.terminerFonct)
         self.canAjoutModif.create_window(950,150,window=self.btnTermine,width=60,height=70)
     
     def terminerFonct(self):
@@ -184,7 +184,7 @@ class Vue():
         self.tfResponsable.delete(0,END)
     
     def fenetreConfirmation(self):
-        self.topConfirm=Toplevel(height=200)
+        self.topConfirm=Toplevel(height=120, width=170)
         self.topConfirm.title("Confimation de supression")
         msg = Message(self.topConfirm, text="Voulez-vous vraiment supprimer cette fonctionnalité?")
         msg.pack()
@@ -192,6 +192,14 @@ class Vue():
         btnConfirmation.pack()
         btnAnnuler=Button(self.topConfirm, text="Annuler", command=self.topConfirm.destroy)
         btnAnnuler.pack()
+        
+    def centrerFenetre(self):
+        self.root.update() # Suivant le WM. A faire dans tous les cas donc.
+        fenrw = self.root.winfo_reqwidth()
+        fenrh = self.root.winfo_reqheight()
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        self.root.geometry("%dx%d+%d+%d" % (fenrw, fenrh, (sw-fenrw)/2, (sh-fenrh)/2))
         
     def optionAnnuler(self):
         index=self.listFonct.index(ACTIVE)
