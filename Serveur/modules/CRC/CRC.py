@@ -36,8 +36,6 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
         self.classes = []
-        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
-     
         
 
         self.creerVueMenu()
@@ -59,11 +57,6 @@ class Vue():
     def creerVueMenu(self):  
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menu.pack(side=LEFT)
-        #self.menu.pack_propagate(0)
-        #self.classes = self.parent.modele.nomsDesClasses()
-        #test
-        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
-
         self.creerMenuGauche()
         self.creerMenuDroite()
         self.loaderNomClasses()
@@ -146,10 +139,6 @@ class Vue():
         scrollbar.pack(side=LEFT,fill="y")
    
         self.listeClasses.config(yscrollcommand=scrollbar.set)
-        
-        #remplir la liste de classes
-        #for classe in self.classes:
-        #    self.listeClasses.insert(END,classe[2]) #insérer le nom de la classe
         self.loaderNomClasses()  
         #for x in range(30):
         #    listeClasses.insert(END, str(x))

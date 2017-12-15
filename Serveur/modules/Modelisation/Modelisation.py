@@ -5,7 +5,6 @@ from tkinter import messagebox
 
 class Controleur():
     def __init__(self):
-        print("jentre das qqch")
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
@@ -17,7 +16,6 @@ class Controleur():
         self.vue = Vue(self)
         self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
-        print("controleur")
 
     def fermerProgramme(self):
         self.writeLog("Fermeture du Module","3")
@@ -32,7 +30,6 @@ class Controleur():
         self.vue.menuInitial()
         
     def connectionServeur(self):
-        print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
     
@@ -45,7 +42,6 @@ class Controleur():
            
     
     def changeEtat(self, etat, idChamp, listBox,idTable):
-        print("Entre dans la fonction changeEtat")
         if(etat=="Bon"):
             self.serveur.updateSQL("Champs", "Pas bon","etat", "id", "id_Table",idChamp, idTable)
         elif(etat=="Pas bon"):
@@ -106,27 +102,23 @@ class Modele():
         listBox.delete(0, END)
         laselection=self.controleur.serveur.selectionSQL3("Champs", "nom", "id_Table", idTable )
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
             
     def remplirListBoxContraintesChamps(self, listBox, idTable):
         listBox.delete(0, END)
         laselection=self.controleur.serveur.selectionSQL3("Champs", "contrainte", "id_Table", idTable )
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
         
     def remplirListBoxTypeChamps(self, listBox, idTable):
         laselection=self.controleur.serveur.selectionSQL3("Champs", "type", "id_Table", idTable )
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
             
     def remplirListBoxEtatChamps(self, listBox, idTable):
         laselection=self.controleur.serveur.selectionSQL3("Champs", "etat", "id_Table", idTable )
         listBox.delete(0, END)
         for x in laselection:
-            print(x)
             listBox.insert(END,str(x)[2:int(len(x)-3)])
    
             
@@ -396,10 +388,8 @@ class Vue():
     
     def changeEtat(self):
         ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxEtatChampsTable ,"Veuillez selectionner un etat")
-        print("OUI OU NONONONONON : ", ouiOuNon)
         if(ouiOuNon == True):
             nomTable=self.lblNomTable.cget('text')
-            print("NOMOMOMOM DEEE LLLAAAA TTABEL :  ", nomTable)
             idTable=self.controleur.modele.idTableAjoutChamps(nomTable)
             position=self.listBoxEtatChampsTable.curselection()[0]
             nom=self.listBoxChampsTable.get(position, position)
@@ -410,7 +400,6 @@ class Vue():
             else:
                nomChampGood=nom
                etatGood=etat
-            print("NOM DU CHAMMMPPPPP A CHANGER ETAT : ", nomChampGood)
             idChamp=self.controleur.modele.idDuChamp(nomChampGood, idTable)
             self.controleur.changeEtat(etatGood, idChamp, self.listBoxEtatChampsTable, idTable)
             self.canevaAffichageChamps.forget()

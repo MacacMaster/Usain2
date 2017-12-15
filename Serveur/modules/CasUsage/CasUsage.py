@@ -1,7 +1,7 @@
 from tkinter import *
 from logging.config import listen
 from xmlrpc.client import ServerProxy
-
+from tkinter import messagebox
 
 class Controleur():
     def __init__(self):
@@ -116,7 +116,6 @@ class Controleur():
         valeur = [nomCas]
         indice=self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         indiceGood=str(indice)[2:int(len(indice)-3)]
-        print(indiceGood)
         return indiceGood
     
     def changerReprendre(self,indice):
@@ -272,15 +271,17 @@ class Vue():
     
         
     def supprimer(self):
-        position=self.listeetat.curselection()[0]
-        nomCas=self.listecas.get(position,position) # indice du cas selectionné
-        if(position!=0):
-           nomCasSelectionGood=str(nomCas)[2:int(len(nomCas)-4)]
-        else: 
-            nomCasSelectionGood=nomCas
-        self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
-        self.controleur.changerEtat(self.indiceCasModifier)
-    
+        try:
+            position=self.listeetat.curselection()[0]
+            nomCas=self.listecas.get(position,position) # indice du cas selectionné
+            if(position!=0):
+                nomCasSelectionGood=str(nomCas)[2:int(len(nomCas)-4)]
+            else: 
+                nomCasSelectionGood=nomCas
+                self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
+                self.controleur.changerEtat(self.indiceCasModifier)
+        except IndexError:
+            messagebox.showerror("Mauvaise Liste","Choisir dans la liste d'état")
     def menuInitialMod(self):
         self.canevaMod.forget()
         self.menuInitial()
@@ -324,14 +325,14 @@ class Vue():
                 test=True
         return test   
     
-    def reprendre(self):
-      #  if(position = self.listeetat.curselection()[0])
-        
-        reprend=self.unSeulReprendre()
-        if(reprend==False):  
-            position=self.listeetat.curselection()[0] 
-            indice=self.trouverCasReprendre(position)
-            self.controleur.changerReprendre(indice)
-    
+    def reprendre(self):  
+        try:
+            reprend=self.unSeulReprendre()
+            if(reprend==False):  
+                position=self.listeetat.curselection()[0] 
+                indice=self.trouverCasReprendre(position)
+                self.controleur.changerReprendre(indice)
+        except IndexError:
+            messagebox.showerror("Mauvaise Liste","Choisir dans la liste d'état")
 if __name__ == '__main__':
     c = Controleur()

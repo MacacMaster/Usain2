@@ -68,7 +68,6 @@ class Controleur():
         self.sql.supressionFonction(fonct)
     
     def connectionServeurSaas(self):
-        print("Connection au serveur Saas...")
         return ServerProxy(self.adresseServeur)
     
     def updateListe(self):
