@@ -77,9 +77,16 @@ class Controleur():
         self.serveur.updateSQL2("Maquettes", nouveauNom, "nom", "id", self.idMaquette)
     
     def getIdMaquette(self, nomMaquette):
-        self.idMaquette = self.serveur.selectionSQL3("Maquettes","id","nom", nomMaquette)
+        nomTable = "Maquettes"
+        champs = "id"
+        where = ["id_Projet", "nom"]
+        valeur = [str(self.idProjet), nomMaquette]
+
+        requete = self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
+        self.idMaquette = requete
         self.idMaquette = str(self.idMaquette)[2:len(self.idMaquette)-3]
-    
+        
+            
 class Vue():
     def __init__(self, pControleur):
         self.controleur = pControleur
@@ -177,10 +184,24 @@ class Vue():
         self.canvasRenommage.pack()
 
     def renommer(self, nouveauNom, ancienNom):
-        self.controleur.renommer(nouveauNom, ancienNom)
-        self.listeMaquettes.delete(self.listeMaquettes.curselection())
-        self.listeMaquettes.insert(END,nouveauNom)
+        nomDispo = True
+        #self.controleur.renommer(nouveauNom, ancienNom)
+        #self.listeMaquettes.delete(self.listeMaquettes.curselection())
+        #self.listeMaquettes.insert(END,nouveauNom)
         self.popup.destroy()
+        for i in range(0,self.listeMaquettes.size()+1):
+            nom=self.listeMaquettes.get(ACTIVE)
+            self.listeMaquettes.activate(i)
+            etat2= str(nom)
+            if nom == nouveauNom:
+                nomDispo = False
+                self.afficherMessageErreur("Ce nom de maquette existe déjà.")
+        
+        if nomDispo:
+            self.listeMaquettes.delete(self.listeMaquettes.curselection())
+            self.controleur.renommer(nouveauNom, ancienNom)
+            self.listeMaquettes.insert(END,nouveauNom)
+            self.popup.destroy()
 
     def bindTouche(self):
         self.canvasDessin.bind('<B1-Motion>', self.deplacementSouris)
@@ -232,7 +253,7 @@ class Vue():
         
     def clicSouris(self,event):
         if not self.listeMaquettes.curselection():
-            self.afficherMessageErreur("Vous devez d'abord sélectionner un projet")
+            self.afficherMessageErreur("Vous devez d'abord sélectionner une maquette")
         elif (self.controleur.modele.estEditable == False):
             self.afficherMessageErreur("Vous devez confirmer votre choix")
         elif self.listeMaquettes.curselection():
@@ -281,13 +302,13 @@ class Vue():
             self.canvasDessin.itemconfig(self.text_id, text="")
         
     def selectionOutils(self, nomBouton):
-        if (nomBouton == "Rectangle"):
+        if (nomBouton == "Rectangle" and self.controleur.modele.estEditable):
             self.controleur.modele.choixForme = "Rectangle"
-        elif (nomBouton == "Ovale"):
+        elif (nomBouton == "Ovale" and self.controleur.modele.estEditable):
             self.controleur.modele.choixForme = "Ovale"
-        elif (nomBouton == "Fleche"):
+        elif (nomBouton == "Fleche" and self.controleur.modele.estEditable):
             self.controleur.modele.choixForme = "Fleche"
-        elif (nomBouton == "Texte"):
+        elif (nomBouton == "Texte" and self.controleur.modele.estEditable):
             self.controleur.modele.choixForme = "Texte"
         elif (nomBouton == "CommitChangement"):
             self.controleur.commitNouvellesFormes()
