@@ -83,8 +83,8 @@ class Controleur():
     def insererNouvelleTache(self,id_utilisateur, id_sprint, tache, reussi):
         return self.modele.insererNouvelleTache(self.idProjet, id_utilisateur, id_sprint, tache, reussi)
     
-    def enregistrer(self,list,id_utilisateur,id_sprint):
-        self.modele.enregistrer(self.idProjet,id_utilisateur,id_sprint,list)
+    def enregistrer(self,list,id_utilisateur,id_sprint,jourSemaineValides):
+        self.modele.enregistrer(self.idProjet,id_utilisateur,id_sprint,list, jourSemaineValides)
         
     def insererNouveauSprint(self,date_debut, date_fin, nom):
         self.modele.insererNouveauSprint(self.idProjet,date_debut, date_fin, nom)
