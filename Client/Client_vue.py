@@ -15,12 +15,13 @@ class Vue():
         self.labNomOrga = None
         self.root=tix.Tk()
         self.root.title("SPRINTMASTER")
+        self.root.iconbitmap('Icon.ico')
         self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerApplication)
         self.cadreApplication = Frame(self.root, width = self.largeur, height = self.hauteur)
         self.cadreApplication.pack()
         self.centrerFenetre()
         self.statut=0
-        
+        self.photo=PhotoImage(file=('Logo.gif'))
         self.creerCadreModules()
         self.creerCadreLogIn(pClientIp)
         self.changeCadre(self.cadreLogIn)
@@ -44,6 +45,7 @@ class Vue():
         hauteur = self.root.winfo_reqheight()
         self.cadreLogIn=Frame(self.cadreApplication)
         self.canevaLogIn=Canvas(self.cadreLogIn,width=largeur,height=hauteur) 
+        
         labNomOrga=Label(text="Nom organisation",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
         labNomUsager=Label(text="Nom usager",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
         labMDP=Label(text="Mot de passe",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
@@ -52,6 +54,18 @@ class Vue():
         self.entrerMotDePasse=Entry(bg="white", show="*")
         btnLogInClient=Button(text="Se connecter", command=self.logInClient)
         
+        
+        
+        
+        self.canevaLogIn.create_image(0, 0, image=self.photo, anchor=NW)
+        
+
+        self.photoLogo=PhotoImage(file='Title2.gif')
+        self.panel = Label(image = self.photoLogo)
+
+        
+        
+        self.canevaLogIn.create_window(largeur/2,100,window=self.panel,width=largeur)
         self.canevaLogIn.create_window(largeur/2,250,window=labNomOrga,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,300,window=self.entrerNomOrga,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,350,window=labNomUsager,width=150,height=30)
@@ -60,6 +74,8 @@ class Vue():
         self.canevaLogIn.create_window(largeur/2,500,window=self.entrerMotDePasse,width=150,height=30)
         self.canevaLogIn.create_window(largeur/2,550,window=btnLogInClient,width=150,height=30) 
         self.canevaLogIn.pack()
+        
+
         
     def logInClient(self):
         identifiantNomOrga = self.entrerNomOrga.get()
@@ -124,6 +140,7 @@ class Vue():
             self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
             btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="lightgrey",command=self.chargerProjet)
             btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="lightgrey",command=self.creerProjet)
+            self.canevaProjet.create_image(0, 0, image=self.photo, anchor=NW)
             self.canevaProjet.create_window(380,150,window=self.listeProjets)
             self.canevaProjet.create_window(275,30,window=self.labNomOrga,width=150,height=30)
             self.canevaProjet.create_window(525,30,window=self.labIDOrga,width=150,height=30)
@@ -136,6 +153,7 @@ class Vue():
         self.cadreModules=Frame(self.cadreCentral2)
         self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="steelblue")
         self.canevaModules.pack()
+        self.canevaModules.create_image(0, 0, image=self.photo, anchor=NW)
         self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=7)
         btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="lightgrey",command=self.requeteModule)
         self.canevaModules.create_window(200,150,window=self.listeModules)
