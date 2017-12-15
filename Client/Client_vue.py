@@ -107,7 +107,7 @@ class Vue():
             self.cadreOutil = Frame(self.cadreCentral)
             self.canevaOutil=Canvas(self.cadreOutil,width=400,height=600,bg="lightgrey")
             self.canevaOutil.pack()
-            self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+            self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=7)
             btnconnecter=Button(self.cadreOutil, text="Choisir un outil",bg="steelblue",command=self.requeteOutil)
             btnCommande=Button(self.cadreOutil, text="Envoyer une requete SQL",bg="steelblue",command=self.commandeAdmin)
             btnCommandeSaas=Button(self.cadreOutil, text="Envoyer une requete SAAS",bg="steelblue",command=self.commandeAdminSaas)

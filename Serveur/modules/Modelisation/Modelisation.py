@@ -49,10 +49,14 @@ class Controleur():
         print("Etat : ", etat, "     idChamp : ", idChamp)
         if(etat=="Bon"):
             print("l'etat est Bon")
-            self.serveur.updateSQL2("Champs", "Pas bon","etat", "id",idChamp)
+            print("idChamps : ", idChamp,"  idTAble : ", idTable)
+            self.serveur.updateSQL("Champs", "Pas bon","etat", "id", "id_Table",idChamp, idTable)
+           # self.serveur.updateSQL2("Champs", "Pas bon","etat", "id",idChamp)
         elif(etat=="Pas bon"):
+            print("idChamps : ", idChamp,"  idTAble : ", idTable)
             print("l'etat est Pas bon")
-            self.serveur.updateSQL2("Champs", "Bon","etat", "id",idChamp)
+            self.serveur.updateSQL("Champs", "Bon" , "etat", "id" , "id_Table" , idChamp , idTable)
+           # self.serveur.updateSQL2("Champs", "Bon","etat", "id",idChamp)
         self.modele.remplirListBoxEtatChamps(listBox, idTable)
         
     def ajouterChamp(self,nom, contrainte,type):
@@ -103,13 +107,12 @@ class Modele():
         return idTableGood
     
     
-    def idDuChamp(self, nomChamp):
+    def idDuChamp(self, nomChamp, idTable):
         print("NOM Du CHAMP      ", nomChamp)
-        idChamp=self.controleur.serveur.selectionSQL3("Champs", "id",  "nom", nomChamp)
+        idChamp=self.controleur.serveur.selectionSQL2("Champs", "id",  "nom","id_Table", nomChamp, idTable)
         print("ID DU CHAMPS 1    ", idChamp)
         idChampGood=str(idChamp)[2:int(len(idChamp)-3)]
         print("ID DU CHAMPS 2    ", idChampGood)
-        
         self.idChamp=idChampGood
         return idChampGood
     
@@ -421,6 +424,7 @@ class Vue():
     
     def changeEtat(self):
         ouiOuNon = self.controleur.modele.verificationSelection(self.listBoxEtatChampsTable ,"Veuillez selectionner un etat")
+        print("OUI OU NONONONONON : ", ouiOuNon)
         if(ouiOuNon == True):
             nomTable=self.lblNomTable.cget('text')
             print("NOMOMOMOM DEEE LLLAAAA TTABEL :  ", nomTable)
@@ -435,7 +439,7 @@ class Vue():
                nomChampGood=nom
                etatGood=etat
             print("NOM DU CHAMMMPPPPP A CHANGER ETAT : ", nomChampGood)
-            idChamp=self.controleur.modele.idDuChamp(nomChampGood)
+            idChamp=self.controleur.modele.idDuChamp(nomChampGood, idTable)
             self.controleur.changeEtat(etatGood, idChamp, self.listBoxEtatChampsTable, idTable)
             self.canevaAffichageChamps.forget()
             self.menuAffichageChamps(nomTable)

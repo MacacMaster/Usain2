@@ -178,9 +178,9 @@ class ControleurServeur():
     def selectionSQL(self,nomTable,champs):
         return self.serveurBD.selDonnees(nomTable,champs)
   
-    def updateSQL(self,nomTable,champs,valeur):
-        self.serveurBD.updateDonnes(nomTable,champs,valeur)
-        return self.serveurBD.selDonneesComplexe1(nomTable,champs,where,indice)
+    def updateSQL(self, nomTable,champs, description,where1, where2,indice1,indice2):
+        self.serveurBD.updateDonnees(nomTable,champs,description, where1, where2, indice1, indice2)
+        #return self.serveurBD.selDonneesComplexe1(nomTable,champs,where, where1,indice1,indice2)
     
     def updateSQL2(self,nomTable,champ,description,where,indice1):
         self.serveurBD.updateDonnees2(nomTable,champ,description,where,indice1)
