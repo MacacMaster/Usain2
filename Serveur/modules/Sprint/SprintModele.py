@@ -147,8 +147,8 @@ class Modele():
             for jour in semaine:
                 compteur = compteur+1
                 if jourSemaineValides[compteur]:
-                    reussi = str(jour[4].get())
-                    prevu = str(jour[5].get())
+                    prevu = str(jour[4].get())
+                    reussi = str(jour[5].get())
                     entry = str(jour[2].get())
                     date = str(lesCinqJours[compteur])
                     idTache = tacheX[4]

@@ -403,17 +403,12 @@ class Vue():
             #pour les 5 jours de la semaine
             listeSemaine=[]
             for i in range(5):
-                
-                print(self.datePrevu, id_tache)
                 try:
-                    dateSprint =  self.retournerUneDateSprint(self.datePrevu, id_tache)
-                    reqJourFait = dateSprint[0][0]
-                   
+                    dateSprint =  self.retournerUneDateSprint(str(self.lesCinqJours[i]), id_tache)
+                    reqJourFait = dateSprint[0][0]         
                     reqJourPrevu = dateSprint[0][1]
-                   
                     texteDefaut = dateSprint[0][2]
                 except:
-                
                     reqJourFait = 0
                     reqJourPrevu =0    
                     texteDefaut = ""
@@ -427,7 +422,7 @@ class Vue():
                 jourPrevu = IntVar()
                 #jourEntry = IntVar()
                 self.checkParDefaut(jourFait, reqJourFait)
-                #self.checkParDefaut(jourPrevu, reqJourPrevu)
+                self.checkParDefaut(jourPrevu, reqJourPrevu)
                 fait = Checkbutton(frame, state = state, variable=jourFait)
                 fait.grid(row=row,column=column)
                 prevu = Checkbutton(frame, state = state, variable = jourPrevu)
