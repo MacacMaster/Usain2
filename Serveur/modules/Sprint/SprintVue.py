@@ -490,6 +490,7 @@ class Vue():
          self.rangees = 0
          self.colonnes = 0
          self.lesCinqJours = []
+         self.joursSemaineValides= []
          self.populer(self.frame)
              
     def nbColonnes(self):
