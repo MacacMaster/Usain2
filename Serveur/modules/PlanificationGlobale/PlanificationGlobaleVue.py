@@ -21,16 +21,20 @@ class Vue():
         self.largeurTotale=800
         self.hauteurSub=500
         self.largeurSub=800
+        self.updated=0;
+        self.strAction = ""
         self.root.protocol("WM_DELETE_WINDOW", self.parent.fermerProgramme)
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale)
         self.fenetre.pack()
-                   
+        
+        
 
         self.barreTaches()
         self.framePrincipal()
         self.frameCommandes()
         self.frameAjoutModif()
         self.afficherListes()
+        
         
     def barreTaches(self):
         #menu deroulante
@@ -45,13 +49,12 @@ class Vue():
     def framePrincipal(self):
         self.framePrincipal = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub, padx=10, pady=10, bg="light blue")
         self.framePrincipal.pack(fill=X)
-        self.canPrincipal=Canvas(self.framePrincipal, width=1000, height=530, bg="steelblue", )
+        self.canPrincipal=Canvas(self.framePrincipal, width=1000, height=530, bg="steelblue")
         self.canPrincipal.pack()
         
-        self.lblProchain=Label(self.framePrincipal, text="Prochaine action: ", width=150, height=30, bg="light blue")
+        self.lblProchain=Label(self.framePrincipal, text="Suggestion: ", width=150, height=30, bg="light blue",  relief=SUNKEN)
         self.canPrincipal.create_window(90,40, window=self.lblProchain, width=120, height=30)
-        self.StrAction="Ici sera affichee la prochaine action a effectuer par l'utilisateur"
-        self.lblAction=Label(self.framePrincipal, text=self.StrAction, width=800, height=30, bg="pink")
+        self.lblAction=Label(self.framePrincipal, text=self.strAction, width=800, height=30, bg="pink",  relief=SUNKEN)
         self.canPrincipal.create_window(575,40, window=self.lblAction, width=800, height=30)
         
         
@@ -61,9 +64,7 @@ class Vue():
         self.canPrincipal.create_window(660,90,window=self.lblPriorite, width=60, height=25)
         self.lblSprint=Label(self.framePrincipal, text="Sprint", width=60, height=25, bg="white", relief=RAISED )
         self.canPrincipal.create_window(720,90,window=self.lblSprint, width=60, height=25)
-        self.lblPourcentage=Label(self.framePrincipal, text="%", width=70, height=25, bg="white", relief=RAISED )
-        self.canPrincipal.create_window(785,90,window=self.lblPourcentage, width=70, height=25)
-        self.lblPourcentage=Label(self.framePrincipal, text="%", width=70, height=25, bg="white", relief=RAISED )
+        self.lblPourcentage=Label(self.framePrincipal, text="Termine", width=70, height=25, bg="white", relief=RAISED )
         self.canPrincipal.create_window(785,90,window=self.lblPourcentage, width=70, height=25)
         self.lblResponsable=Label(self.framePrincipal, text="Responsable", width=160, height=25, bg="white", relief=RAISED )
         self.canPrincipal.create_window(900,90,window=self.lblResponsable, width=160, height=25)
@@ -108,14 +109,13 @@ class Vue():
         self.canCommandes=Canvas(self.frameCommandes, width=1000, height=70, bg="light grey", )
         self.canCommandes.pack()
         
-        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="pink", command=self.ajoutFonction)
+        self.btnNouvFonct=Button(self.frameCommandes, text="Ajouter fonctionnalite", width=40, bg="light blue", command=self.ajoutFonction)
         self.canCommandes.create_window(100,35,window=self.btnNouvFonct,width=150,height=35)
         self.btnModifFonct=Button(self.frameCommandes, text="Modifier fonctionnalite", width=40, bg="pink", command=self.modifierFonction)
         self.canCommandes.create_window(300,35,window=self.btnModifFonct,width=150,height=35)
         self.btnSuppFonct=Button(self.frameCommandes, text="Supprimer fonctionnalite", width=40, bg="pink", command=self.fenetreConfirmation)
         self.canCommandes.create_window(500,35,window=self.btnSuppFonct,width=150,height=35)
-        self.btnChangerProjet=Button(self.frameCommandes, text="Changer de projet", width=40, bg="light blue")
-        self.canCommandes.create_window(900,35,window=self.btnChangerProjet,width=150,height=35)
+     
     
     
     def frameAjoutModif(self):
@@ -162,8 +162,18 @@ class Vue():
         self.canAjoutModif.create_window(550,180, window=self.tfResponsable, width=700, height=25)
         
         #bouton
-        self.btnEffacer=Button(self.frameAjoutModif, text="Clear", width=100, bg="pink", command=self.effacerChamps)
-        self.canAjoutModif.create_window(950,105,window=self.btnEffacer,width=50,height=120)
+        self.btnEffacer=Button(self.frameAjoutModif, text="Effacer", width=100, bg="light blue", command=self.effacerChamps)
+        self.canAjoutModif.create_window(950,60,window=self.btnEffacer,width=60,height=70)
+        self.btnTermine=Button(self.frameAjoutModif, text="Terminer", width=100, bg="light blue", command=self.terminerFonct)
+        self.canAjoutModif.create_window(950,150,window=self.btnTermine,width=60,height=70)
+    
+    def terminerFonct(self):
+        if self.tfFin.get()!="":
+            if(self.tfFin.get()[-1:]!="X"):
+                self.tfFin.insert(END, " - X")
+                self.modifierFonction()
+ 
+    
     
     def effacerChamps(self):
         self.tfFonctionnalite.delete(0,END)
@@ -174,7 +184,7 @@ class Vue():
         self.tfResponsable.delete(0,END)
     
     def fenetreConfirmation(self):
-        self.topConfirm=Toplevel(height=200)
+        self.topConfirm=Toplevel(height=120, width=170)
         self.topConfirm.title("Confimation de supression")
         msg = Message(self.topConfirm, text="Voulez-vous vraiment supprimer cette fonctionnalité?")
         msg.pack()
@@ -182,6 +192,14 @@ class Vue():
         btnConfirmation.pack()
         btnAnnuler=Button(self.topConfirm, text="Annuler", command=self.topConfirm.destroy)
         btnAnnuler.pack()
+        
+    def centrerFenetre(self):
+        self.root.update() # Suivant le WM. A faire dans tous les cas donc.
+        fenrw = self.root.winfo_reqwidth()
+        fenrh = self.root.winfo_reqheight()
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        self.root.geometry("%dx%d+%d+%d" % (fenrw, fenrh, (sw-fenrw)/2, (sh-fenrh)/2))
         
     def optionAnnuler(self):
         index=self.listFonct.index(ACTIVE)
@@ -193,16 +211,30 @@ class Vue():
         self.listPourcentage.delete(index)
         self.listResponsable.delete(index)
         
+        self.suppressionFonction()
+        
         self.topConfirm.destroy()
         
     def infosCRC(self):
-        kj=self.parent.serveur.selectionSQL3('Classes','id','id_Projet', self.parent.idProjet)
-        print(str(kj))
-        #nomTable,champs, where, idProjet
-    
+        classes=self.parent.serveur.selectionSQL3('Classes','id','id_Projet', self.parent.idProjet)
+        if not classes:
+            self.updated=1
+            #self.parent.creerFonction(self.tfSprint.get(), "AUCUN CRC DISPONIBLE", self.tfPriorite.get(), self.tfDebut.get(), self.tfFin.get());
+        
+        for uneClasse in classes:
+            classe=str(uneClasse)[1:-1]
+            responsabilite=self.parent.serveur.selectionSQL3('Responsabilites','nom','id_Classe', classe)
+            
+            for uneResp in responsabilite:
+                resp=str(uneResp)[2:-2]
+                self.parent.creerFonction("", resp, "", "", "")
+        
+        self.afficherListes()
+  
+        
     def afficherListes(self):
         
-         
+        self.strAction=""
         self.listFonct.delete(0,END)
         self.listPriorite.delete(0,END)
         self.listSprint.delete(0,END)
@@ -219,39 +251,38 @@ class Vue():
                 self.listDebut.insert(END, liste[6])
                 self.listFin.insert(END, liste[7])
                 self.listResponsable.insert(END, liste[3])
+                
+                if liste[7][-1:]=="X":
+                    self.listPourcentage.insert(END,"X")
+                else:
+                    self.listPourcentage.insert(END,"")
+                
+                #attribution de la suggestion:
+                if self.strAction=="":
+                    if liste[7][-1:]!="X" and liste[3]==self.parent.utilisateur:
+                        self.strAction=liste[7]
+                self.lblAction=Label(self.framePrincipal, text=self.strAction, width=800, height=30, bg="pink",  relief=SUNKEN)
+                self.canPrincipal.create_window(575,40, window=self.lblAction, width=800, height=30)
+                    
+                    
         
         if self.listFonct.size()==0:
-            self.infosCRC()
-        
-        """
-        for item in fonctions:
-            self.listFonct.insert(END, item)
-            
-        for item in priorites:
-            self.listPriorite.insert(END, item)
-            
-        for item in sprints:
-            self.listSprint.insert(END, item)
-            
-        for item in pourcents:
-            self.listPourcentage.insert(END, item)
-            
-        for item in responsables:
-            self.listResponsable.insert(END, item)"""
+            if self.updated==0:
+                self.infosCRC()
             
     
     
     def ajoutFonction(self):
         #sprint,nomfonction,priorite,debut,fin
         self.parent.creerFonction(self.tfSprint.get(), self.tfFonctionnalite.get(), self.tfPriorite.get(), self.tfDebut.get(), self.tfFin.get())
-        print(self.tfSprint.get() + self.tfFonctionnalite.get() + self.tfPriorite.get() + self.tfDebut.get() + self.tfFin.get())
+        
         self.effacerChamps()
         self.afficherListes()
 
         
         
     def suppressionFonction(self):
-        self.parent.supressionFonction()
+        self.parent.suppressionFonction(self.tfFonctionnalite.get())
         self.effacerChamps()
         self.afficherListes()
     

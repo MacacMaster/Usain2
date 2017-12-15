@@ -40,7 +40,6 @@ class Controleur():
 
         #[r0=[c1,c2,c3...],R1...]
         self.listeFonctions=self.sql.selDonnees("*")
-        print("dans le controleur: " + str(self.listeFonctions))
         #Calcule automatiquement      
         self.id = len(self.listeFonctions)
 
@@ -65,8 +64,8 @@ class Controleur():
     def creerFonction(self,sprint,nom,priorite,debut,fin):
         self.sql.creerFonction(sprint,nom,priorite,debut,fin)
         
-    def suppressionFonction(self):
-        self.sql.suppressionFonction()
+    def suppressionFonction(self, fonct):
+        self.sql.supressionFonction(fonct)
     
     def connectionServeurSaas(self):
         print("Connection au serveur Saas...")
