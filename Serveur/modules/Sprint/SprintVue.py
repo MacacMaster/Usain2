@@ -396,10 +396,14 @@ class Vue():
         #4e rangee
         row = self.nbRangees()
         Label(frame, text="Nouvelle tâche", width=10, borderwidth="5",bg= self.color).grid(row=row+2, column=0)
-        if (self.aucunSprint == True or self.ajoutRecent):
+        if (self.aucunSprint == True):
             self.ajoutRecent = False
             entry = Entry(frame, state = DISABLED)
             b.config(bg = "yellow")
+        elif self.ajoutRecent:
+            self.ajoutRecent = False
+            entry = Entry(frame, state = DISABLED)
+            b.config(bg = "gainsboro")
         else:
             entry = Entry(frame, state = NORMAL)
             b.config(bg = "gainsboro")
