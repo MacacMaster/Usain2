@@ -11,6 +11,7 @@ class Vue():
         self.jours = ("Lundi","Mardi","Mercredi","Jeudi","Vendredi")
         self.mois = ("Janvier","Février","Mars","Avril","Mai")
         self.joursSemaineValides= []
+        self.lesCinqJours = []
         self.root = Tk()
         self.root.protocol("WM_DELETE_WINDOW", self.fermerProgramme)
         self.taille = 20
@@ -22,6 +23,7 @@ class Vue():
         self.id_sprint = None
         self.id_utilisateur = None
         self.creerFenetreSprints()
+        
         
         try:
             pass
@@ -88,7 +90,7 @@ class Vue():
     
     def laSemaine(self,frame,jour,row, i):
         
-        self.datePrevu += datetime.timedelta(days=1)
+        self.lesCinqJours.append(self.datePrevu)
         
         column = 3 + jour*3
         Label(frame, text=self.jours[jour]).grid(row=row, column=column, columnspan=3)
@@ -112,7 +114,7 @@ class Vue():
             Label(frame, text="Prévu").grid(row=row+2, column=column)
             Label(frame, text="Fait").grid(row=row+2, column=column+1)
             Label(frame, text="Temps").grid(row=row+2, column=column+2)
-        
+        self.datePrevu += datetime.timedelta(days=1)
     def changer(self,row):
         try:
             label = self.list[row][0]
@@ -401,6 +403,21 @@ class Vue():
             #pour les 5 jours de la semaine
             listeSemaine=[]
             for i in range(5):
+                
+                print(self.datePrevu, id_tache)
+                try:
+                    dateSprint =  self.retournerUneDateSprint(self.datePrevu, id_tache)
+                    reqJourFait = dateSprint[0][0]
+                   
+                    reqJourPrevu = dateSprint[0][1]
+                   
+                    texteDefaut = dateSprint[0][2]
+                except:
+                
+                    reqJourFait = 0
+                    reqJourPrevu =0    
+                    texteDefaut = ""
+                
                 if (self.joursSemaineValides[i]):
                     state = NORMAL
                 else:
@@ -409,20 +426,25 @@ class Vue():
                 jourFait = IntVar()
                 jourPrevu = IntVar()
                 #jourEntry = IntVar()
+                self.checkParDefaut(jourFait, reqJourFait)
+                #self.checkParDefaut(jourPrevu, reqJourPrevu)
                 fait = Checkbutton(frame, state = state, variable=jourFait)
                 fait.grid(row=row,column=column)
                 prevu = Checkbutton(frame, state = state, variable = jourPrevu)
                 prevu.grid(row=row,column=column+1)
                 entry = Entry(frame,state = state)
+                entry.insert(END,texteDefaut)
                 entry.grid(row=row,column=column+2)
                 
                 listeSemaine.append([fait,prevu,entry,self.datePrevu, jourFait, jourPrevu])
+
           
             self.list.append([labelTache,crochetFait,listeSemaine,tache,id_tache])
             
             #changer l'etat des boutons au loadage
             if (reussi):
                 self.changer(index)
+      
                 
           
     def dateEnFormatUtilisable(self,date):
@@ -433,7 +455,7 @@ class Vue():
         return nouvelleDate
    
     def enregistrer(self):
-        self.parent.enregistrer(self.list, self.id_utilisateur,self.id_sprint, self.joursSemaineValides)
+        self.parent.enregistrer(self.list, self.id_utilisateur,self.id_sprint, self.joursSemaineValides, self.lesCinqJours)
      
     def checkParDefaut(self, crochet, reussi):
         if reussi == 1: 
@@ -459,6 +481,9 @@ class Vue():
     def nbRangees(self):
         self.rangees +=1
         return self.rangees-1
+    
+    def retournerUneDateSprint(self,date, id_tache):
+        return self.parent.retournerUneDateSprint(date, id_tache)
     
     def retournerLesTaches(self,id_sprint,id_utilisateur):
         return self.parent.retournerLesTaches(id_sprint,id_utilisateur)

@@ -67,7 +67,6 @@ class Controleur():
         self.serveur.writeLog(self.id_Organisation,self.utilisateur,self.clientIP,self.saasIP,"Sprint",action,codeid) 
         
     def connectionServeur(self):
-        print("Connection au serveur BD...")
         serveur=ServerProxy(self.adresseServeur)
         return serveur
     
@@ -83,14 +82,17 @@ class Controleur():
     def insererNouvelleTache(self,id_utilisateur, id_sprint, tache, reussi):
         return self.modele.insererNouvelleTache(self.idProjet, id_utilisateur, id_sprint, tache, reussi)
     
-    def enregistrer(self,list,id_utilisateur,id_sprint,jourSemaineValides):
-        self.modele.enregistrer(self.idProjet,id_utilisateur,id_sprint,list, jourSemaineValides)
+    def enregistrer(self,list,id_utilisateur,id_sprint,jourSemaineValides, lesCinqJours):
+        self.modele.enregistrer(self.idProjet,id_utilisateur,id_sprint,list, jourSemaineValides, lesCinqJours)
         
     def insererNouveauSprint(self,date_debut, date_fin, nom):
         self.modele.insererNouveauSprint(self.idProjet,date_debut, date_fin, nom)
         
     def retournerLeSprint(self,id_sprint):
         return self.modele.retournerLeSprint(id_sprint)
+    
+    def retournerUneDateSprint(self,date, id_tache):
+        return self.modele.retournerUneDateSprint(date, id_tache)
         
 if __name__ == '__main__':
     #parent = serveur Saas
