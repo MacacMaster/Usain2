@@ -159,7 +159,6 @@ class Vue():
         if choix == 1:
             self.parent.modele.uneExpression.nature = "Objet"
             self.labelChoixNature.config(text="Objet")
-            print("Envoie de la nature Objet dans l'expression: " + self.parent.modele.uneExpression.nature)
         elif choix == 2:
             self.labelChoixNature.config(text="Action")
             self.parent.modele.uneExpression.nature = "Action"
@@ -396,7 +395,7 @@ class Modele():
             fichier = open(filename, "r")
         except FileNotFoundError:
             fonctionne = False
-            print("Aucun fichier choisi!")
+            messagebox.showinfo("Erreur","Aucun fichier choisi")
         if fonctionne:  
             content = fichier.read()
             fichier.close()
@@ -405,11 +404,7 @@ class Modele():
     def insertionSQL(self):  
         pass
         sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id) + "," + str(self.uneExpression.type) + "," + str(self.uneExpression.emplacement) + "," + str(self.uneExpression.contenu) + "," + str(self.uneExpression.nature) + ");"
-        print("Envoie a la BD")
-        
-        
         self.curseur.execute("INSERT INTO Mots VALUES(?,?,?,?,?)", (self.uneExpression.id, self.uneExpression.type, self.uneExpression.emplacement, self.uneExpression.contenu, self.uneExpression.nature,))
-        print("Envoi avec succes")
         self.database.commit()
         
     
@@ -423,7 +418,7 @@ class Modele():
                     break
             return self.parent.texteMandat
         except NameError:
-            print("erreur, rien a loader de la BD")
+            messagebox.showinfo("Erreur","Aucune connexion possible avec cette valeur")
             return "Bienvenue au module Mandat"  # pour le texte par defaut
         
     def selectionLesExpressions(self, type, nature):
@@ -482,7 +477,6 @@ class Controleur():
 
 
     def connectionServeur(self):
-        print("Connection au serveur BD...")
         serveur = ServerProxy(self.adresseServeur)
         return serveur
         

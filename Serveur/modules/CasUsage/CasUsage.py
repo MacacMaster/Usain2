@@ -116,7 +116,6 @@ class Controleur():
         valeur = [nomCas]
         indice=self.serveur.selDonneesWHERE(nomTable,champs,where,valeur)
         indiceGood=str(indice)[2:int(len(indice)-3)]
-        print(indiceGood)
         return indiceGood
     
     def changerReprendre(self,indice):

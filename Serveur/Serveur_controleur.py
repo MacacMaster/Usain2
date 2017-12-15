@@ -66,7 +66,7 @@ class ControleurServeur():
         #Connection au serveurDB
         self.ipServeurBd = "http://"+pUsagerIP+":9998"
         self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1)
-        print("Connexion au serveur BD")
+        
 
    
         #variables id
@@ -96,7 +96,6 @@ class ControleurServeur():
         return idProjet
         
     def fermeture(self, utilisateurId):
-        print("Déconnexion de ce client  "+str(utilisateurId))
         del self.modele.clients[utilisateurId]
         
     def finDuProgramme(self):
@@ -203,7 +202,7 @@ class ControleurServeur():
                 logdb.commit()
                 locked=False
             except sqlite3.OperationalError:
-                print("database locked")
+                messagebox.showinfo("Erreur","Databasedlocked")
                 time.sleep(2)
         logdb.close()
         return True 

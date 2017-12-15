@@ -229,10 +229,11 @@ class Vue():
         self.root.after(250, self.afficherFormes)
         
     def annulerForme(self):
-        if len(self.controleur.modele.formesTemporaire) > self.controleur.modele.nbFormesCharger:
-            self.controleur.modele.formesTemporaire.pop()
-            self.controleur.modele.formes.pop()
-            self.nettoyerCanevasDessin()
+        if len(self.controleur.modele.formesTemporaire) >0: 
+            if len(self.controleur.modele.formesTemporaire) > self.controleur.modele.nbFormesCharger:
+                self.controleur.modele.formesTemporaire.pop()
+                self.controleur.modele.formes.pop()
+                self.nettoyerCanevasDessin()
         
     def accepterTexte(self, event):
         if (self.controleur.modele.choixForme == "Texte"):

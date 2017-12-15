@@ -99,11 +99,13 @@ curseur.execute("INSERT INTO Usagers VALUES ('4','1', 'admin', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('5','2', 'admin', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('6','3', 'admin', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('7','4', 'admin', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('8','3', 'etudiant', 'e')")
 
 
 curseur.execute("INSERT INTO Projets VALUES ('1', '1', 'ProjetTest')")
 curseur.execute("INSERT INTO Projets VALUES ('2', '2', 'Projet1')")
 curseur.execute("INSERT INTO Projets VALUES ('3', '1', 'Projet1')")
+curseur.execute("INSERT INTO Projets VALUES ('4', '3', 'Presentation')")
 
 
 # Voir les objets de la bd
