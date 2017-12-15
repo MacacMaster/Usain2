@@ -136,7 +136,7 @@ class Vue():
         self.cadreModules=Frame(self.cadreCentral2)
         self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="steelblue")
         self.canevaModules.pack()
-        self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+        self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=7)
         btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="lightgrey",command=self.requeteModule)
         self.canevaModules.create_window(200,150,window=self.listeModules)
         self.canevaModules.create_window(200,500,window=btnconnecter,width=100,height=30)

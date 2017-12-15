@@ -1,7 +1,7 @@
 from tkinter import *
 from logging.config import listen
 from xmlrpc.client import ServerProxy
-from tkinter import messagebox
+
 
 class Controleur():
     def __init__(self):
@@ -272,17 +272,15 @@ class Vue():
     
         
     def supprimer(self):
-        try:
-            position=self.listeetat.curselection()[0]
-            nomCas=self.listecas.get(position,position) # indice du cas selectionné
-            if(position!=0):
-                nomCasSelectionGood=str(nomCas)[2:int(len(nomCas)-4)]
-            else: 
-                nomCasSelectionGood=nomCas
-                self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
-                self.controleur.changerEtat(self.indiceCasModifier)
-        except IndexError:
-            messagebox.showerror("Mauvaise Liste","Choisir dans la liste d'état")
+        position=self.listeetat.curselection()[0]
+        nomCas=self.listecas.get(position,position) # indice du cas selectionné
+        if(position!=0):
+           nomCasSelectionGood=str(nomCas)[2:int(len(nomCas)-4)]
+        else: 
+            nomCasSelectionGood=nomCas
+        self.indiceCasModifier=self.controleur.indiceCasModifier(nomCasSelectionGood)
+        self.controleur.changerEtat(self.indiceCasModifier)
+    
     def menuInitialMod(self):
         self.canevaMod.forget()
         self.menuInitial()
@@ -327,13 +325,11 @@ class Vue():
         return test   
     
     def reprendre(self):  
-        try:
-            reprend=self.unSeulReprendre()
-            if(reprend==False):  
-                position=self.listeetat.curselection()[0] 
-                indice=self.trouverCasReprendre(position)
-                self.controleur.changerReprendre(indice)
-        except IndexError:
-            messagebox.showerror("Mauvaise Liste","Choisir dans la liste d'état")
+        reprend=self.unSeulReprendre()
+        if(reprend==False):  
+            position=self.listeetat.curselection()[0] 
+            indice=self.trouverCasReprendre(position)
+            self.controleur.changerReprendre(indice)
+    
 if __name__ == '__main__':
     c = Controleur()
