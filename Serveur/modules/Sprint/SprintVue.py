@@ -249,6 +249,7 @@ class Vue():
 
     def prochain(self):
         #passer a la prochaine semaine
+        self.enregistrer()
         self.datePrevu = self.lesCinqJours[0]+ datetime.timedelta(days=7)
         self.changementDeSemaine = True
         self.updaterVue()
@@ -257,6 +258,7 @@ class Vue():
     
     def precedent(self):
         #passer a la prochaine semaine
+        self.enregistrer()
         self.datePrevu = self.lesCinqJours[0]- datetime.timedelta(days=7)
         self.changementDeSemaine = True
         self.updaterVue()
