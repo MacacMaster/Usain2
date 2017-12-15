@@ -283,9 +283,7 @@ class Vue():
         row = self.nbRangees()
         Label(frame, text="Utilisateur", width=10, borderwidth="5", relief="solid").grid(row=row, column=0, rowspan = 1)
         b  = Button(frame, text="+", width=10, borderwidth="5", command = self.ajouterUnSprint)
-        
-        
-        b.grid(row=1, column=1)
+        b.grid(row=2, column=1)
         Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=1, column=0)
         
         #bouton pour passer a la prochaine semaine
@@ -347,16 +345,16 @@ class Vue():
             w.configure(state="disabled")
             self.aucunSprint = True
        
-        w.grid(row=row, column=5)
+        w.grid(row=1, column=1)
           
         if (self.id_sprint == None):          
             self.setSprint(OPTIONS[0])       
                
         button = Button(frame,text="Confirmer", command = self.updaterVue)
-        button.grid(row=row, column=7)
+        button.grid(row=row, column=2)
         
         button = Button(frame,text="Enregistrer", command = self.enregistrer)
-        button.grid(row=row, column=9)
+        button.grid(row=row, column=18)
         
         #deuxieme rangee
         row = self.nbRangees()
