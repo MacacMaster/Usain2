@@ -31,19 +31,16 @@ class Controleur():
         self.vue=Vue(self,self.clientIP)
         
         self.vue.root.mainloop()
-
     
     def chargerProjet(self, nomprojet):
         idProjet = self.serveur.chargerProjet(nomprojet, self.idOrga)
         self.idProjet = idProjet
         self.log.writeLog("Projet ID: "+str(idProjet),"PE0")
-        #print("id du projet coté client controleur", self.idProjet)
         return idProjet
     
     #trouve l'IP du client
     def chercherIP(self):
         clientIP = socket.gethostbyname(socket.gethostname())
-        #print("L'addresse ip du client est: ", clientIP)
         return clientIP
 
     def fermerApplication(self):
@@ -57,12 +54,11 @@ class Controleur():
         if (pIdentifiantNomOrga !="" and pIdentifiantNomUsager !="" and pIdentifiantMotDePasse !="" ):
             #connection au Serveur
             ad="http://"+self.saasIP+":9999"
-            #print("Connection au serveur Saas en cours...")
             self.serveur=ServerProxy(ad,allow_none = 1)
             #Needs those Var for LOGS
             self.log.setLog( pIdentifiantNomOrga, pIdentifiantNomUsager, )
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
-            print("Connection au serveur Saas réussi")
+    
             
             if (reponseServeur == 0):
                 self.log.writeLog("Login Fail")
@@ -79,7 +75,7 @@ class Controleur():
                 self.vue.chargerCentral(reponseServeur[0][1],reponseServeur[0][2],reponseServeur[0][3],reponseServeur[0][4])
         else:
             self.vue.logInClientFail(2)
-        self.serveur.selectionSQL("Projets","id")
+
         
     def creerProjet(self,nom):
         
@@ -88,19 +84,15 @@ class Controleur():
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)
         if rep:
-            #print(rep[0])
             cwd=os.getcwd()
             lieuApp="/"+rep[0]
             lieu=cwd+lieuApp
-            #print(lieu)
             if not os.path.exists(lieu):
                 os.mkdir(lieu) #plante s'il existe deja
             reso=rep[1]
-            #print(rep[1])
             for i in rep[2]:
                 if i[0]=="fichier":
                     nom=reso+i[1]
-                    print("DODODOO",nom)
                     rep=self.serveur.requeteFichier(nom)
                     fiche=open(lieu+"/"+i[1],"wb")
                     fiche.write(rep.data)
@@ -120,33 +112,29 @@ class Controleur():
             #pid = Popen(["C:\\Python34\\Python.exe", chaineappli,argumentsServeur],shell=1).pid 
             #pid = Popen(["C:\\Python34\\Python.exe", chaineappli],shell=1).pid
         else:
-            print("RIEN")
+            print("Pas de connexion")
             
                
     def requeteOutil(self,mod):
         rep=self.serveur.requeteOutil(mod)
         if rep:
-            print(rep[0])
             cwd=os.getcwd()
             lieuApp="/"+rep[0]
             lieu=cwd+lieuApp
-            #print(lieu)
             if not os.path.exists(lieu):
                 os.mkdir(lieu) #plante s'il exist deja
             reso=rep[1]
-            #print(rep[1])
             for i in rep[2]:
                 if i[0]=="fichier":
                     nom=reso+i[1]
-                    #print("DODODOO",nom)
                     rep=self.serveur.requeteFichier(nom)
                     fiche=open(lieu+"/"+i[1],"wb")
                     fiche.write(rep.data)
                     fiche.close()
             chaineappli="."+lieuApp+lieuApp+".py"
-            pid = Popen(["C:\\Python34\\Python.exe", chaineappli],shell=1).pid 
+            pid = Popen(["C:\\Python34\\Python.exe", chaineappli,self.saasIP,self.utilisateur,self.organisation,self.clientIP],shell=1).pid 
         else:
-            print("RIEN")
+            print("Pas de connexion")
             
 if __name__=="__main__":
     c=Controleur()

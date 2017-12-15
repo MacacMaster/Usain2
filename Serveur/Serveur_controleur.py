@@ -1,19 +1,5 @@
 #-*- coding: utf-8 -*-
-######################################################
-# Pour utiliser les fonctions de sélection ou d'insertion
-# dans les modules
-# 1) s'assurer d'avoir un lien avec le serveur (voir client)
-#2) appeler la fonction de serveur:
-#      ex:  self.serveur.insertionSQL("Organisations", " 4, 'allo' ")
-# Premier paramètre est le nom de la table en string, le deuxième est un long string qui est la liste des valeurs à ajouter. Si cette liste a des string, les mettre entre ' ' .
-#        self.selDonnees("Organisations","id, nom")
-#Les ids uniquies sont pris en charge avec la fonction
-# 
-# ex: self.serveur.selectionSQL("Projets","id")
-#        Premier paramètre est le nom de la table en string, puis la liste des colonnes dont vous voulez les données
-#        Cette fonction a encore un print, vous verrez donc son résultat.
-#        Cette fonction retourne une liste, il vous faudra donc aller sélectionner spécifiquement le champ recherché
-######################################################
+
 from xmlrpc.server import SimpleXMLRPCServer
 import xmlrpc.client
  #création de l'objet qui écoute  Q
@@ -22,6 +8,7 @@ import sqlite3
 from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
+import sys
 from datetime import datetime
 import time
 
@@ -48,12 +35,10 @@ class ModeleService(object):
                                  "PlanificationGlobale":"PlanificationGlobale",
                                  "Sprint":"Sprint"}
 
-        self.outilsdisponibles={"meta_sql": "meta_sql",
-                                                    "Facturation": "Facturation"}
+        self.outilsdisponibles={"Facturation": "Facturation"}
         self.clients={}
 
     def creerclient(self,nom, idOrga, id):
-        print ("id client = ", id)
         if id in self.clients.keys(): # on assure un nom unique
             return [0,"Simulation deja en cours"]
         # tout va bien on cree le client et lui retourne la seed pour le random
@@ -62,8 +47,7 @@ class ModeleService(object):
         tabProjet = self.controleur.rechercheProjetsDispo(idOrga)
         for i in tabProjet:
             self.projetsdisponibles[i] = i
-        for i in self.projetsdisponibles:
-            print (i)
+        
         
         return [c.id,
                 c.nom,
@@ -80,10 +64,9 @@ class ControleurServeur():
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Connection au serveurDB
-        print("Connexion au serveur BD...")
         self.ipServeurBd = "http://"+pUsagerIP+":9998"
         self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1)
-        print("Connexion au serveur BD réussie")
+        print("Connexion au serveur BD")
 
    
         #variables id
@@ -96,7 +79,6 @@ class ControleurServeur():
         if (clientTempo == 0):
             return 0
         else:
-            print("Recherche du client terminé. Il s'agit de", clientTempo[0], "qui appartient a l'organisation numero ", clientTempo[1])
             client = self.modele.creerclient(clientTempo[0], clientTempo[1], clientTempo[2])
             if client[1] == "Simulation deja en cours":
                 return "Simulation deja en cours"
@@ -114,8 +96,7 @@ class ControleurServeur():
         return idProjet
         
     def fermeture(self, utilisateurId):
-        print("Deconnection en cours")
-        print(utilisateurId)
+        print("Déconnexion de ce client  "+str(utilisateurId))
         del self.modele.clients[utilisateurId]
         
     def finDuProgramme(self):
@@ -128,11 +109,9 @@ class ControleurServeur():
     def requeteModule(self,mod):
         if mod in self.modele.modulesdisponibles.keys():
             cwd=os.getcwd()
-            #print(mod,os.getcwd())
             if os.path.exists(cwd+"/modules/"):
                 dirmod=cwd+"/modules/"+self.modele.modulesdisponibles[mod]+"/"
                 if os.path.exists(dirmod):
-                    #print("TROUVE")
                     listefichiers=[]
                     for i in os.listdir(dirmod):
                         if os.path.isfile(dirmod+i):
@@ -146,11 +125,9 @@ class ControleurServeur():
     def requeteOutil(self,mod):
         if mod in self.modele.outilsdisponibles.keys():
             cwd=os.getcwd()
-            #print(mod,os.getcwd())
             if os.path.exists(cwd+"/outils/"):
                 dirmod=cwd+"/outils/"+self.modele.outilsdisponibles[mod]+"/"
                 if os.path.exists(dirmod):
-                    #print("TROUVE")
                     listefichiers=[]
                     for i in os.listdir(dirmod):
                         if os.path.isfile(dirmod+i):
@@ -231,6 +208,14 @@ class ControleurServeur():
         logdb.close()
         return True 
     
+    def selectBdInterne(self,nomTable,champs,un,deux,indice1,indice2):
+        conn= sqlite3.connect('Logs.sqlite')
+        c = conn.cursor()
+        c.execute('''SELECT '''+ champs +''' FROM '''+nomTable+''' WHERE '''+ un +'''=? and '''+deux+''' =?''' , (indice1,indice2))
+        laselection=c.fetchall()
+        conn.close()
+        return laselection
+    
     def getTime(self):
         return (datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
     
@@ -242,10 +227,9 @@ class ControleurServeur():
         return self.serveurBD.selDonneesWHERE_DATES(nomTable,champs,where,valeur)
     
     
-print("Création du serveur...")
+
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)
 objetControleurServeur=ControleurServeur()
 daemon.register_instance(objetControleurServeur)
-print("Création du serveur terminé")
 daemon.serve_forever()
 

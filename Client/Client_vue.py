@@ -67,7 +67,6 @@ class Vue():
         identifiantMotDePasse = self.entrerMotDePasse.get()
         if(identifiantNomUsager == "admin"):
             self.statut=1
-        print("Nom de l'organisation entré par l'usager:", identifiantNomOrga,"Nom entré par l'usager ", identifiantNomUsager, "Mot de passe entré par l'usager ", identifiantMotDePasse)
         self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
     
     def logInClientFail(self, code):
@@ -157,9 +156,9 @@ class Vue():
         
     def commandeAdmin(self):
         self.affCommande=Text(bg="lightblue")
-        self.canevaOutil.create_window(200,455,window=self.affCommande,width=300,height=90)
+        self.canevaOutil.create_window(200,475,window=self.affCommande,width=300,height=90)
         btnNEnvoi=Button(self.cadreOutil, text="SQL",bg="steelblue",command=self.envoiSQL)
-        self.canevaOutil.create_window(200,540,window=btnNEnvoi,width=50,height=30) 
+        self.canevaOutil.create_window(200,560,window=btnNEnvoi,width=50,height=30) 
     
     def commandeAdminSaas(self):
         self.affCommandeSaas=Text(bg="lightblue")

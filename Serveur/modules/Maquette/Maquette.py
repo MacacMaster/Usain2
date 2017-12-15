@@ -29,12 +29,12 @@ class Controleur():
         self.vue = Vue(self)
         self.chargerMaquette()
         
-        self.writeLog("Ouverture du Module","M42")        
+        self.writeLog("Ouverture du Module","2")        
         self.vue.root.mainloop()
 
         
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M43")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
         
     def writeLog(self,action,codeid):
@@ -48,7 +48,7 @@ class Controleur():
         return ServerProxy(self.adresseServeur,allow_none = 1)
         
     def commitNouvelleMaquette(self, nomMaquette):
-        if nomMaquette == "":
+        if nomMaquette.replace(" ","") == "":
             self.vue.afficherMessageErreur("Vous devez entrer un nom de maquette valide.")
         else:
             if self.serveur.verificationExiste("nom","Maquettes","id_Projet", self.idProjet, nomMaquette):
@@ -61,8 +61,7 @@ class Controleur():
     def chargerFormesMaquette(self, nomMaquette):
         self.modele.viderListes()
         self.vue.nettoyerCanevasDessin()
-        self.idMaquette = self.serveur.selectionSQL3("Maquettes","id","nom", nomMaquette)
-        self.idMaquette = str(self.idMaquette)[2:len(self.idMaquette)-3]
+        self.getIdMaquette(nomMaquette)
         for i in self.serveur.selectionSQL3("Formes","id, x1, y1, x2, y2, texte, nom","id_Maquette", self.idMaquette):
             forme = Forme(i[1], i[2], i[3], i[4], i[6], i[5])
             self.modele.formesTemporaire.append(forme)
@@ -73,6 +72,13 @@ class Controleur():
             self.serveur.insertionSQL("Formes", "'"+str(self.idMaquette)+"', '"+str(i.x1)+"', '"+str(i.y1)+"', '"+str(i.x2)+"', '"+str(i.y2)+"', '"+i.text+"', '"+i.nom+"'")
         self.modele.miseAJourNbFormes()
         
+    def renommer(self, nouveauNom, ancienNom):
+        self.getIdMaquette(ancienNom)
+        self.serveur.updateSQL2("Maquettes", nouveauNom, "nom", "id", self.idMaquette)
+    
+    def getIdMaquette(self, nomMaquette):
+        self.idMaquette = self.serveur.selectionSQL3("Maquettes","id","nom", nomMaquette)
+        self.idMaquette = str(self.idMaquette)[2:len(self.idMaquette)-3]
     
 class Vue():
     def __init__(self, pControleur):
@@ -122,6 +128,7 @@ class Vue():
         self.listeMaquettes = Listbox(self.optionGauche)
         self.labelOutils = Label(self.optionMilieu, text="Outils")
         self.boutonChargerMaquette = Button(self.optionGauche,image=self.imgNouvMaquette,width=30, command = lambda: self.selectionOutils("ChargerMaquette"))
+        self.boutonRenommerMaquette = Button(self.optionGauche,text="Renommer",width=30, command = lambda: self.creerFenetreRenommer(self.listeMaquettes.selection_get()))
         self.boutonRectangle = Button(self.optionMilieu,image=self.imgRectangle,width=30, command= lambda: self.selectionOutils("Rectangle"))
         self.boutonOvale = Button(self.optionMilieu,image=self.imgOvale,width=30, command = lambda: self.selectionOutils("Ovale"))
         self.boutonFleche = Button(self.optionMilieu,image=self.imgFleche,width=30, command = lambda: self.selectionOutils("Fleche"))
@@ -132,9 +139,10 @@ class Vue():
         self.entreNouvMaquette = Entry(self.optionDroite)
         self.boutonNouvMaquette = Button(self.optionDroite,text="OK",width=30, command = lambda: self.selectionOutils("CommitNouvMaquette"))
         
-        self.optionGauche.create_window(115,60, window=self.listeMaquettes,width=190,height=50)
-        self.optionGauche.create_window(135,20, window=self.labelMaquette,width=240,height=30)
-        self.optionGauche.create_window(245,60, window=self.boutonChargerMaquette,width=40,height=30)
+        self.optionGauche.create_window(115,60, window=self.listeMaquettes,width=170,height=50)
+        self.optionGauche.create_window(135,20, window=self.labelMaquette,width=240,height=20)
+        self.optionGauche.create_window(237,70, window=self.boutonChargerMaquette,width=60,height=22)
+        self.optionGauche.create_window(237,40, window=self.boutonRenommerMaquette, width = 60, height= 25)
         self.optionMilieu.create_window(30,60, window=self.boutonRectangle,width=40,height=30)
         self.optionMilieu.create_window(73,60, window=self.boutonOvale,width=40,height=30)
         self.optionMilieu.create_window(118,60, window=self.boutonFleche,width=40,height=30)
@@ -154,6 +162,26 @@ class Vue():
         self.cadreMaquette.pack()
         self.canvasDessin.pack()
 
+    def creerFenetreRenommer(self, ancienNom):
+        self.popup = Toplevel(self.root)
+        self.fenetreRenommage = Frame(self.popup, width = 300, height = 200)
+        self.canvasRenommage = Canvas(self.fenetreRenommage, width = 300, height = 200)
+        
+        self.entreNouvNomMaquette = Entry(self.canvasRenommage)
+        self.labelNomMaquette = Label(self.canvasRenommage, text="Nom de la maquette: ")
+        self.boutonSauvegarde = Button(self.canvasRenommage,text="OK",width=30, command = lambda : self.renommer(self.entreNouvNomMaquette.get(), ancienNom))
+        self.canvasRenommage.create_window(150,30, window=self.labelNomMaquette,width=190,height=30)
+        self.canvasRenommage.create_window(150,80, window=self.entreNouvNomMaquette,width=190,height=30)
+        self.canvasRenommage.create_window(150,150, window=self.boutonSauvegarde,width=190,height=30)
+        self.fenetreRenommage.pack()
+        self.canvasRenommage.pack()
+
+    def renommer(self, nouveauNom, ancienNom):
+        self.controleur.renommer(nouveauNom, ancienNom)
+        self.listeMaquettes.delete(self.listeMaquettes.curselection())
+        self.listeMaquettes.insert(END,nouveauNom)
+        self.popup.destroy()
+
     def bindTouche(self):
         self.canvasDessin.bind('<B1-Motion>', self.deplacementSouris)
         self.canvasDessin.bind('<Button-1>', self.clicSouris)
@@ -167,12 +195,10 @@ class Vue():
         for i in self.controleur.modele.formesTemporaire:
             if (i.nom == "Rectangle"):
                 self.canvasDessin.create_rectangle(i.x1,i.y1,i.x2, i.y2)
-                print("je dessine un rectangle")
             elif (i.nom == "Ovale"):
                 self.canvasDessin.create_oval(i.x1,i.y1,i.x2, i.y2)
             elif (i.nom == "Fleche"):
                 self.canvasDessin.create_line(i.x1,i.y1,i.x2, i.y2)
-                print("je dessine une fleche")
             elif (i.nom  == "Texte"):
                 self.canvasDessin.create_text(i.x1+10, i.y1+10, text=i.text,font=("Purisa",12))
         self.root.after(250, self.afficherFormes)
@@ -183,17 +209,20 @@ class Vue():
             self.controleur.modele.formes.pop()
             self.nettoyerCanevasDessin()
         
-    def deselectionner(self, event):
-        self.canvasDessin.focus_force()
+    def accepterTexte(self, event):
         if (self.controleur.modele.choixForme == "Texte"):
             textTemporaire = Forme(self.controleur.modele.posForme[0],
                                     self.controleur.modele.posForme[1],
                                     0,
                                     0,
                                     "Texte",
-                                    self.entryTemp.get())
+                                    self.entryTemp.get().replace("'","°"))
             self.controleur.modele.formesTemporaire.append(textTemporaire)
             self.controleur.modele.formes.append(textTemporaire)
+            self.entryTemp.destroy()
+            
+    def deselectionnerTexte(self, event):
+        if self.entryTemp:
             self.entryTemp.destroy()
     
     def deplacementSouris(self,event):
@@ -202,13 +231,19 @@ class Vue():
         self.dessinerFormeTemporaire()
         
     def clicSouris(self,event):
-        self.controleur.modele.posForme[0] = event.x
-        self.controleur.modele.posForme[1] = event.y
+        if not self.listeMaquettes.curselection():
+            self.afficherMessageErreur("Vous devez d'abord sélectionner un projet")
+        elif (self.controleur.modele.estEditable == False):
+            self.afficherMessageErreur("Vous devez confirmer votre choix")
+        elif self.listeMaquettes.curselection():
+            self.controleur.modele.posForme[0] = event.x
+            self.controleur.modele.posForme[1] = event.y
         
     def relacheSouris(self, event):
         if self.controleur.modele.choixForme == "Texte":
             self.entryTemp = Entry(self.canvasDessin, bd = 0, font=("Purisa",12))
-            self.entryTemp.bind('<Return>',self.deselectionner)
+            self.entryTemp.bind('<Return>',self.accepterTexte)
+            self.entryTemp.bind('<Escape>', self.deselectionnerTexte)
             self.entryTemp.place(x= event.x, y= event.y)
             self.entryTemp.focus_force()
         else:
@@ -259,6 +294,7 @@ class Vue():
         elif (nomBouton == "CommitNouvMaquette"):
             self.controleur.commitNouvelleMaquette(self.entreNouvMaquette.get())
         elif (nomBouton == "ChargerMaquette"):
+            self.controleur.modele.estEditable = True
             self.controleur.chargerFormesMaquette(self.listeMaquettes.selection_get())
                 
                 
@@ -268,6 +304,7 @@ class Modele():
         self.posForme = [ 0, 0, 0, 0 ]
         self.formes = [ ]
         self.formesTemporaire = [ ]
+        self.estEditable = False
         self.choixForme = None
         self.choixText = None
         self.nbFormesCharger = None

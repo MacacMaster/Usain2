@@ -63,6 +63,9 @@ curseur.execute('''CREATE TABLE IF NOT EXISTS Maquettes
 
 curseur.execute('''CREATE TABLE IF NOT EXISTS Taches
              (id INTEGER PRIMARY KEY, id_Projet integer, id_utilisateur text , id_sprint integer ,tache text, reussi integer )''')
+
+curseur.execute('''CREATE TABLE IF NOT EXISTS DateDeSprints
+             (id INTEGER PRIMARY KEY,date text, id_tache , prevu integer, reussi integer,temps text )''')
  
 # Supprimer tout ce qui se trouve dans la bd
 for comptes in curseur.execute('SELECT id FROM Organisations'):
@@ -86,12 +89,16 @@ for comptes in curseur.execute('SELECT id FROM Organisations'):
 # Ajouter les nouveaux comptes
 curseur.execute("INSERT INTO Organisations VALUES ('1', 't')")
 curseur.execute("INSERT INTO Organisations VALUES ('2', 'a')")
+curseur.execute("INSERT INTO Organisations VALUES ('3', 'Exemples')")
+curseur.execute("INSERT INTO Organisations VALUES ('4', 'Tentatives')")
 
 curseur.execute("INSERT INTO Usagers VALUES ('1', '1', 't', 't')")
 curseur.execute("INSERT INTO Usagers VALUES ('2', '1', 'a', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('3', '2', 'a', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('4','1', 'admin', 'a')")
 curseur.execute("INSERT INTO Usagers VALUES ('5','2', 'admin', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('6','3', 'admin', 'a')")
+curseur.execute("INSERT INTO Usagers VALUES ('7','4', 'admin', 'a')")
 
 
 curseur.execute("INSERT INTO Projets VALUES ('1', '1', 'ProjetTest')")

@@ -24,12 +24,6 @@ from subprocess import Popen
 
 class Controleur():
     def __init__(self):
-#         self.saasIP= socket.gethostbyname(socket.gethostname())     #sys.argv[1]
-#         self.utilisateur="BOB"          #sys.argv[2]
-#         self.organisation="Organe"      #sys.argv[3]
-#         self.idProjet="111"             #sys.argv[4]
-#         self.clientIP="10.57.47.7"      #sys.argv[5]
-
         self.saasIP=        sys.argv[1]
         self.utilisateur=   sys.argv[2]
         self.organisation=  sys.argv[3]
@@ -41,7 +35,7 @@ class Controleur():
         self.serveur=self.connectionServeurSaas()
         self.modele=Modele(self)
         
-        self.writeLog("Ouverture du Module","M62")
+        self.writeLog("Ouverture du Module","2")
         self.sql=SQL(self)
 
         #[r0=[c1,c2,c3...],R1...]
@@ -57,7 +51,7 @@ class Controleur():
         self.vue.root.mainloop()
         
     def fermerProgramme(self):
-        self.writeLog("Fermeture du Module","M63")
+        self.writeLog("Fermeture du Module","3")
         self.vue.root.destroy()
         
     def writeLog(self,action,codeid):
