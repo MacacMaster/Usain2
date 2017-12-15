@@ -102,10 +102,10 @@ class Vue():
         taille = 3
         if column % 2 == 0:
             couleur = "lightskyblue"
-            Label(frame, text=self.jours[jour], bg = "lightskyblue").grid(row=row, column=column, columnspan=taille)
+            Label(frame, text=self.jours[jour], bg = "lightskyblue", width=30).grid(row=row, column=column, columnspan=taille)
         else:
             couleur = "steelblue"
-            Label(frame, text=self.jours[jour], bg = "steelblue").grid(row=row, column=column, columnspan=taille)
+            Label(frame, text=self.jours[jour], bg = "steelblue", width=30).grid(row=row, column=column, columnspan=taille)
         if self.aucunSprint == False:
             try:
                 dateDebut = self.dateEnFormatUtilisable(self.leSprint[0][2])
@@ -281,16 +281,16 @@ class Vue():
 
         #premiere rangee
         row = self.nbRangees()
-        Label(frame, text="Utilisateur", width=10, borderwidth="1", relief="solid",bg= self.color).grid(row=row, column=0, rowspan = 1)
+        Label(frame, text="Utilisateur", width=10, borderwidth="5", relief="solid").grid(row=row, column=0, rowspan = 1)
         b  = Button(frame, text="+", width=10, borderwidth="5", command = self.ajouterUnSprint)
         
         
-        b.grid(row=row, column=3)
-        Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=row, column=4)
+        b.grid(row=1, column=1)
+        Label(frame, text="Sprint", width=10, borderwidth="5", relief="solid").grid(row=1, column=0)
         
         #bouton pour passer a la prochaine semaine
         Button(frame, text="Prochain", bg= "blue", fg = "white", command = self.prochain).grid(row=1, column=18)
-        Button(frame, text="Précédent", bg= "blue", fg = "white", command = self.precedent).grid(row=1, column=3)
+        Button(frame, text="Précédent", bg= "blue", fg = "white", command = self.precedent).grid(row=1, column=2)
 
         #try:
             #dropdown menu 1
