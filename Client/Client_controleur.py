@@ -6,6 +6,7 @@ from Client_log import *
 import socket
 from xmlrpc.client import ServerProxy
 from subprocess import Popen
+from tkinter import messagebox
 import os
 
 
@@ -112,7 +113,7 @@ class Controleur():
             #pid = Popen(["C:\\Python34\\Python.exe", chaineappli,argumentsServeur],shell=1).pid 
             #pid = Popen(["C:\\Python34\\Python.exe", chaineappli],shell=1).pid
         else:
-            print("Pas de connexion")
+            messagebox.showinfo("Erreur","Il n'y a pas de connexion")
             
                
     def requeteOutil(self,mod):
@@ -134,7 +135,7 @@ class Controleur():
             chaineappli="."+lieuApp+lieuApp+".py"
             pid = Popen(["C:\\Python34\\Python.exe", chaineappli,self.saasIP,self.utilisateur,self.organisation,self.clientIP],shell=1).pid 
         else:
-            print("Pas de connexion")
+            messagebox.showinfo("Erreur","Il n'y a pas de connexion")
             
 if __name__=="__main__":
     c=Controleur()
