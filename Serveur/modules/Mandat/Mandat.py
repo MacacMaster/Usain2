@@ -22,7 +22,6 @@ class Vue():
         self.parent = parent
         self.root = Tk()  # Fenetre
         self.root.title("MANDAT")
-        self.root.protocol("WM_DELETE_WINDOW", self.parent.fermerProgramme)
         self.hauteurTotale = 200
         self.largeurTotale = 200
         self.hauteurMandat = 200
@@ -31,6 +30,7 @@ class Vue():
         self.fenetre.pack()
         self.text = ""
         self.mot = ""
+    
         
         # listes de types et de natures
         self.types = ["Explicite", "Implicite", "Supplementaire"]
@@ -50,6 +50,7 @@ class Vue():
         self.ecranCommande()
         self.ecranAnalyse()   
         self.barreTaches()
+    
     
     def barreTaches(self):
         # menu deroulant
@@ -415,13 +416,13 @@ class Modele():
     
     def loaderTexte(self):
         requete = self.parent.serveur.selectionSQL("Textes", "id_Projet, texte")
-        
+        #requete = self.parent.serveur.selDonneesWHERE("Textes", "texte", "id_Projet", "0")
         try: 
             for element in requete:
                 if str(element[0]) == str(self.parent.idProjet):
-                    texte = element[1]
+                    self.parent.texteMandat = element[1]
                     break
-            return texte
+            return self.parent.texteMandat
         except NameError:
             print("erreur, rien a loader de la BD")
             return "Bienvenue au module Mandat"  # pour le texte par defaut
@@ -460,14 +461,28 @@ class Controleur():
         self.idProjet=sys.argv[4]
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9999"
+        self.texteMandat = ""
         
         self.modele=Modele(self)
         self.serveur = self.connectionServeur()
         self.vue=Vue(self)
+        self.vue.root.protocol("WM_DELETE_WINDOW", self.sauvegarderContenu)
         
         self.writeLog("Ouverture du Module","2")
         self.vue.root.mainloop()
         
+    
+    def sauvegarderContenu(self):
+        
+        self.texteMandat=self.vue.text.get("1.0","end-1c")
+        print("texte: " + self.texteMandat)
+        
+        if self.texteMandat!="":
+            print("yep")
+            self.modele.ajouterNouveauTexte(self.texteMandat);
+        
+        self.vue.root.destroy()
+
 
     def connectionServeur(self):
         print("Connection au serveur BD...")

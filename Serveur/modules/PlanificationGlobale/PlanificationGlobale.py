@@ -40,7 +40,6 @@ class Controleur():
 
         #[r0=[c1,c2,c3...],R1...]
         self.listeFonctions=self.sql.selDonnees("*")
-        print("dans le controleur: " + str(self.listeFonctions))
         #Calcule automatiquement      
         self.id = len(self.listeFonctions)
 
