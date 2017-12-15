@@ -350,7 +350,7 @@ class Vue():
         if (self.id_sprint == None):          
             self.setSprint(OPTIONS[0])       
                
-        button = Button(frame,text="Confirmer", command = self.updaterVue)
+        button = Button(frame,text="Charger le Sprint", command = self.updaterVue, bg = "yellow3")
         button.grid(row=row, column=2)
         
         button = Button(frame,text="Enregistrer", command = self.enregistrer)
